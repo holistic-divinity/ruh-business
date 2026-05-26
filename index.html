@@ -67,6 +67,20 @@
       border-radius: 2px;
       color: var(--cream);
     }
+    .workbook-link {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.18);
+      padding: 0.45rem 1rem;
+      border-radius: 2px;
+      color: var(--cream);
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .workbook-link:hover { background: rgba(255,255,255,0.18); }
+    .header-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
 
     /* ── MONTH NAV ── */
     .month-nav {
@@ -494,7 +508,10 @@
     <div class="brand-name">RUH</div>
     <div class="brand-sub">Business Planner</div>
   </div>
-  <div class="phase-badge" id="currentPhaseBadge">Phase 1 — Brand Foundation</div>
+  <div class="header-right">
+    <div class="phase-badge" id="currentPhaseBadge">Phase 1 — Brand Foundation</div>
+    <a href="workbook.html" class="workbook-link">Workbook →</a>
+  </div>
 </header>
 
 <nav class="month-nav" id="monthNav"></nav>

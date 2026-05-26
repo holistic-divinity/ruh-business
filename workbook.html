@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RUH — Workbook</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --burgundy:       #6B1F30;
+      --burgundy-mid:   #8B2841;
+      --burgundy-pale:  #C4829A;
+      --sage:           #6B8F71;
+      --sage-light:     #8FAF8B;
+      --sage-pale:      #C8DEC9;
+      --amber:          #C17B41;
+      --terracotta:     #B85C38;
+      --cream:          #F8F4EE;
+      --cream-dark:     #EDE6D8;
+      --text-dark:      #2C1810;
+      --text-mid:       #5C3D2A;
+      --text-light:     #8B7355;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--burgundy);
+      color: var(--cream);
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      line-height: 1;
+    }
+    .brand-sub {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--burgundy-pale);
+      margin-top: 0.2rem;
+    }
+    .header-nav a {
+      color: var(--burgundy-pale);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .header-nav a:hover { color: var(--cream); }
+
+    /* ── LAYOUT ── */
+    .app-body {
+      display: flex;
+      flex: 1;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 220px;
+      min-width: 220px;
+      background: white;
+      border-right: 1px solid var(--cream-dark);
+      padding: 1.5rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+    .sidebar-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      padding: 0.75rem 1.5rem 0.25rem;
+    }
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 1.5rem;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      color: var(--text-mid);
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: all 0.15s;
+      background: none;
+      border-top: none;
+      border-right: none;
+      border-bottom: none;
+      width: 100%;
+      text-align: left;
+    }
+    .sidebar-item:hover { background: var(--cream); color: var(--text-dark); }
+    .sidebar-item.active {
+      color: var(--burgundy);
+      border-left-color: var(--burgundy);
+      background: var(--cream);
+      font-weight: 600;
+    }
+    .sidebar-icon { font-size: 0.9rem; opacity: 0.7; }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      flex: 1;
+      min-width: 0;
+      padding: 2.5rem 3rem;
+      overflow-y: auto;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--text-dark);
+      margin-bottom: 0.3rem;
+    }
+    .section-desc {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      max-width: 600px;
+    }
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── INDEX GRID ── */
+    .index-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .index-card {
+      background: white;
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .index-card:hover {
+      border-color: var(--burgundy-pale);
+      box-shadow: 0 2px 12px rgba(107,31,48,0.08);
+      transform: translateY(-2px);
+    }
+    .index-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+    .index-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--burgundy);
+      margin-bottom: 0.4rem;
+    }
+    .index-card-desc {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      line-height: 1.6;
+    }
+    .index-card-count {
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--burgundy-pale);
+      margin-top: 0.75rem;
+    }
+
+    /* ── SHARED FORM STYLES ── */
+    .form-group { margin-bottom: 1.25rem; }
+    .form-label {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0.4rem;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      background: white;
+      border: 1px solid var(--cream-dark);
+      border-radius: 3px;
+      padding: 0.65rem 0.85rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.82rem;
+      color: var(--text-dark);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: rgba(107,31,48,0.35);
+    }
+    .form-textarea { min-height: 100px; resize: vertical; line-height: 1.6; }
+    .form-row { display: flex; gap: 1rem; }
+    .form-row .form-group { flex: 1; }
+    .btn {
+      background: var(--burgundy);
+      color: var(--cream);
+      border: none;
+      padding: 0.65rem 1.5rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+    .btn:hover { background: var(--burgundy-mid); }
+    .btn-ghost {
+      background: none;
+      color: var(--text-light);
+      border: 1px solid var(--cream-dark);
+    }
+    .btn-ghost:hover { background: var(--cream-dark); color: var(--text-dark); }
+    .btn-sm {
+      padding: 0.35rem 0.85rem;
+      font-size: 0.6rem;
+    }
+    .btn-danger {
+      background: none;
+      color: var(--text-light);
+      border: none;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: 0;
+    }
+    .btn-danger:hover { color: var(--burgundy); }
+
+    /* ── CARD LIST ── */
+    .card-list { display: flex; flex-direction: column; gap: 0.85rem; margin-top: 1.5rem; }
+    .card {
+      background: white;
+      border: 1px solid var(--cream-dark);
+      border-radius: 4px;
+      padding: 1.25rem 1.5rem;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--text-dark);
+    }
+    .card-meta {
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+    .card-body {
+      font-size: 0.8rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .card-tag {
+      display: inline-block;
+      font-size: 0.58rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      margin-right: 0.4rem;
+      margin-top: 0.5rem;
+    }
+    .tag-sage { background: var(--sage-pale); color: var(--sage); }
+    .tag-amber { background: #F5E8D8; color: var(--amber); }
+    .tag-burgundy { background: #F5E8EB; color: var(--burgundy); }
+
+    .empty-state {
+      font-size: 0.8rem;
+      color: var(--text-light);
+      font-style: italic;
+      line-height: 1.7;
+      padding: 2rem 0;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--cream-dark); margin: 2rem 0; }
+
+    /* ── BRAND VISION SPECIFIC ── */
+    .vision-section { margin-bottom: 2rem; }
+    .vision-section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--burgundy);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ── RECIPE INGREDIENTS TABLE ── */
+    .ingredients-table { width: 100%; border-collapse: collapse; margin-top: 0.5rem; }
+    .ingredients-table th {
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-align: left;
+      padding: 0.4rem 0.5rem;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+    .ingredients-table td {
+      font-size: 0.78rem;
+      color: var(--text-mid);
+      padding: 0.4rem 0.5rem;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    /* ── STABILITY GRID ── */
+    .stability-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 0.5rem; margin-top: 0.75rem; }
+    .stability-cell { background: var(--cream); border: 1px solid var(--cream-dark); border-radius: 3px; padding: 0.75rem; }
+    .stability-cell-label { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.35rem; }
+    .stability-cell-value { font-size: 0.78rem; color: var(--text-mid); line-height: 1.5; }
+
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 1.5rem; }
+      .stability-grid { grid-template-columns: 1fr 1fr; }
+      .form-row { flex-direction: column; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand-name">RUH</div>
+    <div class="brand-sub">Workbook</div>
+  </div>
+  <div class="header-nav">
+    <a href="index.html">← Back to Planner</a>
+  </div>
+</header>
+
+<div class="app-body">
+
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-label">Overview</div>
+    <button class="sidebar-item active" data-section="index">
+      <span class="sidebar-icon">◈</span> Index
+    </button>
+
+    <div class="sidebar-label">Brand</div>
+    <button class="sidebar-item" data-section="vision">
+      <span class="sidebar-icon">✦</span> Brand Vision
+    </button>
+    <button class="sidebar-item" data-section="design">
+      <span class="sidebar-icon">◻</span> Design Notes
+    </button>
+
+    <div class="sidebar-label">Formulation</div>
+    <button class="sidebar-item" data-section="ingredients">
+      <span class="sidebar-icon">⬡</span> Ingredient Stories
+    </button>
+    <button class="sidebar-item" data-section="research">
+      <span class="sidebar-icon">◎</span> Formulation Research
+    </button>
+    <button class="sidebar-item" data-section="recipes">
+      <span class="sidebar-icon">⊞</span> Lab Notebook
+    </button>
+    <button class="sidebar-item" data-section="stability">
+      <span class="sidebar-icon">◷</span> Stability Log
+    </button>
+
+    <div class="sidebar-label">Business</div>
+    <button class="sidebar-item" data-section="costing">
+      <span class="sidebar-icon">◈</span> Costing Sheet
+    </button>
+    <button class="sidebar-item" data-section="suppliers">
+      <span class="sidebar-icon">◉</span> Supplier Directory
+    </button>
+    <button class="sidebar-item" data-section="customers">
+      <span class="sidebar-icon">◇</span> Customer Notes
+    </button>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- INDEX -->
+    <div class="section active" id="section-index">
+      <div class="section-title">Ruh Workbook</div>
+      <div class="section-desc">Everything in one place. Your brand, your formulas, your research, your business. Use the sidebar to navigate between sections, or click a card below.</div>
+
+      <div class="index-grid">
+        <div class="index-card" data-goto="vision">
+          <div class="index-card-icon">✦</div>
+          <div class="index-card-title">Brand Vision</div>
+          <div class="index-card-desc">The soul of Ruh. The making ritual. The Ruh woman. The tiered experience. What Ruh refuses to be.</div>
+          <div class="index-card-count" id="count-vision"></div>
+        </div>
+        <div class="index-card" data-goto="design">
+          <div class="index-card-icon">◻</div>
+          <div class="index-card-title">Design Notes</div>
+          <div class="index-card-desc">Label concepts, website ideas, packaging references, mood board notes, visual direction.</div>
+          <div class="index-card-count" id="count-design"></div>
+        </div>
+        <div class="index-card" data-goto="ingredients">
+          <div class="index-card-icon">⬡</div>
+          <div class="index-card-title">Ingredient Stories</div>
+          <div class="index-card-desc">Every ingredient — its origin, its tradition, its INCI name, its story within Ruh.</div>
+          <div class="index-card-count" id="count-ingredients"></div>
+        </div>
+        <div class="index-card" data-goto="research">
+          <div class="index-card-icon">◎</div>
+          <div class="index-card-title">Formulation Research</div>
+          <div class="index-card-desc">Notes from Formula Botanica, safety research, pH, preservation, chemistry basics.</div>
+          <div class="index-card-count" id="count-research"></div>
+        </div>
+        <div class="index-card" data-goto="recipes">
+          <div class="index-card-icon">⊞</div>
+          <div class="index-card-title">Lab Notebook</div>
+          <div class="index-card-desc">Every batch you make. Ingredients, percentages, method, pH, observations, adjustments.</div>
+          <div class="index-card-count" id="count-recipes"></div>
+        </div>
+        <div class="index-card" data-goto="stability">
+          <div class="index-card-icon">◷</div>
+          <div class="index-card-title">Stability Log</div>
+          <div class="index-card-desc">Track each product batch at 2, 4, 6 and 8 weeks. Your safety record.</div>
+          <div class="index-card-count" id="count-stability"></div>
+        </div>
+        <div class="index-card" data-goto="costing">
+          <div class="index-card-icon">◈</div>
+          <div class="index-card-title">Costing Sheet</div>
+          <div class="index-card-desc">Cost of goods per product. Ingredient costs, packaging, time, markup, final price.</div>
+          <div class="index-card-count" id="count-costing"></div>
+        </div>
+        <div class="index-card" data-goto="suppliers">
+          <div class="index-card-icon">◉</div>
+          <div class="index-card-title">Supplier Directory</div>
+          <div class="index-card-desc">Every supplier you use. Website, what they sell, minimum orders, delivery times, notes.</div>
+          <div class="index-card-count" id="count-suppliers"></div>
+        </div>
+        <div class="index-card" data-goto="customers">
+          <div class="index-card-icon">◇</div>
+          <div class="index-card-title">Customer Notes</div>
+          <div class="index-card-desc">Special orders. What they need, what you made, what you pulled for them, how they felt.</div>
+          <div class="index-card-count" id="count-customers"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND VISION -->
+    <div class="section" id="section-vision">
+      <div class="section-title">Brand Vision</div>
+      <div class="section-desc">The foundation of everything Ruh is and does. Write it in your own words. Come back and update it as the brand evolves.</div>
+
+      <div class="vision-section">
+        <div class="vision-section-title">The Brand Soul</div>
+        <textarea class="form-textarea" id="vision-soul" style="min-height:120px" placeholder="What is Ruh at its core? What does it stand for? Why does it exist?"></textarea>
+      </div>
+      <div class="vision-section">
+        <div class="vision-section-title">The Brand Statement</div>
+        <textarea class="form-textarea" id="vision-statement" style="min-height:80px" placeholder="The one sentence everything gets measured against..."></textarea>
+      </div>
+      <div class="vision-section">
+        <div class="vision-section-title">The Ruh Woman</div>
+        <textarea class="form-textarea" id="vision-woman" style="min-height:160px" placeholder="Who are you making this for? Describe her — not demographics, but who she is as a person..."></textarea>
+      </div>
+      <div class="vision-section">
+        <div class="vision-section-title">The Making Ritual</div>
+        <textarea class="form-textarea" id="vision-ritual" style="min-height:120px" placeholder="What happens when you make a product? The music, the intention, the closing meditation..."></textarea>
+      </div>
+      <div class="vision-section">
+        <div class="vision-section-title">The Tiered Experience</div>
+        <textarea class="form-textarea" id="vision-tiered" style="min-height:120px" placeholder="Every order vs special orders. What each receives. How the oracle cards work..."></textarea>
+      </div>
+      <div class="vision-section">
+        <div class="vision-section-title">What Ruh Refuses to Be</div>
+        <textarea class="form-textarea" id="vision-refuses" style="min-height:100px" placeholder="Fake spirituality, mass production, generalised wellness claims..."></textarea>
+      </div>
+      <div class="vision-section">
+        <div class="vision-section-title">The Tagline</div>
+        <textarea class="form-textarea" id="vision-tagline" style="min-height:50px" placeholder="Enter a realm of ethereal ease."></textarea>
+      </div>
+      <button class="btn" id="vision-save-btn">Save Vision</button>
+      <div id="vision-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+    </div>
+
+    <!-- DESIGN NOTES -->
+    <div class="section" id="section-design">
+      <div class="section-title">Design Notes</div>
+      <div class="section-desc">Label ideas, website concepts, packaging references, visual direction. Capture it before it disappears.</div>
+
+      <div class="form-group">
+        <label class="form-label">Title</label>
+        <input class="form-input" id="design-title" placeholder="e.g. Label concept for face cream, Homepage hero ideas..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="design-category">
+          <option value="label">Label Design</option>
+          <option value="website">Website</option>
+          <option value="packaging">Packaging</option>
+          <option value="logo">Logo</option>
+          <option value="photography">Photography</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="design-notes" style="min-height:140px" placeholder="Describe the idea — colours, layout, feel, references, what you want it to communicate..."></textarea>
+      </div>
+      <button class="btn" id="design-save-btn">Add Note</button>
+      <div id="design-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div class="card-list" id="design-list"></div>
+    </div>
+
+    <!-- INGREDIENT STORIES -->
+    <div class="section" id="section-ingredients">
+      <div class="section-title">Ingredient Stories</div>
+      <div class="section-desc">Every ingredient Ruh uses — its origin, its tradition, its INCI name, what it does, and what story it carries into the product.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Ingredient Name</label>
+          <input class="form-input" id="ing-name" placeholder="e.g. Shea Butter" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">INCI Name</label>
+          <input class="form-input" id="ing-inci" placeholder="e.g. Butyrospermum Parkii Butter" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Origin / Region</label>
+          <input class="form-input" id="ing-origin" placeholder="e.g. Shea Belt, West Africa" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Used In (products)</label>
+          <input class="form-input" id="ing-products" placeholder="e.g. Body Butter, Face Cream" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Traditional Use + Cultural Story</label>
+        <textarea class="form-textarea" id="ing-story" placeholder="Where does this ingredient come from? What traditions used it? What did it mean to the people who harvested it?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Skin Benefits + Properties</label>
+        <textarea class="form-textarea" style="min-height:80px" id="ing-benefits" placeholder="What does it do for the skin? pH, recommended usage percentage, any contraindications?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" style="min-height:70px" id="ing-notes" placeholder="Anything else — sourcing notes, ritual significance, what product it's going into and why..."></textarea>
+      </div>
+      <button class="btn" id="ing-save-btn">Add Ingredient</button>
+      <div id="ing-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div class="card-list" id="ing-list"></div>
+    </div>
+
+    <!-- FORMULATION RESEARCH -->
+    <div class="section" id="section-research">
+      <div class="section-title">Formulation Research</div>
+      <div class="section-desc">Notes from Formula Botanica, safety research, preservation, pH, emulsifiers, anything you learn that changes how you make things.</div>
+
+      <div class="form-group">
+        <label class="form-label">Topic / Title</label>
+        <input class="form-input" id="res-title" placeholder="e.g. Preservation in water-based products, pH basics, Emulsifier types..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Source</label>
+        <input class="form-input" id="res-source" placeholder="e.g. Formula Botanica, Point of Interest blog, Tisserand Institute..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" style="min-height:180px" id="res-notes" placeholder="Write everything you learned. Be detailed — future you will thank present you."></textarea>
+      </div>
+      <button class="btn" id="res-save-btn">Save Notes</button>
+      <div id="res-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div class="card-list" id="res-list"></div>
+    </div>
+
+    <!-- LAB NOTEBOOK -->
+    <div class="section" id="section-recipes">
+      <div class="section-title">Lab Notebook</div>
+      <div class="section-desc">Every batch you make, documented. This is your production record — legally important and practically essential for replicating what works.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Product Name</label>
+          <input class="form-input" id="rec-product" placeholder="e.g. Ruh Face Cream" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Batch Number</label>
+          <input class="form-input" id="rec-batch" placeholder="e.g. FC-001" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date Made</label>
+          <input class="form-input" type="date" id="rec-date" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ingredients + Percentages</label>
+        <textarea class="form-textarea" id="rec-ingredients" placeholder="List each ingredient and its percentage, e.g:&#10;Aqua — 65%&#10;Shea Butter — 15%&#10;Jojoba Oil — 10%&#10;Emulsifying Wax — 6%&#10;Optiphen — 1%&#10;Lavender Essential Oil — 0.5%"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Method</label>
+        <textarea class="form-textarea" id="rec-method" placeholder="What did you do, step by step? Temperatures, timing, order of addition..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">pH Result</label>
+          <input class="form-input" id="rec-ph" placeholder="e.g. 5.2" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Batch Size</label>
+          <input class="form-input" id="rec-size" placeholder="e.g. 500g, 12 bars" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Immediate Observations</label>
+        <textarea class="form-textarea" style="min-height:80px" id="rec-observations" placeholder="Texture, colour, scent, consistency, anything unusual..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Changes from Previous Batch</label>
+        <textarea class="form-textarea" style="min-height:70px" id="rec-changes" placeholder="What did you change and why?"></textarea>
+      </div>
+      <button class="btn" id="rec-save-btn">Save Batch</button>
+      <div id="rec-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div class="card-list" id="rec-list"></div>
+    </div>
+
+    <!-- STABILITY LOG -->
+    <div class="section" id="section-stability">
+      <div class="section-title">Stability Log</div>
+      <div class="section-desc">Track each product batch over 8 weeks. No change = good news. Document everything — this is your safety record.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Product + Batch Number</label>
+          <input class="form-input" id="stab-product" placeholder="e.g. Ruh Face Cream — FC-001" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date Made</label>
+          <input class="form-input" type="date" id="stab-date" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Week 2 Observation</label>
+          <textarea class="form-textarea" style="min-height:70px" id="stab-w2" placeholder="Colour, texture, scent, separation?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Week 4 Observation</label>
+          <textarea class="form-textarea" style="min-height:70px" id="stab-w4" placeholder="Colour, texture, scent, separation?"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Week 6 Observation</label>
+          <textarea class="form-textarea" style="min-height:70px" id="stab-w6" placeholder="Colour, texture, scent, separation?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Week 8 Observation (Milestone)</label>
+          <textarea class="form-textarea" style="min-height:70px" id="stab-w8" placeholder="Final stability check. Pass or fail?"></textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Overall Result</label>
+        <select class="form-select" id="stab-result">
+          <option value="">— Select —</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Stable — Passed">Stable — Passed</option>
+          <option value="Issues Found — Adjustments Needed">Issues Found — Adjustments Needed</option>
+          <option value="Failed">Failed</option>
+        </select>
+      </div>
+      <button class="btn" id="stab-save-btn">Save Log</button>
+      <div id="stab-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div class="card-list" id="stab-list"></div>
+    </div>
+
+    <!-- COSTING SHEET -->
+    <div class="section" id="section-costing">
+      <div class="section-title">Costing Sheet</div>
+      <div class="section-desc">Know exactly what each product costs to make. This is how you price honestly and build a sustainable business.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Product Name</label>
+          <input class="form-input" id="cost-product" placeholder="e.g. Ruh Face Cream" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Batch Size (units)</label>
+          <input class="form-input" type="number" id="cost-batch-size" placeholder="e.g. 20" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ingredients Cost (total for batch, R)</label>
+        <input class="form-input" type="number" id="cost-ingredients" placeholder="e.g. 180" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Packaging Cost (total for batch, R)</label>
+        <input class="form-input" type="number" id="cost-packaging" placeholder="e.g. 120" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Labour / Time Cost (total for batch, R)</label>
+        <input class="form-input" type="number" id="cost-labour" placeholder="e.g. 60" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Other Costs (labels, ritual cards, etc, R)</label>
+        <input class="form-input" type="number" id="cost-other" placeholder="e.g. 40" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Markup (x)</label>
+        <select class="form-select" id="cost-markup">
+          <option value="3">3x</option>
+          <option value="3.5">3.5x</option>
+          <option value="4" selected>4x</option>
+          <option value="4.5">4.5x</option>
+          <option value="5">5x</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" style="min-height:70px" id="cost-notes" placeholder="Any notes on pricing decisions, market comparison, etc."></textarea>
+      </div>
+      <button class="btn" id="cost-save-btn">Calculate + Save</button>
+      <div id="cost-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div class="card-list" id="cost-list"></div>
+    </div>
+
+    <!-- SUPPLIER DIRECTORY -->
+    <div class="section" id="section-suppliers">
+      <div class="section-title">Supplier Directory</div>
+      <div class="section-desc">Every supplier you work with. Reference this before every order so you're never searching from scratch.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Supplier Name</label>
+          <input class="form-input" id="sup-name" placeholder="e.g. Essentially Natural" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Website</label>
+          <input class="form-input" id="sup-website" placeholder="e.g. essentiallynatural.co.za" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What They Supply</label>
+        <input class="form-input" id="sup-supplies" placeholder="e.g. Carrier oils, butters, essential oils, preservatives" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Minimum Order</label>
+          <input class="form-input" id="sup-min" placeholder="e.g. R500, no minimum" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Delivery Time</label>
+          <input class="form-input" id="sup-delivery" placeholder="e.g. 3–5 business days to Gauteng" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea class="form-textarea" style="min-height:80px" id="sup-notes" placeholder="Quality notes, things to avoid, discount codes, contact person, anything useful..."></textarea>
+      </div>
+      <button class="btn" id="sup-save-btn">Add Supplier</button>
+      <div id="sup-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div class="card-list" id="sup-list"></div>
+    </div>
+
+    <!-- CUSTOMER NOTES -->
+    <div class="section" id="section-customers">
+      <div class="section-title">Customer Notes</div>
+      <div class="section-desc">Special orders and the people behind them. What they needed, what you made, what you felt when you pulled their card.</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Name / Handle</label>
+          <input class="form-input" id="cust-name" placeholder="e.g. Lerato, @moonchild_sa" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input class="form-input" type="date" id="cust-date" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What They Shared / What They Need</label>
+        <textarea class="form-textarea" id="cust-need" placeholder="What did they tell you? What are they going through? What did they ask for?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Products Sent</label>
+        <input class="form-input" id="cust-products" placeholder="e.g. Face Cream, Body Butter, Rooibos Tea" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Oracle / Tarot Card Pulled</label>
+        <input class="form-input" id="cust-card" placeholder="e.g. The Star — Rumi Oracle" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message Written for Them</label>
+        <textarea class="form-textarea" id="cust-message" placeholder="What did you feel when you pulled this card for them? What did you write?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Follow-Up Notes</label>
+        <textarea class="form-textarea" style="min-height:70px" id="cust-followup" placeholder="Did they respond? What did they say? Did they order again?"></textarea>
+      </div>
+      <button class="btn" id="cust-save-btn">Save Customer Note</button>
+      <div id="cust-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div class="card-list" id="cust-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  NAVIGATION
+// ─────────────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  const section = document.getElementById('section-' + id);
+  if (section) section.classList.add('active');
+  const btn = document.querySelector(`.sidebar-item[data-section="${id}"]`);
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+document.querySelectorAll('.sidebar-item').forEach(btn => {
+  btn.addEventListener('click', () => showSection(btn.dataset.section));
+});
+document.querySelectorAll('.index-card[data-goto]').forEach(card => {
+  card.addEventListener('click', () => showSection(card.dataset.goto));
+});
+
+// ─────────────────────────────────────────────
+//  STORAGE HELPERS
+// ─────────────────────────────────────────────
+function load(key) {
+  try { return JSON.parse(localStorage.getItem('ruh_wb_' + key)) || []; }
+  catch { return []; }
+}
+function save(key, data) {
+  localStorage.setItem('ruh_wb_' + key, JSON.stringify(data));
+}
+function flash(id, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  setTimeout(() => el.textContent = '', 2000);
+}
+function clearInputs(ids) {
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el.tagName === 'SELECT') el.selectedIndex = 0;
+    else el.value = '';
+  });
+}
+
+// ─────────────────────────────────────────────
+//  INDEX COUNTS
+// ─────────────────────────────────────────────
+function updateCounts() {
+  const sections = ['design','ingredients','research','recipes','stability','costing','suppliers','customers'];
+  sections.forEach(s => {
+    const el = document.getElementById('count-' + s);
+    if (!el) return;
+    const count = load(s).length;
+    el.textContent = count > 0 ? `${count} entr${count === 1 ? 'y' : 'ies'}` : '';
+  });
+}
+
+// ─────────────────────────────────────────────
+//  BRAND VISION
+// ─────────────────────────────────────────────
+const visionFields = ['soul','statement','woman','ritual','tiered','refuses','tagline'];
+function loadVision() {
+  const data = JSON.parse(localStorage.getItem('ruh_wb_vision') || '{}');
+  visionFields.forEach(f => {
+    const el = document.getElementById('vision-' + f);
+    if (el && data[f]) el.value = data[f];
+  });
+}
+document.getElementById('vision-save-btn').addEventListener('click', () => {
+  const data = {};
+  visionFields.forEach(f => {
+    const el = document.getElementById('vision-' + f);
+    if (el) data[f] = el.value;
+  });
+  localStorage.setItem('ruh_wb_vision', JSON.stringify(data));
+  flash('vision-saved-msg', 'Saved.');
+});
+loadVision();
+
+// ─────────────────────────────────────────────
+//  DESIGN NOTES
+// ─────────────────────────────────────────────
+function renderDesign() {
+  const list = load('design');
+  const el = document.getElementById('design-list');
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No design notes yet. Start capturing ideas.</div>'; return; }
+  [...list].reverse().forEach((item, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.title)}</div><div class="card-meta">${esc(item.category)} · ${item.date}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div><div class="card-body">${esc(item.notes)}</div>`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+    const list = load('design'); list.splice(parseInt(btn.dataset.idx), 1); save('design', list); renderDesign(); updateCounts();
+  }));
+}
+document.getElementById('design-save-btn').addEventListener('click', () => {
+  const title = document.getElementById('design-title').value.trim();
+  if (!title) return;
+  const list = load('design');
+  list.push({ title, category: document.getElementById('design-category').value, notes: document.getElementById('design-notes').value.trim(), date: new Date().toLocaleDateString('en-ZA') });
+  save('design', list);
+  clearInputs(['design-title','design-notes']);
+  flash('design-saved-msg', 'Saved.');
+  renderDesign(); updateCounts();
+});
+renderDesign();
+
+// ─────────────────────────────────────────────
+//  INGREDIENT STORIES
+// ─────────────────────────────────────────────
+function renderIngredients() {
+  const list = load('ingredients');
+  const el = document.getElementById('ing-list');
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No ingredients documented yet. Start with your heroes — coconut oil, shea butter, jojoba.</div>'; return; }
+  [...list].reverse().forEach((item, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.name)}</div><div class="card-meta">${esc(item.inci)} · ${esc(item.origin)}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div>${item.products ? `<div style="margin-bottom:0.5rem"><span class="card-tag tag-sage">${esc(item.products)}</span></div>` : ''}<div class="card-body">${esc(item.story)}</div>${item.benefits ? `<div class="card-body" style="margin-top:0.5rem;font-style:italic">${esc(item.benefits)}</div>` : ''}`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+    const list = load('ingredients'); list.splice(parseInt(btn.dataset.idx), 1); save('ingredients', list); renderIngredients(); updateCounts();
+  }));
+}
+document.getElementById('ing-save-btn').addEventListener('click', () => {
+  const name = document.getElementById('ing-name').value.trim();
+  if (!name) return;
+  const list = load('ingredients');
+  list.push({ name, inci: document.getElementById('ing-inci').value.trim(), origin: document.getElementById('ing-origin').value.trim(), products: document.getElementById('ing-products').value.trim(), story: document.getElementById('ing-story').value.trim(), benefits: document.getElementById('ing-benefits').value.trim(), notes: document.getElementById('ing-notes').value.trim() });
+  save('ingredients', list);
+  clearInputs(['ing-name','ing-inci','ing-origin','ing-products','ing-story','ing-benefits','ing-notes']);
+  flash('ing-saved-msg', 'Ingredient saved.');
+  renderIngredients(); updateCounts();
+});
+renderIngredients();
+
+// ─────────────────────────────────────────────
+//  FORMULATION RESEARCH
+// ─────────────────────────────────────────────
+function renderResearch() {
+  const list = load('research');
+  const el = document.getElementById('res-list');
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No research notes yet. Start with Formula Botanica\'s beginner guides tomorrow.</div>'; return; }
+  [...list].reverse().forEach((item, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.title)}</div><div class="card-meta">${esc(item.source)} · ${item.date}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div><div class="card-body">${esc(item.notes)}</div>`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+    const list = load('research'); list.splice(parseInt(btn.dataset.idx), 1); save('research', list); renderResearch(); updateCounts();
+  }));
+}
+document.getElementById('res-save-btn').addEventListener('click', () => {
+  const title = document.getElementById('res-title').value.trim();
+  if (!title) return;
+  const list = load('research');
+  list.push({ title, source: document.getElementById('res-source').value.trim(), notes: document.getElementById('res-notes').value.trim(), date: new Date().toLocaleDateString('en-ZA') });
+  save('research', list);
+  clearInputs(['res-title','res-source','res-notes']);
+  flash('res-saved-msg', 'Notes saved.');
+  renderResearch(); updateCounts();
+});
+renderResearch();
+
+// ─────────────────────────────────────────────
+//  LAB NOTEBOOK
+// ─────────────────────────────────────────────
+function renderRecipes() {
+  const list = load('recipes');
+  const el = document.getElementById('rec-list');
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No batches recorded yet. Your first entry goes here when you make your first test batch in June.</div>'; return; }
+  [...list].reverse().forEach((item, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.product)}</div><div class="card-meta">Batch ${esc(item.batch)} · ${item.date} · ${esc(item.size)} · pH ${esc(item.ph)}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div><div style="margin-top:0.75rem"><strong style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light)">Ingredients</strong><div class="card-body" style="margin-top:0.25rem">${esc(item.ingredients)}</div></div><div style="margin-top:0.75rem"><strong style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light)">Observations</strong><div class="card-body" style="margin-top:0.25rem">${esc(item.observations)}</div></div>${item.changes ? `<div style="margin-top:0.75rem"><strong style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light)">Changes from Previous</strong><div class="card-body" style="margin-top:0.25rem">${esc(item.changes)}</div></div>` : ''}`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+    const list = load('recipes'); list.splice(parseInt(btn.dataset.idx), 1); save('recipes', list); renderRecipes(); updateCounts();
+  }));
+}
+document.getElementById('rec-save-btn').addEventListener('click', () => {
+  const product = document.getElementById('rec-product').value.trim();
+  if (!product) return;
+  const list = load('recipes');
+  list.push({ product, batch: document.getElementById('rec-batch').value.trim(), date: document.getElementById('rec-date').value, size: document.getElementById('rec-size').value.trim(), ingredients: document.getElementById('rec-ingredients').value.trim(), method: document.getElementById('rec-method').value.trim(), ph: document.getElementById('rec-ph').value.trim(), observations: document.getElementById('rec-observations').value.trim(), changes: document.getElementById('rec-changes').value.trim() });
+  save('recipes', list);
+  clearInputs(['rec-product','rec-batch','rec-date','rec-size','rec-ingredients','rec-method','rec-ph','rec-observations','rec-changes']);
+  flash('rec-saved-msg', 'Batch saved.');
+  renderRecipes(); updateCounts();
+});
+renderRecipes();
+
+// ─────────────────────────────────────────────
+//  STABILITY LOG
+// ─────────────────────────────────────────────
+function renderStability() {
+  const list = load('stability');
+  const el = document.getElementById('stab-list');
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No stability logs yet. Start one the day you make your first batch.</div>'; return; }
+  [...list].reverse().forEach((item, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const resultColour = item.result === 'Stable — Passed' ? 'tag-sage' : item.result === 'In Progress' ? 'tag-amber' : 'tag-burgundy';
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.product)}</div><div class="card-meta">Made ${item.date}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div>${item.result ? `<span class="card-tag ${resultColour}">${esc(item.result)}</span>` : ''}<div class="stability-grid" style="margin-top:0.75rem"><div class="stability-cell"><div class="stability-cell-label">Week 2</div><div class="stability-cell-value">${esc(item.w2) || '—'}</div></div><div class="stability-cell"><div class="stability-cell-label">Week 4</div><div class="stability-cell-value">${esc(item.w4) || '—'}</div></div><div class="stability-cell"><div class="stability-cell-label">Week 6</div><div class="stability-cell-value">${esc(item.w6) || '—'}</div></div><div class="stability-cell"><div class="stability-cell-label">Week 8</div><div class="stability-cell-value">${esc(item.w8) || '—'}</div></div></div>`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+    const list = load('stability'); list.splice(parseInt(btn.dataset.idx), 1); save('stability', list); renderStability(); updateCounts();
+  }));
+}
+document.getElementById('stab-save-btn').addEventListener('click', () => {
+  const product = document.getElementById('stab-product').value.trim();
+  if (!product) return;
+  const list = load('stability');
+  list.push({ product, date: document.getElementById('stab-date').value, w2: document.getElementById('stab-w2').value.trim(), w4: document.getElementById('stab-w4').value.trim(), w6: document.getElementById('stab-w6').value.trim(), w8: document.getElementById('stab-w8').value.trim(), result: document.getElementById('stab-result').value });
+  save('stability', list);
+  clearInputs(['stab-product','stab-date','stab-w2','stab-w4','stab-w6','stab-w8','stab-result']);
+  flash('stab-saved-msg', 'Log saved.');
+  renderStability(); updateCounts();
+});
+renderStability();
+
+// ─────────────────────────────────────────────
+//  COSTING SHEET
+// ─────────────────────────────────────────────
+function renderCosting() {
+  const list = load('costing');
+  const el = document.getElementById('cost-list');
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No products costed yet. Add your first product once you know your ingredient and packaging costs.</div>'; return; }
+  [...list].reverse().forEach((item, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.product)}</div><div class="card-meta">Batch of ${item.batchSize} units</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-top:0.75rem"><div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.2rem">Cost per unit</div><div style="font-size:1.1rem;font-family:'Cormorant Garamond',serif;color:var(--text-dark)">R${item.cogs}</div></div><div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.2rem">Markup</div><div style="font-size:1.1rem;font-family:'Cormorant Garamond',serif;color:var(--text-dark)">${item.markup}x</div></div><div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.2rem">Selling price</div><div style="font-size:1.1rem;font-family:'Cormorant Garamond',serif;color:var(--burgundy)">R${item.price}</div></div></div>${item.notes ? `<div class="card-body" style="margin-top:0.75rem">${esc(item.notes)}</div>` : ''}`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+    const list = load('costing'); list.splice(parseInt(btn.dataset.idx), 1); save('costing', list); renderCosting(); updateCounts();
+  }));
+}
+document.getElementById('cost-save-btn').addEventListener('click', () => {
+  const product = document.getElementById('cost-product').value.trim();
+  if (!product) return;
+  const batchSize = parseFloat(document.getElementById('cost-batch-size').value) || 1;
+  const ingredients = parseFloat(document.getElementById('cost-ingredients').value) || 0;
+  const packaging = parseFloat(document.getElementById('cost-packaging').value) || 0;
+  const labour = parseFloat(document.getElementById('cost-labour').value) || 0;
+  const other = parseFloat(document.getElementById('cost-other').value) || 0;
+  const markup = parseFloat(document.getElementById('cost-markup').value) || 4;
+  const totalCost = ingredients + packaging + labour + other;
+  const cogs = (totalCost / batchSize).toFixed(2);
+  const price = (parseFloat(cogs) * markup).toFixed(2);
+  const list = load('costing');
+  list.push({ product, batchSize, cogs, markup, price, notes: document.getElementById('cost-notes').value.trim() });
+  save('costing', list);
+  clearInputs(['cost-product','cost-batch-size','cost-ingredients','cost-packaging','cost-labour','cost-other','cost-notes']);
+  flash('cost-saved-msg', `Saved. Cost per unit: R${cogs} → Sell at R${price}`);
+  renderCosting(); updateCounts();
+});
+renderCosting();
+
+// ─────────────────────────────────────────────
+//  SUPPLIER DIRECTORY
+// ─────────────────────────────────────────────
+function renderSuppliers() {
+  const list = load('suppliers');
+  const el = document.getElementById('sup-list');
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No suppliers added yet. Essentially Natural is your first one — add them when you place your first order.</div>'; return; }
+  [...list].reverse().forEach((item, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.name)}</div><div class="card-meta">${esc(item.website)}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div><div style="margin-top:0.5rem"><span class="card-tag tag-sage">${esc(item.supplies)}</span></div><div style="display:flex;gap:2rem;margin-top:0.75rem"><div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.2rem">Min Order</div><div style="font-size:0.8rem;color:var(--text-mid)">${esc(item.min)}</div></div><div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.2rem">Delivery</div><div style="font-size:0.8rem;color:var(--text-mid)">${esc(item.delivery)}</div></div></div>${item.notes ? `<div class="card-body" style="margin-top:0.75rem">${esc(item.notes)}</div>` : ''}`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+    const list = load('suppliers'); list.splice(parseInt(btn.dataset.idx), 1); save('suppliers', list); renderSuppliers(); updateCounts();
+  }));
+}
+document.getElementById('sup-save-btn').addEventListener('click', () => {
+  const name = document.getElementById('sup-name').value.trim();
+  if (!name) return;
+  const list = load('suppliers');
+  list.push({ name, website: document.getElementById('sup-website').value.trim(), supplies: document.getElementById('sup-supplies').value.trim(), min: document.getElementById('sup-min').value.trim(), delivery: document.getElementById('sup-delivery').value.trim(), notes: document.getElementById('sup-notes').value.trim() });
+  save('suppliers', list);
+  clearInputs(['sup-name','sup-website','sup-supplies','sup-min','sup-delivery','sup-notes']);
+  flash('sup-saved-msg', 'Supplier saved.');
+  renderSuppliers(); updateCounts();
+});
+renderSuppliers();
+
+// ─────────────────────────────────────────────
+//  CUSTOMER NOTES
+// ─────────────────────────────────────────────
+function renderCustomers() {
+  const list = load('customers');
+  const el = document.getElementById('cust-list');
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="empty-state">No customer notes yet. These begin when someone reaches out before ordering.</div>'; return; }
+  [...list].reverse().forEach((item, idx) => {
+    const realIdx = list.length - 1 - idx;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.name)}</div><div class="card-meta">${item.date}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div><div style="margin-top:0.5rem"><span class="card-tag tag-amber">${esc(item.products)}</span>${item.card ? `<span class="card-tag tag-burgundy">${esc(item.card)}</span>` : ''}</div><div style="margin-top:0.75rem"><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.25rem">What they needed</div><div class="card-body">${esc(item.need)}</div></div>${item.message ? `<div style="margin-top:0.75rem"><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.25rem">Message written</div><div class="card-body">${esc(item.message)}</div></div>` : ''}${item.followup ? `<div style="margin-top:0.75rem"><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.25rem">Follow-up</div><div class="card-body">${esc(item.followup)}</div></div>` : ''}`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+    const list = load('customers'); list.splice(parseInt(btn.dataset.idx), 1); save('customers', list); renderCustomers(); updateCounts();
+  }));
+}
+document.getElementById('cust-save-btn').addEventListener('click', () => {
+  const name = document.getElementById('cust-name').value.trim();
+  if (!name) return;
+  const list = load('customers');
+  list.push({ name, date: document.getElementById('cust-date').value, need: document.getElementById('cust-need').value.trim(), products: document.getElementById('cust-products').value.trim(), card: document.getElementById('cust-card').value.trim(), message: document.getElementById('cust-message').value.trim(), followup: document.getElementById('cust-followup').value.trim() });
+  save('customers', list);
+  clearInputs(['cust-name','cust-date','cust-need','cust-products','cust-card','cust-message','cust-followup']);
+  flash('cust-saved-msg', 'Saved.');
+  renderCustomers(); updateCounts();
+});
+renderCustomers();
+
+// ─────────────────────────────────────────────
+//  ESCAPE HELPER
+// ─────────────────────────────────────────────
+function esc(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+updateCounts();
+</script>
+</body>
+</html>
