@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RUH — Business Planner</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --burgundy:       #6B1F30;
+      --burgundy-mid:   #8B2841;
+      --burgundy-pale:  #C4829A;
+      --sage:           #6B8F71;
+      --sage-light:     #8FAF8B;
+      --sage-pale:      #C8DEC9;
+      --amber:          #C17B41;
+      --amber-light:    #D4944F;
+      --terracotta:     #B85C38;
+      --cream:          #F8F4EE;
+      --cream-dark:     #EDE6D8;
+      --text-dark:      #2C1810;
+      --text-mid:       #5C3D2A;
+      --text-light:     #8B7355;
+    }
+
+    body {
+      font-family: 'Raleway', sans-serif;
+      background: var(--cream);
+      color: var(--text-dark);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--burgundy);
+      color: var(--cream);
+      padding: 2rem 2.5rem 1.5rem;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 3.5rem;
+      font-weight: 300;
+      letter-spacing: 0.35em;
+      line-height: 1;
+    }
+    .brand-sub {
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--burgundy-pale);
+      margin-top: 0.25rem;
+    }
+    .phase-badge {
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 0.45rem 1rem;
+      border-radius: 2px;
+      color: var(--cream);
+    }
+
+    /* ── MONTH NAV ── */
+    .month-nav {
+      display: flex;
+      gap: 0;
+      padding: 0 2.5rem;
+      background: var(--cream-dark);
+      border-bottom: 1px solid rgba(107,31,48,0.12);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .month-nav::-webkit-scrollbar { display: none; }
+    .month-btn {
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      color: var(--text-light);
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .month-btn:hover { color: var(--text-dark); }
+    .month-btn.active {
+      color: var(--burgundy);
+      border-bottom-color: var(--burgundy);
+      font-weight: 600;
+    }
+
+    /* ── CALENDAR ── */
+    .calendar-wrap {
+      padding: 2rem 2.5rem;
+      max-width: 1100px;
+    }
+    .calendar-month-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.8rem;
+      font-weight: 300;
+      letter-spacing: 0.1em;
+      color: var(--text-dark);
+      margin-bottom: 1.5rem;
+    }
+    .cal-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+    .cal-header-cell {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      text-align: center;
+      padding: 0.5rem 0;
+    }
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+    .cal-day {
+      min-height: 80px;
+      background: white;
+      border: 1px solid var(--cream-dark);
+      border-radius: 3px;
+      padding: 0.5rem;
+      position: relative;
+      transition: all 0.15s;
+    }
+    .cal-day.empty { background: transparent; border-color: transparent; }
+    .cal-day.weekend {
+      background: var(--cream-dark);
+      opacity: 0.6;
+    }
+    .cal-day.has-tasks {
+      cursor: pointer;
+      border-color: rgba(107,31,48,0.15);
+    }
+    .cal-day.has-tasks:hover {
+      border-color: var(--burgundy-mid);
+      box-shadow: 0 2px 12px rgba(107,31,48,0.12);
+      transform: translateY(-1px);
+    }
+    .cal-day.today {
+      border-color: var(--burgundy);
+      background: #FDF5F7;
+    }
+    .day-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      color: var(--text-mid);
+    }
+    .cal-day.today .day-num { color: var(--burgundy); font-weight: 600; }
+    .cal-day.weekend .day-num { color: var(--text-light); }
+    .day-peek {
+      font-size: 0.6rem;
+      letter-spacing: 0.05em;
+      color: var(--text-light);
+      margin-top: 0.3rem;
+      line-height: 1.4;
+    }
+    .day-dot {
+      width: 5px;
+      height: 5px;
+      background: var(--burgundy-pale);
+      border-radius: 50%;
+      position: absolute;
+      top: 0.4rem;
+      right: 0.4rem;
+    }
+    .cal-day.has-tasks .day-dot { background: var(--burgundy); }
+    .rest-label {
+      font-size: 0.58rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-top: 0.4rem;
+    }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(44,24,16,0.55);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--cream);
+      width: 100%;
+      max-width: 680px;
+      max-height: 88vh;
+      border-radius: 8px 8px 0 0;
+      overflow-y: auto;
+      padding: 2rem 2.5rem 3rem;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+    .modal-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+    }
+    .modal-date-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--text-dark);
+    }
+    .modal-phase-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1.75rem;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text-light);
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 0 0 1rem;
+    }
+    .close-btn:hover { color: var(--text-dark); }
+
+    /* time blocks */
+    .block {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.85rem;
+      align-items: flex-start;
+    }
+    .block-time {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--text-light);
+      white-space: nowrap;
+      min-width: 100px;
+      padding-top: 0.2rem;
+    }
+    .block-body {
+      flex: 1;
+      border-left: 3px solid var(--cream-dark);
+      padding-left: 0.85rem;
+    }
+    .block-title {
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      margin-bottom: 0.2rem;
+    }
+    .block-desc {
+      font-size: 0.76rem;
+      color: var(--text-mid);
+      line-height: 1.55;
+    }
+    .block.cat-admin    .block-body { border-color: var(--burgundy-mid); }
+    .block.cat-research .block-body { border-color: var(--sage); }
+    .block.cat-creative .block-body { border-color: var(--amber); }
+    .block.cat-product  .block-body { border-color: var(--terracotta); }
+    .block.cat-content  .block-body { border-color: var(--sage-light); }
+    .block.cat-business .block-body { border-color: #7B8FA1; }
+    .block.cat-build    .block-body { border-color: #5B6B7A; }
+    .block.cat-break    .block-body { border-color: var(--cream-dark); }
+
+    .block.cat-admin    .block-title { color: var(--burgundy); }
+    .block.cat-research .block-title { color: var(--sage); }
+    .block.cat-creative .block-title { color: var(--amber); }
+    .block.cat-product  .block-title { color: var(--terracotta); }
+    .block.cat-content  .block-title { color: #5B8272; }
+    .block.cat-business .block-title { color: #5B6B7A; }
+    .block.cat-build    .block-title { color: #4A5B6A; }
+    .block.cat-break    .block-title { color: var(--text-light); }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--cream-dark);
+      margin: 1.25rem 0;
+    }
+
+    /* legend */
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 1.5rem 2.5rem;
+      border-top: 1px solid var(--cream-dark);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.62rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-light);
+    }
+    .legend-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+    }
+
+    @media (max-width: 600px) {
+      header { padding: 1.5rem; }
+      .calendar-wrap { padding: 1.25rem; }
+      .month-nav { padding: 0 1rem; }
+      .modal-box { padding: 1.5rem 1.5rem 2.5rem; }
+      .block-time { min-width: 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="brand-name">RUH</div>
+    <div class="brand-sub">Business Planner</div>
+  </div>
+  <div class="phase-badge" id="currentPhaseBadge">Phase 1 — Brand Foundation</div>
+</header>
+
+<nav class="month-nav" id="monthNav"></nav>
+
+<div class="calendar-wrap">
+  <div class="calendar-month-label" id="calMonthLabel"></div>
+  <div class="cal-header">
+    <div class="cal-header-cell">Mon</div>
+    <div class="cal-header-cell">Tue</div>
+    <div class="cal-header-cell">Wed</div>
+    <div class="cal-header-cell">Thu</div>
+    <div class="cal-header-cell">Fri</div>
+    <div class="cal-header-cell">Sat</div>
+    <div class="cal-header-cell">Sun</div>
+  </div>
+  <div class="cal-grid" id="calGrid"></div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#8B2841"></div> Admin</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6B8F71"></div> Research</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#C17B41"></div> Creative</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#B85C38"></div> Product</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#8FAF8B"></div> Content</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7B8FA1"></div> Business</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#5B6B7A"></div> Website Build</div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-top">
+      <div>
+        <div class="modal-date-label" id="modalDateLabel"></div>
+        <div class="modal-phase-label" id="modalPhaseLabel"></div>
+      </div>
+      <button class="close-btn" id="closeModal">×</button>
+    </div>
+    <div id="modalBlocks"></div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+//  SCHEDULE DATA
+// ─────────────────────────────────────────────
+// Format: "YYYY-MM-DD": { phase, tasks: [{ time, task, desc, cat }] }
+// cat options: admin | research | creative | product | content | business | build | break
+
+const schedule = {
+
+  // ══════════════════════════════
+  //  MAY 2026 — WEEK 0
+  // ══════════════════════════════
+
+  "2026-05-26": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Open your brand journal. Write one sentence: what do you want Ruh to feel like to the first person who receives it?", cat: "break" },
+      { time: "09:15 – 09:45", task: "Secure @ruh on Instagram", desc: "Create the Instagram account. Even if the profile is empty, the handle must be locked down today. Profile photo can be a placeholder.", cat: "admin" },
+      { time: "09:45 – 10:15", task: "Register ruhapothecary.co.za", desc: "Go to domains.co.za, search ruhapothecary.co.za and ruhapothecary.com, and register both. This is non-negotiable today.", cat: "admin" },
+      { time: "10:15 – 10:30", task: "Short break", desc: "Step away from the screen. Make tea.", cat: "break" },
+      { time: "10:30 – 13:00", task: "Write the Ruh Brand Vision Document", desc: "Open a Google Doc titled 'Ruh — Brand Vision'. Write out: the brand soul, the making ritual, the ideal customer (the awakening woman), the tiered experience, what Ruh refuses to be. Use everything from today's session with Claude. Ask Claude to help structure it.", cat: "creative" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Step away completely. Eat, rest, no screens if you can manage it.", cat: "break" },
+      { time: "14:00 – 15:30", task: "First Ruh Mood Board", desc: "Open Pinterest, create a board called 'Ruh'. Pull images that feel like Ruh — not product images, but feelings. Textures, light, botanicals, hands making things, earthy colours, sacred spaces. Minimum 30 pins.", cat: "creative" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Write 3 things in your journal: what felt right today, what felt unclear, one question you want to answer tomorrow.", cat: "break" }
+    ]
+  },
+
+  "2026-05-27": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write today's intention. What aspect of the brand are you getting clearer on?", cat: "break" },
+      { time: "09:15 – 11:00", task: "Formula Botanica — Beginner Guides", desc: "Go to formulabotanica.com and read their free beginner articles on natural cosmetics formulation. Focus on: what makes a product stable, preservatives in natural products, and pH basics. Take notes.", cat: "research" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Move your body. Stretch.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Ingredient Research — Your Current Heroes", desc: "Research the cultural origins of coconut oil, shea butter, and jojoba oil. Find out where they historically come from, what traditions used them, and how. Document in a Google Doc called 'Ruh — Ingredient Stories'.", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Brand Reference Research", desc: "Find 8 brands you genuinely love — not necessarily skincare. Study each one: what does the name feel like, how do they use colour and typography, what does their packaging say before you even read it? Write notes.", cat: "research" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "What did you learn today that surprised you? Write it down.", cat: "break" }
+    ]
+  },
+
+  "2026-05-28": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 10:30", task: "CIPC Registration Research", desc: "Go to cipc.co.za. Understand the difference between a Sole Proprietor and a Pty Ltd. Read the registration requirements for both. Decide which you're starting with (Claude's recommendation: Sole Proprietor for now).", cat: "business" },
+      { time: "10:30 – 12:00", task: "Begin CIPC Sole Proprietor Registration", desc: "Follow the steps on cipc.co.za to register Ruh as a sole proprietor. If anything is unclear, note the exact question and ask Claude. Registration fee is approximately R175.", cat: "admin" },
+      { time: "12:00 – 13:00", task: "Business Bank Account Research", desc: "Compare FNB Business Account vs Capitec Business. Look at monthly fees, features, and ease of use. You're already with FNB — adding a business account may be simplest.", cat: "business" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:00", task: "Open Business Bank Account", desc: "Call FNB or visit the app to open a business account for Ruh. This money must never mix with your personal account again.", cat: "admin" },
+      { time: "15:00 – 15:45", task: "Set Up Wave Accounting", desc: "Go to waveapps.com, create a free account for Ruh. Set up your business name, currency (ZAR), and basic category structure.", cat: "business" },
+      { time: "15:45 – 16:00", task: "Day Review", desc: "Log what was completed today in your brand journal.", cat: "break" }
+    ]
+  },
+
+  "2026-05-29": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 10:30", task: "Colour Palette Formalisation", desc: "Open Canva. Create a brand kit called 'Ruh'. Input your confirmed colours: Burgundy #6B1F30, Sage #6B8F71, Amber #C17B41, Terracotta #B85C38, Cream #F8F4EE. Name each one and save.", cat: "creative" },
+      { time: "10:30 – 12:00", task: "Typography Setup", desc: "Add Cormorant Garamond and Raleway to your Canva brand kit. Create a type specimen showing each font at various sizes — heading, subheading, body, caption. Print or screenshot it.", cat: "creative" },
+      { time: "12:00 – 13:00", task: "Logo Concept Research", desc: "Search 'wordmark logo design natural apothecary' and 'typographic logo botanical brand'. You are NOT copying — you are training your eye. Save 10 references that feel close to what Ruh should look like.", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "First Logo Attempts in Canva", desc: "Start playing with the Ruh wordmark. Large 'RUH' in Cormorant Garamond. Try different weights and layouts. Don't overthink — just explore. You are not finalising today.", cat: "creative" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Save all logo attempts, even the ones you don't like. Note which direction feels closest.", cat: "break" }
+    ]
+  },
+
+  "2026-05-30": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 10:30", task: "South African Cosmetics Regulations", desc: "Research the Foodstuffs, Cosmetics and Disinfectants Act (Act 54 of 1972). Understand what labels must include. Note the difference between cosmetic claims and medicinal claims. Ask Claude any questions.", cat: "research" },
+      { time: "10:30 – 11:30", task: "INCI Labelling Requirements", desc: "Research INCI (International Nomenclature of Cosmetic Ingredients) naming. Every ingredient on your label must use its INCI name. Start a reference document of INCI names for your ingredients.", cat: "research" },
+      { time: "11:30 – 13:00", task: "Week 1 Review", desc: "Go through everything completed this week. What is done? What still needs action? What surprised you? Write an honest assessment in your brand journal.", cat: "business" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Monthly Budget Allocation for Ruh", desc: "Transfer your first R3,500 into your Ruh business bank account. This is Phase 1 budget. Log it in Wave Accounting as 'Initial Capital'. Do not spend it yet — next week we plan the first order.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Week 1 Close + Rest Plan", desc: "Write your wins for the week. Rest this weekend completely. Let ideas come to you without forcing them.", cat: "break" }
+    ]
+  },
+
+  // ══════════════════════════════
+  //  JUNE 2026 — WEEKS 1-4
+  // ══════════════════════════════
+
+  "2026-06-02": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "New week. Write what you want to walk away with by Friday.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Cosmetic Chemistry Basics", desc: "Study: emulsifiers (what they are, why you need them), preservatives (why even natural products need them), and pH (what it is, why it matters for skin). Formula Botanica and Point of Interest (blog) are excellent sources.", cat: "research" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Step outside briefly if you can.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Ingredient Research — Baobab + Marula", desc: "Deep research into baobab oil and marula oil. Find: where they originate, what cultures used them and how, their INCI names, their skin benefits and any contraindications. Document in your Ingredient Stories file.", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Ingredient Research — Rooibos + Rosehip", desc: "Same deep research for rooibos (South African, rich cultural and botanical history) and rosehip oil. These are your local heroes — know them inside out.", cat: "research" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "What was the most interesting thing you discovered today?", cat: "break" }
+    ]
+  },
+
+  "2026-06-03": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 10:30", task: "Essential Oil Safety", desc: "Go to tisserandinstitute.org. Read their essential oil safety guidelines. Understand: dilution rates for face vs body vs bath, phototoxic oils (citrus), sensitising oils, and which oils to avoid in pregnancy. This is non-negotiable safety knowledge.", cat: "research" },
+      { time: "10:30 – 12:00", task: "Preservation Systems Research", desc: "Research preservation options for natural cosmetics: Optiphen, Geogard Ultra, Leucidal, Naticide. Understand why every water-containing product MUST be preserved. Document options and where to source in SA.", cat: "research" },
+      { time: "12:00 – 13:00", task: "Shelf Life and Stability", desc: "Research how to test shelf life at home (heat stress testing, observation logs). Understand rancidity in oils, CPSR (Cosmetic Product Safety Report), and PAO symbols. Start your stability tracking template.", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Recipe Notebook Setup", desc: "Create your digital lab notebook (Google Sheet or Notion). Columns: Date, Product Name, Batch Number, Ingredients + Percentages, Method, pH, Observations, Changes Made. This is your production record from day one.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "What safety information are you most glad you now know?", cat: "break" }
+    ]
+  },
+
+  "2026-06-04": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Essentially Natural — Full Catalogue Browse", desc: "Go to essentiallynatural.co.za. Go through the entire catalogue. Do not buy yet. Add every ingredient you want to your wishlist. Note prices per size. This is your research session — get familiar with what exists.", cat: "research" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea and rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Hero Product List + Ingredients Per Product", desc: "Decide your 5 launch products: 1 face cream, 1 body butter, 1 soap, 1 tea blend, 1 face oil or serum. For each product, list every ingredient you'll need. This is your first ingredient map.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "First Ingredient Order — Quantities + Cost", desc: "For Phase 1 testing, you need small quantities only. Calculate the minimum you need for 3 test batches of each product. Build a shopping list with quantities and estimated cost. Total should stay under R2,000 for this first order.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How does your product list feel? Exciting? Overwhelming? Write it honestly.", cat: "break" }
+    ]
+  },
+
+  "2026-06-05": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 10:00", task: "Place First Ingredient Order", desc: "Go to essentiallynatural.co.za and place your ingredient order. Keep it small — this is a testing order, not a production order. Log the total in Wave under 'Ingredient Expenses — Test Batches'.", cat: "admin" },
+      { time: "10:00 – 11:30", task: "Basic Equipment Research + Order", desc: "You need: a precision scale (0.1g accuracy), thermometer, pH strips, mixing bowls (stainless or glass), immersion blender. Search Takealot or local stores. Order anything you don't already have.", cat: "admin" },
+      { time: "11:30 – 13:00", task: "Making Ritual Design", desc: "Write out your making ritual in full. From setting the space (music, singing bowl) to the intention for each batch to the closing meditation. This becomes your standard practice. Write it as a guide you would hand to yourself.", cat: "creative" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "WhatsApp Business Setup", desc: "Download WhatsApp Business, set up the Ruh profile: business name, description, logo (placeholder), hours, website (placeholder for now). Create 3 quick reply templates: greeting, order enquiry, shipping info.", cat: "admin" },
+      { time: "15:30 – 16:00", task: "Week 2 Review", desc: "Full review of the week. What's moved forward? What needs more time next week?", cat: "break" }
+    ]
+  },
+
+  "2026-06-09": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Soap Making Theory — Cold Process", desc: "Study cold process soap making from scratch: the lye saponification process, safety protocols for working with lye (NaOH), oils and their properties in soap, trace, and curing time (4–6 weeks). MiFi Soap and Brambleberry are good resources.", cat: "research" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Step outside.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Tea Blending Foundations", desc: "Research herbal tea blending: base herbs (rooibos, chamomile, honeybush), middle notes, top notes, blending ratios, and South African herbs with healing properties. Start drafting 2 potential tea blend recipes.", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Face Cream Recipe Research", desc: "Study emulsion theory for face creams: oil phase, water phase, emulsifier, preservative, actives. Look at example formulations on Formula Botanica. Draft your first Ruh face cream recipe using your chosen ingredients.", cat: "product" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Note any recipe ideas you had during the day.", cat: "break" }
+    ]
+  },
+
+  "2026-06-10": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Body Butter Recipe Research", desc: "Study anhydrous (no-water) formulations for body butter. These are simpler than lotions — no emulsifier needed, no preservative needed. Draft your Ruh body butter recipe. Focus on the butters and oils that carry your cultural ingredient stories.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Ingredient Origins — Shea Butter + Jojoba Deep Dive", desc: "Full research into shea butter (Shea Belt, West African women's cooperatives, cultural significance) and jojoba (Sonoran Desert, Native American uses). These stories become part of the product ritual and brand content.", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Face Oil / Serum Recipe Research", desc: "Study the difference between a face oil (pure carrier oil blend) and a serum (active-focused, may contain water). Decide which one you're launching with. Draft a recipe. A face oil is simpler to start.", cat: "product" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How confident do you feel about your recipes so far?", cat: "break" }
+    ]
+  },
+
+  "2026-06-11": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 10:30", task: "Pricing Research — Market Analysis", desc: "Find 10 South African natural skincare brands. Note their price points for face cream, body butter, and soap. Where does the market sit? Where should Ruh sit? (Premium but accessible.) Document findings.", cat: "business" },
+      { time: "10:30 – 12:00", task: "Pricing Formula Work", desc: "For each of your 5 launch products, calculate the cost of goods (ingredients + packaging estimate). Apply the 3–4x markup formula. Set preliminary prices. These are not final yet — you'll refine once you have real packaging costs.", cat: "business" },
+      { time: "12:00 – 13:00", task: "Packaging Research — Containers", desc: "Research amber glass jars, pump bottles, kraft pouches for teas. Find SA suppliers: Packaging Supplies SA, Cape Containers, Bottles and Jars SA. Build a packaging wish list with prices.", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Logo Refinement Session", desc: "Return to your logo concepts from last week. Refine the two or three directions you liked most. Try the layout: RUH large, smaller text beneath. Try different weights of Cormorant Garamond.", cat: "creative" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Which logo direction feels most like Ruh?", cat: "break" }
+    ]
+  },
+
+  "2026-06-12": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Brand Voice Document", desc: "Write the Ruh brand voice guide. Include: words Ruh uses, words Ruh never uses, the tone (warm, knowing, never preachy), example caption for an Instagram post, example message to a customer. This guides all communication.", cat: "creative" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Move your body.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Customer Experience Design", desc: "Design the full unboxing experience in writing. From the outer packaging to what's inside: tissue paper, product, handwritten note template, small gift (what?), ritual card (what does it say?). Sketch it out.", cat: "creative" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Supplier Research — Labels and Printing", desc: "Research label printing in SA: Minuteman Press, Handy Labels SA, VistaPrint SA. Get quotes for small batch custom labels (minimum 50 units). Compare cost and turnaround.", cat: "research" },
+      { time: "15:30 – 16:00", task: "Week 3 Review", desc: "Full honest review. What needs more work before ingredients arrive?", cat: "break" }
+    ]
+  },
+
+  "2026-06-16": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention. Ingredients may be arriving this week — what are you making first?", cat: "break" },
+      { time: "09:15 – 10:30", task: "Instagram Account Build", desc: "Transform @ruh from placeholder to real: write the bio (who this is for, what Ruh is, brand feel), add a profile image (placeholder logo is fine), set up 3 story highlight covers.", cat: "content" },
+      { time: "10:30 – 12:00", task: "Business Email Setup", desc: "Set up hello@ruhapothecary.co.za via Google Workspace (approx R100/month). This is the email for all Ruh communication — customers, suppliers, everything. No more using personal email.", cat: "admin" },
+      { time: "12:00 – 13:00", task: "Making Space Preparation", desc: "Set up your making area at home. It needs to be: cleanable (no carpet, easy-wipe surfaces), well-lit, have a designated space for equipment. Photograph the space. This is your studio.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Packaging Order — Sample Quantities", desc: "Order small sample quantities of your chosen packaging. You want to physically test how the product looks and feels in the container before committing to large orders. Order 5–10 of each.", cat: "admin" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How does your making space feel? What still needs to be set up?", cat: "break" }
+    ]
+  },
+
+  "2026-06-17": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "First Test Batch — Body Butter", desc: "Make your first test batch of body butter using your drafted recipe. Follow your making ritual: set the space, music, intention. Keep the batch small (100–200g). Document every step, every measurement, in your lab notebook.", cat: "product" },
+      { time: "11:00 – 11:30", task: "Batch Observation + Notes", desc: "Observe your body butter immediately after making: texture, colour, scent, consistency. Take photos. Write observations in your lab notebook.", cat: "product" },
+      { time: "11:30 – 13:00", task: "First Test Batch — Face Oil", desc: "Make your first face oil blend. This is simpler than a cream — just carrier oils + essential oils. Follow your ritual. Document everything.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Patch Testing Protocol", desc: "Start patch testing your body butter and face oil on yourself. Inner arm, behind ear. Photograph. Set a reminder to check at 24 hours and 48 hours. Document any reactions — even 'no reaction' is data.", cat: "product" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How did your first making session feel? What will you adjust?", cat: "break" }
+    ]
+  },
+
+  "2026-06-18": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention + Patch Test Check", desc: "Check your 24-hour patch test results. Document observations.", cat: "break" },
+      { time: "09:15 – 11:00", task: "First Test Batch — Face Cream", desc: "This is more complex — it involves an emulsion (oil phase + water phase + emulsifier). Go slowly, follow your recipe exactly. Use a thermometer. Document everything. Do not rush this.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Let the cream cool while you rest.", cat: "break" },
+      { time: "11:15 – 12:00", task: "pH Test — Face Cream", desc: "Once your face cream is at room temperature, test the pH with strips. It should be between 4.5 and 5.5 for skin health. Document the result. If outside range, research how to adjust.", cat: "product" },
+      { time: "12:00 – 13:00", task: "Recipe Adjustments Document", desc: "For each product tested this week, note what needs to change in batch 2: texture, scent level, consistency, pH. This is normal — first batches are rarely final.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Brand Guidelines Document — First Draft", desc: "Create a Ruh Brand Guidelines document. Include: logo versions, colour codes, typography rules, tone of voice, image style guide (what photos look like, what they don't). This becomes your reference for everything.", cat: "creative" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How did the face cream go? Document honestly.", cat: "break" }
+    ]
+  },
+
+  "2026-06-19": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention + Patch Test Check", desc: "48-hour patch test check. Document results.", cat: "break" },
+      { time: "09:15 – 10:30", task: "Soap Making Safety Study", desc: "Before you touch lye — study safety protocols thoroughly. Gloves, goggles, never add water to lye (always lye to water), what to do if it contacts skin. Do not proceed to making until you feel completely confident.", cat: "research" },
+      { time: "10:30 – 12:00", task: "Soap Recipe Calculation — SoapCalc", desc: "Go to soapcalc.net. Learn how to use the lye calculator. Enter your chosen oils and calculate the exact amount of lye needed. No guessing — this is chemistry. Save your calculated recipe.", cat: "product" },
+      { time: "12:00 – 13:00", task: "Set Up Stability Testing Shelf", desc: "Designate a shelf or surface for stability testing. Place your face cream and body butter there. Label each with: product name, batch number, date made. You will observe these weekly for 8 weeks.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Month 1 Full Review", desc: "Sit with your brand journal and do a complete review of the past month. What was completed? What surprised you? What do you know now that you didn't know 4 weeks ago? What is Ruh becoming?", cat: "business" },
+      { time: "15:30 – 16:00", task: "Month 2 Intentions", desc: "Write 3 intentions for Month 2. What do you most want to have done by end of July?", cat: "break" }
+    ]
+  },
+
+  "2026-06-23": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "First Cold Process Soap Batch", desc: "Make your first soap with full safety precautions in place: gloves, goggles, dedicated equipment. Follow your lye-calculated recipe. Work slowly and carefully. Document everything. Soap will need 4–6 weeks to cure.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Let the soap sit undisturbed.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Tea Blend — First Test", desc: "Make your first tea blend. Weigh every herb precisely. Brew a cup and taste it. Adjust ratios. Document what you used and what you'd change. Share with someone you trust for their feedback.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Wave Accounting — Month 1 Catch-Up", desc: "Log every expense from Month 1 into Wave: ingredients, equipment, domain registration, packaging samples, CIPC fee. Categorize each. Run a Month 1 expense report. Know exactly what you've spent.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How was the first soap attempt? Log everything you observed.", cat: "break" }
+    ]
+  },
+
+  "2026-06-24": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Second Test Batch — Body Butter (Refined)", desc: "Make a refined version of your body butter with changes from Batch 1. Document every change and why.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Product Naming Research", desc: "Start thinking about what each product is called. Not generic names ('rooibos face cream') — names that carry meaning, that belong to the brand world. Research naming conventions for natural beauty brands.", cat: "creative" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Website Planning — Structure and Pages", desc: "Plan your website structure with Claude. What pages does Ruh need? Homepage, Shop, About, Ritual (your making practice), Community, Contact. Sketch the layout of each page.", cat: "build" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Write your observations.", cat: "break" }
+    ]
+  },
+
+  "2026-06-25": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Stability Check — Week 1 Observations", desc: "Check all products on your stability shelf. Look for: separation, colour change, smell change, texture change, mould. Document everything. No change is good news — document that too.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Second Test Batch — Face Cream (Refined)", desc: "Make your refined face cream. Apply every lesson from Batch 1. Document every step, every measurement, every observation.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Trusted Tester Setup", desc: "Identify 3–4 people you trust deeply to test your products. These are people who will give you honest, detailed feedback. Approach them and explain what you need: honest reactions, photos if comfortable, written notes.", cat: "admin" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Log observations.", cat: "break" }
+    ]
+  },
+
+  "2026-06-26": {
+    phase: "Phase 1 — Brand Foundation",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 10:30", task: "Give Products to Trusted Testers", desc: "Package up your test products (even without labels is fine) and give them to your trusted testers with a brief guide: use daily, note any reactions, tell me what you feel.", cat: "product" },
+      { time: "10:30 – 12:00", task: "GitHub Repository Setup", desc: "Set up your Ruh business GitHub repo with Claude's help. Push the business planner dashboard. This is also the repo where your website will eventually live.", cat: "build" },
+      { time: "12:00 – 13:00", task: "Content Planning — First 9 Instagram Posts", desc: "Plan the first 9 posts for @ruh. What are they? Behind the scenes of making? Ingredient origin stories? The vision? Sketch the grid layout. You are not posting yet — you are planning.", cat: "content" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Month 1 Financial Report", desc: "In Wave, run your expense report for May–June. Total spent on: ingredients, equipment, registration, domain, packaging samples, accounting setup. Compare to your R3,500 budget. Note the variance.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Phase 1 Close — Reflect", desc: "Write in your journal: what Phase 1 taught you. What do you know about Ruh now that you didn't before?", cat: "break" }
+    ]
+  },
+
+  // ══════════════════════════════
+  //  JULY 2026 — PRODUCT DEVELOPMENT
+  // ══════════════════════════════
+
+  "2026-07-01": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Phase 2 begins. Write what you most want to learn about your products this month.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Tester Feedback Collection", desc: "Contact your trusted testers for first impressions after a few days of use. Ask: how does it feel on your skin, any reactions, what would you change, would you pay for this?", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Recipe Adjustments Based on Feedback", desc: "For each product, map tester feedback to specific recipe adjustments. Document the reasoning for every change you plan to make. Do not change everything at once — change one variable per batch.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Third Batch — Body Butter (Final Direction)", desc: "Make your third body butter incorporating all feedback. This should start feeling close to the product you want to sell.", cat: "product" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Log observations.", cat: "break" }
+    ]
+  },
+
+  "2026-07-02": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Third Batch — Face Cream (Final Direction)", desc: "Refined face cream incorporating all learning. Document every step.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Let cream cool.", cat: "break" },
+      { time: "11:15 – 12:00", task: "pH Test and Observation", desc: "Test pH on new face cream batch. Compare to previous results. Document.", cat: "product" },
+      { time: "12:00 – 13:00", task: "Scent Profile Research", desc: "For each product, research what essential oils complement each other AND carry meaning (based on your ingredient origin research). Start building scent profile drafts for each product.", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Product Naming — First Drafts", desc: "For each of your 5 products, brainstorm 5 possible names. Pull from your ingredient stories, the traditions you've researched, the feelings you want to evoke. Nothing is final yet.", cat: "creative" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Which product names feel closest to right?", cat: "break" }
+    ]
+  },
+
+  "2026-07-03": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Second Tea Blend Batch", desc: "Refine your tea blends based on first tasting. If testing 2 different blends, make both today. Document recipes, ratios, and tasting notes.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Drink your tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Herbal Research — SA Indigenous Herbs", desc: "Research South African indigenous herbs for tea: buchu, honeybush, African wormwood (lengana), wild rosemary. What are their traditional uses? Can any be incorporated into your blends authentically?", cat: "research" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Stability Check — Week 2", desc: "Check all products on stability shelf. Document everything observed. Compare to Week 1 notes.", cat: "product" },
+      { time: "15:30 – 16:00", task: "Week 1 of July Review", desc: "Review and plan next week.", cat: "break" }
+    ]
+  },
+
+  "2026-07-06": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Soap Demould Check", desc: "Check if your cold process soap is ready to demould (usually 24–48 hours). If ready, unmould carefully. Check for lye pockets (soft spots, zap test). Begin the 4–6 week curing period.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Second Soap Batch", desc: "With lessons from Batch 1, make a refined soap. This time you know what to expect. Focus on getting the colour and scent profile right.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Website Content Writing — About Page", desc: "Write the Ruh About page copy. This is your story: who you are, why you make what you make, what the brand believes. Write from the heart — this will be edited but the raw truth should come first.", cat: "content" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Log observations.", cat: "break" }
+    ]
+  },
+
+  "2026-07-07": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Oracle Card Concept Research", desc: "Research oracle decks you love (Rumi Oracle, Lightworker's Oracle, Wild Unknown). What do you love about each? Size, art style, card meanings, packaging. Begin imagining what a Ruh oracle deck could look like one day.", cat: "research" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Step outside.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Website Content Writing — Ritual Page", desc: "Write the copy for the Ritual page — describing your making practice, the sound healing, the intention, the closing meditation. This is what makes Ruh different and it lives on the website.", cat: "content" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Cost Per Unit — Refined Calculations", desc: "Now that you know your recipes more accurately, redo your cost-per-unit calculations with real numbers. Ingredients + packaging + your time + overhead. Confirm or adjust your prices.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Are your prices feeling right? What doubts do you have?", cat: "break" }
+    ]
+  },
+
+  "2026-07-08": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Product Photography Research", desc: "Study flat lay and lifestyle photography for natural beauty brands. Look at lighting (natural light is best), backgrounds (linen, marble, botanical elements), props, composition. Save a reference folder.", cat: "research" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "First DIY Product Photography Session", desc: "Set up a simple photography station near natural light. Use your placeholder packaging. Practice shooting your products. Don't aim for perfect — aim to understand your angles and lighting.", cat: "content" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Instagram Content Creation — First 3 Posts", desc: "Using your photography and research, create the first 3 Instagram posts for @ruh in Canva. Write the captions. Do not post yet — you are building a content bank.", cat: "content" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How did photography feel? What will you improve?", cat: "break" }
+    ]
+  },
+
+  "2026-07-09": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Stability Check — Week 3", desc: "Full stability check on all products. Document. Any changes are important data. A stable product at 3 weeks is a good sign.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Ritual Card Design — First Draft", desc: "Design the ritual card that will go inside every Ruh order. What does it say? How does it instruct the customer to receive the product? What ritual do you offer them? Design in Canva.", cat: "creative" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Shipping Research — SA Couriers", desc: "Research The Courier Guy, Aramex SA, Pargo. Compare prices for: small parcel under 1kg, standard box 1–2kg. Set up accounts where needed. Calculate shipping into your pricing.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Log observations.", cat: "break" }
+    ]
+  },
+
+  "2026-07-10": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Second Wave Accounting Update", desc: "Log all July expenses to date. Run a cumulative report: total spent since starting. Are you within budget?", cat: "business" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Website Planning Deep Dive with Claude", desc: "Detailed website planning session. Map out every page, every section, what content goes where. Discuss the tech approach (HTML/CSS/JS + Stripe or PayFast). Create a wireframe document.", cat: "build" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Week 2 of July Review", desc: "Review the week. Are products progressing? What needs another batch?", cat: "business" },
+      { time: "15:30 – 16:00", task: "Rest and Reflect", desc: "Write: what does Ruh feel like right now? Are you excited? Scared? Both?", cat: "break" }
+    ]
+  },
+
+  "2026-07-13": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Final Face Cream Batch", desc: "You have made this enough times now. This batch should be the formulation you're comfortable with. If it passes 8-week stability, this is your launch product.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Final Body Butter Batch", desc: "Same energy as the face cream. This is your formulation. Document everything perfectly.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Product Description Writing", desc: "Write the product description for your face cream and body butter. These are the words that sell on your website. What does it feel like? What does it do? What is the intention behind it?", cat: "content" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Log observations.", cat: "break" }
+    ]
+  },
+
+  "2026-07-14": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Final Face Oil Batch", desc: "Finalise your face oil formulation. Test, document, add to stability shelf.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Final Tea Blend Decisions", desc: "You should have tasted your blends multiple times by now. Finalise the recipes and names for your 1–2 launch tea blends.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Product Naming — Final Decisions", desc: "For all 5 launch products, make final naming decisions. Each name should: carry meaning from the ingredient traditions, feel like Ruh, be memorable.", cat: "creative" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Write the product names and why you chose them.", cat: "break" }
+    ]
+  },
+
+  "2026-07-15": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Stability Check — Week 4", desc: "Monthly stability review. All products on the shelf. Full documentation. Products at 4 weeks with no issues are progressing well.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Packaging Final Decisions", desc: "Your sample packaging has arrived by now. Test your products in the actual containers. Does the body butter fill the jar well? Does the face cream pump work correctly? Make final packaging decisions.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Label Design — Final Round", desc: "Final label designs in Canva using your confirmed packaging sizes. Include: product name, Ruh logo, INCI ingredient list, net weight, PAO symbol, your contact details. These are your real labels.", cat: "creative" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How do the labels look on the actual packaging?", cat: "break" }
+    ]
+  },
+
+  "2026-07-16": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Order Final Packaging — First Production Run", desc: "Now that you're happy with your packaging choices, order your first production quantities. This is not a test order — this is packaging for your launch stock. Budget R1,500–2,500.", cat: "admin" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Send Labels to Print", desc: "Submit your finalised label designs for printing. Order enough for 30–50 units of each product initially.", cat: "admin" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Website Build Begins — with Claude", desc: "Start building the Ruh website HTML structure with Claude. Begin with the homepage skeleton: navigation, hero section, brand statement, product preview.", cat: "build" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How does the website structure feel?", cat: "break" }
+    ]
+  },
+
+  "2026-07-17": {
+    phase: "Phase 2 — Product Development",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Website Build — Homepage Hero Section", desc: "Build and style the homepage hero: Ruh brand name, tagline, background image/texture, primary call to action. This is what people see first.", cat: "build" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Month 2 Financial Review", desc: "Full accounting review in Wave. Expenses for July. Cumulative total. Are you on track with your budget? What's the next expected spend?", cat: "business" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Instagram Content Bank — Next 6 Posts", desc: "Create posts 4–9 for @ruh. Mix content types: product, process, ingredient story, brand values. Write all captions. You should now have 9 posts ready but not yet published.", cat: "content" },
+      { time: "15:30 – 16:00", task: "Month 2 Review + Month 3 Planning", desc: "Full review. Set intentions for August.", cat: "break" }
+    ]
+  },
+
+  // ══════════════════════════════
+  //  AUGUST 2026 — REFINEMENT + WEBSITE
+  // ══════════════════════════════
+
+  "2026-08-03": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Phase 3 begins. Products are coming together. Website is underway. This month we refine everything and push toward launch readiness.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Stability Check — Week 6", desc: "Check all products. At 6 weeks, your face cream and body butter should be showing strong stability. Any separation or mould is a red flag that needs addressing.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Website Build — Shop Page", desc: "Build the Shop page structure. Product cards with image, name, price, brief description, add to cart. Style to match the homepage.", cat: "build" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Professional Product Photography", desc: "Set up your best photography station. You have your real packaging now. Photograph every launch product: flat lay, close-up texture shot, lifestyle shot. Natural light, your brand aesthetic.", cat: "content" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Review your photos. Which ones are strong?", cat: "break" }
+    ]
+  },
+
+  "2026-08-04": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Website Build — Product Pages", desc: "Build individual product pages: large photography, full description, ingredient list, how to use, ritual guide for that product, price, add to cart.", cat: "build" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Payment Gateway Setup — PayFast", desc: "Go to payfast.co.za and set up a PayFast account. This is the SA payment gateway that integrates with your website. It accepts credit cards, EFT, and instant payments.", cat: "admin" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Integrate PayFast into Website", desc: "With Claude's help, integrate PayFast payment buttons into your product pages. Test with a R1 test transaction.", cat: "build" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Is the payment flow working?", cat: "break" }
+    ]
+  },
+
+  "2026-08-05": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Website Build — About Page", desc: "Build the About page using the copy you wrote in July. Add your photography. This page must feel personal and real.", cat: "build" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Website Build — Ritual Page", desc: "Build the Ritual page: your making practice, sound healing, the intention behind every batch, the closing meditation. This is Ruh's soul on the website.", cat: "build" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "First Launch Stock — Ingredients Order", desc: "Order ingredients for your first proper production run. Not test quantities — production quantities for 30–50 units of each product. Budget R2,000–3,000.", cat: "admin" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How does the website feel so far?", cat: "break" }
+    ]
+  },
+
+  "2026-08-06": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Website Build — Community Page", desc: "Build the page for your WhatsApp community: what it is, how to join, what members receive. This is where the 'share what you need' offering lives.", cat: "build" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Website Build — Contact + Shipping Info", desc: "Contact page, shipping policy, returns policy, FAQ. These must be clear and complete before you launch.", cat: "build" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Website Mobile Testing", desc: "Test every page of the website on mobile. Most SA customers will visit on their phones. Fix any layout issues with Claude's help.", cat: "build" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "What still needs work on the website?", cat: "break" }
+    ]
+  },
+
+  "2026-08-07": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Website Full Review + Bug Fixes", desc: "Go through every page of the website as if you are a customer. Click everything. Read every word. List every issue. Fix with Claude's help.", cat: "build" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Ask Trusted Friend to Test Website", desc: "Send your website URL to one trusted person and ask them to go through it as a customer. Watch them navigate it if possible (video call). Note every point of confusion.", cat: "build" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Website Fixes Based on Feedback", desc: "Fix every issue raised by your tester.", cat: "build" },
+      { time: "15:30 – 16:00", task: "Week 1 of August Review", desc: "Major progress this week. Take stock of everything.", cat: "break" }
+    ]
+  },
+
+  "2026-08-10": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "First Production Batch — Body Butter (Launch Stock)", desc: "This is it. Your first real production run. Make 20–30 units of your body butter. Full ritual: space, music, intention, closing meditation. Document every batch number.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest — this is significant.", cat: "break" },
+      { time: "11:15 – 13:00", task: "First Production Batch — Face Oil (Launch Stock)", desc: "20–30 units of your face oil. Same ritual. Same documentation.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely. You are making real products today.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Labelling First Production Units", desc: "Apply labels to your body butter and face oil. This is the first time your products look like products. Photograph everything.", cat: "product" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How does it feel to hold a labelled Ruh product?", cat: "break" }
+    ]
+  },
+
+  "2026-08-11": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "First Production Batch — Face Cream (Launch Stock)", desc: "Production run of face cream. Full ritual. Document every batch.", cat: "product" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Let cream cool.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Tea Packaging + Production", desc: "Package your tea blends. Weigh and fill each pouch/tin. Label. Photograph.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Stock Inventory System", desc: "Set up a simple stock tracking spreadsheet: product name, units made, units available, units sold (none yet). This keeps you from overselling.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Log inventory counts.", cat: "break" }
+    ]
+  },
+
+  "2026-08-12": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Product Upload to Website", desc: "Upload all products to your website shop. Photos, descriptions, prices, stock counts. Test the add-to-cart and checkout flow for each product.", cat: "build" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Order Fulfillment Test Run", desc: "Pretend someone just ordered. Go through the entire fulfillment process: find the order, package the product, write the note, include the ritual card, seal the box. How long does it take? What did you forget?", cat: "admin" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Shipping Account Setup", desc: "Set up your account with The Courier Guy. Register for pickup service. Understand how to book collections from your home.", cat: "admin" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Is the fulfillment process manageable?", cat: "break" }
+    ]
+  },
+
+  "2026-08-13": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Instagram Pre-Launch — First 3 Posts Go Live", desc: "Today @ruh becomes active. Post your first 3 posts. These should introduce the brand: what Ruh is, why it exists, what it believes. No product selling yet — just presence.", cat: "content" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest. Don't obsess over likes.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Community Building — Engage Authentically", desc: "Go into the Instagram spaces of your ideal customer. Comment genuinely. Follow accounts that align. Do not spam. Build presence slowly and authentically.", cat: "content" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "WhatsApp Community — Soft Launch", desc: "Start your WhatsApp community by inviting 10 people you trust who embody your ideal customer. Tell them what Ruh is and invite them to be part of building it.", cat: "content" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How did it feel to go public for the first time?", cat: "break" }
+    ]
+  },
+
+  "2026-08-14": {
+    phase: "Phase 3 — Refinement + Website",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Sean Meeting — Digital Marketing Planning", desc: "Sit down with Sean and brief him fully on Ruh: the brand soul, the customer, the products, the current reach. Begin planning your first Meta Ads campaign for launch. What is the objective? What is the target audience?", cat: "business" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Email List Setup — Mailchimp", desc: "Set up a free Mailchimp account for Ruh. Create a simple sign-up form. Connect it to your website. Your email list is an asset you own — unlike social media followers.", cat: "admin" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Post 4, 5, 6 — Schedule for Next Week", desc: "Create posts 4–6 and schedule them. These can go deeper: ingredient stories, a behind-the-scenes of your making ritual, what the brand believes.", cat: "content" },
+      { time: "15:30 – 16:00", task: "Week 2 of August Review", desc: "You are now publicly present. How does that feel?", cat: "break" }
+    ]
+  },
+
+  // ══════════════════════════════
+  //  SEPTEMBER 2026 — PRE-LAUNCH
+  // ══════════════════════════════
+
+  "2026-09-01": {
+    phase: "Phase 4 — Pre-Launch",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Pre-launch phase. You are close. This month is about being fully ready.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Full Website Final Review", desc: "Go through every single page. Every link, every button, every piece of copy. Fix anything that isn't right. Have Sean or a trusted person test it again.", cat: "build" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "SEO Basics — Website Discoverability", desc: "With Claude's help, add basic SEO to your website: page titles, meta descriptions, alt text on images, relevant keywords. People should be able to find Ruh when they search 'natural skincare South Africa'.", cat: "build" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Soap Check — Cure Progress", desc: "Your cold process soap should be well into its cure by now. Check: is it hard? Any lye pockets? How does it smell? How does it feel on skin? Document.", cat: "product" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Log observations.", cat: "break" }
+    ]
+  },
+
+  "2026-09-02": {
+    phase: "Phase 4 — Pre-Launch",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Launch Content Creation — Announcement Post", desc: "Create the launch announcement content. This is the post that tells the world Ruh is open. It must be extraordinary. What does it say? What does it look like? Draft it completely.", cat: "content" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Rest.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Meta Ads Setup with Sean", desc: "Work with Sean on the Meta Ads Manager account. Set up the pixel on your website, create the first audience, build the first ad creative. Launch date is your target.", cat: "business" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Pre-Launch Email — Draft", desc: "Write the launch email for your Mailchimp list. This goes to everyone who signed up. It should feel like a letter, not a newsletter. Personal, warm, true to Ruh.", cat: "content" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How close does launch feel?", cat: "break" }
+    ]
+  },
+
+  "2026-09-03": {
+    phase: "Phase 4 — Pre-Launch",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Final Stock Count", desc: "Count every unit of every product. Update your stock spreadsheet. Do you have enough for launch? (Aim for 20+ units of each product.)", cat: "business" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "If Stock Low — Make More", desc: "If any product is below 20 units, spend this block making more. Follow your full ritual for each batch.", cat: "product" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Shipping Supplies Order", desc: "Order: mailing boxes or bags, tissue paper, thank you cards, packing tape. These are the physical materials of your unboxing experience. Order more than you think you need.", cat: "admin" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "Are you feeling ready? What still feels incomplete?", cat: "break" }
+    ]
+  },
+
+  "2026-09-04": {
+    phase: "Phase 4 — Pre-Launch",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Pre-Launch Checklist Review", desc: "Go through a complete pre-launch checklist with Claude: website, products, stock, shipping, payment, social media, email list, WhatsApp community. What is not done?", cat: "business" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Fix Everything Outstanding", desc: "Work through the incomplete items from your checklist.", cat: "admin" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Set Launch Date", desc: "Decide your official launch date. It should be 2–3 weeks from today. Commit to it. Write it in your journal. Tell Sean. Tell your WhatsApp community.", cat: "business" },
+      { time: "15:30 – 16:00", task: "Month Review + Final Push Plan", desc: "Write your plan for the final weeks before launch. What must happen each week?", cat: "break" }
+    ]
+  },
+
+  // ══════════════════════════════
+  //  OCTOBER 2026 — LAUNCH MONTH
+  // ══════════════════════════════
+
+  "2026-10-05": {
+    phase: "Phase 5 — Launch",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention", desc: "You are in launch month. Stay grounded. Write your intention.", cat: "break" },
+      { time: "09:15 – 11:00", task: "Pre-Launch Campaign — Post 1 of 5", desc: "Begin your pre-launch countdown content. Post 1: 'something is coming'. Tease the brand, the products, the world of Ruh. Do not reveal everything yet.", cat: "content" },
+      { time: "11:00 – 11:15", task: "Break", desc: "Tea.", cat: "break" },
+      { time: "11:15 – 13:00", task: "Final Website Check", desc: "One last complete test of the website. Every link. Every product. Payment processing. Confirm everything works.", cat: "build" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
+      { time: "14:00 – 15:30", task: "Moodilicious Audience Announcement Prep", desc: "Plan how you'll announce Ruh to your existing Moodilicious audience. This is warm traffic — people who already know and trust you. Draft the announcement for your Moodilicious channels.", cat: "content" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "How does launch week feel?", cat: "break" }
+    ]
+  },
+
+  "2026-10-12": {
+    phase: "Phase 5 — Launch",
+    tasks: [
+      { time: "09:00 – 09:15", task: "Morning Intention — Launch Week", desc: "This is launch week. Write what you want to feel by Sunday.", cat: "break" },
+      { time: "09:15 – 10:00", task: "Final Closing Meditation — All Launch Stock", desc: "Sit with all your launch stock. Play your music. Set the intention for every product sitting there. This is your final closing meditation before they go out into the world.", cat: "product" },
+      { time: "10:00 – 11:00", task: "LAUNCH — Website Goes Live", desc: "Today Ruh opens. Make the website live. Send your launch email to your list. Post your announcement on Instagram. Tell your WhatsApp community. Announce on Moodilicious.", cat: "admin" },
+      { time: "11:00 – 11:30", task: "Breathe", desc: "You launched. Step away for 20 minutes. Breathe.", cat: "break" },
+      { time: "11:30 – 13:00", task: "Respond to Everything", desc: "Go through every comment, DM, WhatsApp message, email. Respond to every single one personally. This is your most important job today.", cat: "content" },
+      { time: "13:00 – 14:00", task: "Lunch", desc: "You deserve this lunch.", cat: "break" },
+      { time: "14:00 – 15:30", task: "First Orders — Process and Fulfil", desc: "For any orders received, process them: package with full Ruh ritual, handwritten note, ritual card. Book The Courier Guy collection. This is the real thing.", cat: "admin" },
+      { time: "15:30 – 16:00", task: "End of Launch Day Reflection", desc: "Write in your journal. All of it. What it felt like. What happened. What you're proud of.", cat: "break" }
+    ]
+  }
+
+};
+
+// ─────────────────────────────────────────────
+//  MONTHS CONFIGURATION
+// ─────────────────────────────────────────────
+const months = [
+  { year: 2026, month: 4,  label: "May 2026" },
+  { year: 2026, month: 5,  label: "June 2026" },
+  { year: 2026, month: 6,  label: "July 2026" },
+  { year: 2026, month: 7,  label: "August 2026" },
+  { year: 2026, month: 8,  label: "September 2026" },
+  { year: 2026, month: 9,  label: "October 2026" }
+];
+
+let currentMonthIdx = 0;
+const today = new Date();
+
+// ─────────────────────────────────────────────
+//  BUILD MONTH NAV
+// ─────────────────────────────────────────────
+function buildNav() {
+  const nav = document.getElementById('monthNav');
+  nav.innerHTML = '';
+  months.forEach((m, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'month-btn' + (i === currentMonthIdx ? ' active' : '');
+    btn.textContent = m.label;
+    btn.addEventListener('click', () => { currentMonthIdx = i; renderCalendar(); buildNav(); });
+    nav.appendChild(btn);
+  });
+}
+
+// ─────────────────────────────────────────────
+//  RENDER CALENDAR
+// ─────────────────────────────────────────────
+const DAY_NAMES = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function renderCalendar() {
+  const { year, month, label } = months[currentMonthIdx];
+  document.getElementById('calMonthLabel').textContent = label;
+
+  // Find phase for badge
+  const firstDayOfMonth = `${year}-${String(month+1).padStart(2,'0')}-01`;
+  const phaseEntries = Object.entries(schedule).filter(([d]) => d.startsWith(`${year}-${String(month+1).padStart(2,'0')}`));
+  if (phaseEntries.length > 0) {
+    document.getElementById('currentPhaseBadge').textContent = phaseEntries[0][1].phase;
+  }
+
+  const firstDay = new Date(year, month, 1);
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  let startDow = firstDay.getDay(); // 0=Sun
+  startDow = startDow === 0 ? 6 : startDow - 1; // convert to Mon=0
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  // Empty cells before first day
+  for (let e = 0; e < startDow; e++) {
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    grid.appendChild(empty);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const dow = (startDow + d - 1) % 7; // 0=Mon 6=Sun
+    const isWeekend = dow >= 5;
+    const isToday = (today.getFullYear() === year && today.getMonth() === month && today.getDate() === d);
+    const dayData = schedule[dateStr];
+
+    const cell = document.createElement('div');
+    cell.className = 'cal-day';
+    if (isWeekend) cell.classList.add('weekend');
+    if (isToday) cell.classList.add('today');
+    if (dayData) cell.classList.add('has-tasks');
+
+    const numEl = document.createElement('div');
+    numEl.className = 'day-num';
+    numEl.textContent = d;
+    cell.appendChild(numEl);
+
+    const dot = document.createElement('div');
+    dot.className = 'day-dot';
+    cell.appendChild(dot);
+
+    if (isWeekend) {
+      const rest = document.createElement('div');
+      rest.className = 'rest-label';
+      rest.textContent = 'Rest';
+      cell.appendChild(rest);
+    } else if (dayData) {
+      const peek = document.createElement('div');
+      peek.className = 'day-peek';
+      peek.textContent = dayData.tasks[1]?.task || dayData.tasks[0]?.task || '';
+      cell.appendChild(peek);
+      cell.addEventListener('click', () => openModal(dateStr, d, month, year, dayData));
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+// ─────────────────────────────────────────────
+//  MODAL
+// ─────────────────────────────────────────────
+function openModal(dateStr, d, month, year, dayData) {
+  const dayOfWeek = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const dow = new Date(year, month, d).getDay();
+
+  document.getElementById('modalDateLabel').textContent =
+    `${dayOfWeek[dow]}, ${d} ${MONTH_NAMES[month]} ${year}`;
+  document.getElementById('modalPhaseLabel').textContent = dayData.phase;
+
+  const blocksEl = document.getElementById('modalBlocks');
+  blocksEl.innerHTML = '';
+
+  dayData.tasks.forEach((t, i) => {
+    if (i > 0) {
+      const hr = document.createElement('hr');
+      hr.className = 'divider';
+      blocksEl.appendChild(hr);
+    }
+    const block = document.createElement('div');
+    block.className = `block cat-${t.cat}`;
+    block.innerHTML = `
+      <div class="block-time">${t.time}</div>
+      <div class="block-body">
+        <div class="block-title">${t.task}</div>
+        <div class="block-desc">${t.desc}</div>
+      </div>`;
+    blocksEl.appendChild(block);
+  });
+
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+document.getElementById('closeModal').addEventListener('click', () => {
+  document.getElementById('modalOverlay').classList.remove('open');
+});
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+});
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+
+// Auto-select current month
+const todayMonthIdx = months.findIndex(m => m.year === today.getFullYear() && m.month === today.getMonth());
+if (todayMonthIdx >= 0) currentMonthIdx = todayMonthIdx;
+
+buildNav();
+renderCalendar();
+</script>
+</body>
+</html>
