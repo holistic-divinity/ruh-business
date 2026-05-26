@@ -315,6 +315,56 @@
       margin: 1.25rem 0;
     }
 
+    /* task check-off */
+    .task-check {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 1.5px solid rgba(107,31,48,0.25);
+      border-radius: 3px;
+      background: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65rem;
+      color: white;
+      padding: 0;
+      margin-top: 0.15rem;
+      transition: all 0.15s;
+    }
+    .task-check:hover { border-color: var(--burgundy); }
+    .task-check.checked { background: var(--burgundy); border-color: var(--burgundy); }
+    .block.done .block-title { text-decoration: line-through; opacity: 0.45; }
+    .block.done .block-desc  { opacity: 0.35; }
+    .block.done .block-time  { opacity: 0.35; }
+    .modal-progress {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+    .modal-progress span { color: var(--burgundy); font-weight: 600; }
+
+    /* per-day progress bar */
+    .day-progress {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: rgba(107,31,48,0.08);
+      border-radius: 0 0 3px 3px;
+      overflow: hidden;
+    }
+    .day-progress-bar {
+      height: 100%;
+      background: var(--burgundy);
+      transition: width 0.3s ease;
+    }
+    .cal-day.all-done { background: #f6fbf7; }
+    .cal-day.all-done .day-dot { background: var(--sage); }
+    .cal-day.all-done .day-num { color: var(--sage); }
+
     /* legend */
     .legend {
       display: flex;
@@ -2195,6 +2245,7 @@ function renderCalendar() {
 
     const cell = document.createElement('div');
     cell.className = 'cal-day';
+    cell.dataset.date = dateStr;
     if (isWeekend) cell.classList.add('weekend');
     if (isToday) cell.classList.add('today');
     if (dayData) cell.classList.add('has-tasks');
@@ -2218,11 +2269,46 @@ function renderCalendar() {
       peek.className = 'day-peek';
       peek.textContent = dayData.tasks[1]?.task || dayData.tasks[0]?.task || '';
       cell.appendChild(peek);
+
+      const doneSoFar = (loadDone()[dateStr] || []).length;
+      const totalTasks = dayData.tasks.length;
+      if (doneSoFar === totalTasks && totalTasks > 0) cell.classList.add('all-done');
+      const prog = document.createElement('div');
+      prog.className = 'day-progress';
+      prog.innerHTML = `<div class="day-progress-bar" style="width:${totalTasks ? doneSoFar / totalTasks * 100 : 0}%"></div>`;
+      cell.appendChild(prog);
+
       cell.addEventListener('click', () => openModal(dateStr, d, month, year, dayData));
     }
 
     grid.appendChild(cell);
   }
+}
+
+// ─────────────────────────────────────────────
+//  TASK COMPLETION
+// ─────────────────────────────────────────────
+
+const DONE_KEY = 'ruh_tasks_done';
+function loadDone() { try { return JSON.parse(localStorage.getItem(DONE_KEY)) || {}; } catch { return {}; } }
+function saveDone(d) { localStorage.setItem(DONE_KEY, JSON.stringify(d)); }
+function toggleTask(dateStr, idx) {
+  const done = loadDone();
+  if (!done[dateStr]) done[dateStr] = [];
+  const pos = done[dateStr].indexOf(idx);
+  if (pos === -1) done[dateStr].push(idx); else done[dateStr].splice(pos, 1);
+  saveDone(done);
+}
+function isDone(dateStr, idx) { const d = loadDone(); return d[dateStr] ? d[dateStr].includes(idx) : false; }
+function updateCellProgress(dateStr, dayData) {
+  const cell = document.querySelector(`[data-date="${dateStr}"]`);
+  if (!cell) return;
+  const done = loadDone();
+  const doneCount = (done[dateStr] || []).length;
+  const total = dayData.tasks.length;
+  const bar = cell.querySelector('.day-progress-bar');
+  if (bar) bar.style.width = total ? `${doneCount / total * 100}%` : '0%';
+  cell.classList.toggle('all-done', total > 0 && doneCount === total);
 }
 
 // ─────────────────────────────────────────────
@@ -2239,20 +2325,50 @@ function openModal(dateStr, d, month, year, dayData) {
   const blocksEl = document.getElementById('modalBlocks');
   blocksEl.innerHTML = '';
 
+  const doneArr = loadDone()[dateStr] || [];
+  const total = dayData.tasks.length;
+  const doneCount = doneArr.length;
+
+  const progEl = document.createElement('div');
+  progEl.className = 'modal-progress';
+  progEl.id = 'modalProgress';
+  progEl.innerHTML = doneCount === total && total > 0
+    ? `<span>All done</span> — ${total} tasks completed`
+    : `<span>${doneCount}</span> of ${total} tasks completed`;
+  blocksEl.appendChild(progEl);
+
   dayData.tasks.forEach((t, i) => {
     if (i > 0) {
       const hr = document.createElement('hr');
       hr.className = 'divider';
       blocksEl.appendChild(hr);
     }
+    const done = isDone(dateStr, i);
     const block = document.createElement('div');
-    block.className = `block cat-${t.cat}`;
+    block.className = `block cat-${t.cat}${done ? ' done' : ''}`;
     block.innerHTML = `
+      <button class="task-check${done ? ' checked' : ''}" aria-label="Mark done">${done ? '✓' : ''}</button>
       <div class="block-time">${t.time}</div>
       <div class="block-body">
         <div class="block-title">${t.task}</div>
         <div class="block-desc">${t.desc}</div>
       </div>`;
+    block.querySelector('.task-check').addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleTask(dateStr, i);
+      const nowDone = isDone(dateStr, i);
+      block.classList.toggle('done', nowDone);
+      const btn = e.currentTarget;
+      btn.classList.toggle('checked', nowDone);
+      btn.textContent = nowDone ? '✓' : '';
+      updateCellProgress(dateStr, dayData);
+      const d2 = loadDone()[dateStr] || [];
+      const dc = d2.length;
+      const p = document.getElementById('modalProgress');
+      if (p) p.innerHTML = dc === total && total > 0
+        ? `<span>All done</span> — ${total} tasks completed`
+        : `<span>${dc}</span> of ${total} tasks completed`;
+    });
     blocksEl.appendChild(block);
   });
 
