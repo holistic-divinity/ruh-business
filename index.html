@@ -323,12 +323,167 @@
       border-radius: 50%;
     }
 
+    /* ── MAIN LAYOUT ── */
+    .main-layout {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      padding: 0;
+    }
+    .calendar-wrap {
+      flex: 1;
+      min-width: 0;
+      padding: 2rem 2.5rem;
+    }
+    .legend {
+      padding-left: 2.5rem;
+    }
+
+    /* ── JOURNAL ── */
+    .journal-panel {
+      width: 300px;
+      min-width: 300px;
+      background: white;
+      border-left: 1px solid var(--cream-dark);
+      min-height: calc(100vh - 120px);
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+    }
+    .journal-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 300;
+      letter-spacing: 0.15em;
+      color: var(--burgundy);
+      margin-bottom: 0.25rem;
+    }
+    .journal-subheading {
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 1.25rem;
+    }
+    .journal-date-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0.5rem;
+    }
+    .journal-textarea {
+      width: 100%;
+      min-height: 140px;
+      background: var(--cream);
+      border: 1px solid var(--cream-dark);
+      border-radius: 3px;
+      padding: 0.85rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.8rem;
+      line-height: 1.7;
+      color: var(--text-dark);
+      resize: vertical;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .journal-textarea:focus {
+      border-color: rgba(107,31,48,0.3);
+    }
+    .journal-save-btn {
+      margin-top: 0.75rem;
+      width: 100%;
+      background: var(--burgundy);
+      color: var(--cream);
+      border: none;
+      padding: 0.6rem 1rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.2s;
+    }
+    .journal-save-btn:hover { background: var(--burgundy-mid); }
+    .journal-saved-msg {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      color: var(--sage);
+      text-align: center;
+      margin-top: 0.4rem;
+      min-height: 1rem;
+    }
+    .journal-divider {
+      border: none;
+      border-top: 1px solid var(--cream-dark);
+      margin: 1.25rem 0;
+    }
+    .journal-entries-label {
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-bottom: 0.75rem;
+    }
+    .journal-entries {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .journal-entry {
+      background: var(--cream);
+      border: 1px solid var(--cream-dark);
+      border-radius: 3px;
+      padding: 0.85rem;
+    }
+    .journal-entry-date {
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--burgundy-pale);
+      margin-bottom: 0.4rem;
+    }
+    .journal-entry-text {
+      font-size: 0.78rem;
+      line-height: 1.7;
+      color: var(--text-mid);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .journal-entry-delete {
+      background: none;
+      border: none;
+      font-size: 0.6rem;
+      color: var(--text-light);
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+      padding: 0;
+      opacity: 0.6;
+    }
+    .journal-entry-delete:hover { opacity: 1; color: var(--burgundy); }
+    .journal-empty {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 900px) {
+      .main-layout { flex-direction: column; }
+      .journal-panel { width: 100%; min-width: 0; border-left: none; border-top: 1px solid var(--cream-dark); min-height: auto; }
+    }
     @media (max-width: 600px) {
       header { padding: 1.5rem; }
       .calendar-wrap { padding: 1.25rem; }
       .month-nav { padding: 0 1rem; }
       .modal-box { padding: 1.5rem 1.5rem 2.5rem; }
       .block-time { min-width: 80px; }
+      .legend { padding-left: 1.25rem; }
     }
   </style>
 </head>
@@ -344,28 +499,46 @@
 
 <nav class="month-nav" id="monthNav"></nav>
 
-<div class="calendar-wrap">
-  <div class="calendar-month-label" id="calMonthLabel"></div>
-  <div class="cal-header">
-    <div class="cal-header-cell">Mon</div>
-    <div class="cal-header-cell">Tue</div>
-    <div class="cal-header-cell">Wed</div>
-    <div class="cal-header-cell">Thu</div>
-    <div class="cal-header-cell">Fri</div>
-    <div class="cal-header-cell">Sat</div>
-    <div class="cal-header-cell">Sun</div>
-  </div>
-  <div class="cal-grid" id="calGrid"></div>
-</div>
+<div class="main-layout">
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-dot" style="background:#8B2841"></div> Admin</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#6B8F71"></div> Research</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#C17B41"></div> Creative</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#B85C38"></div> Product</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#8FAF8B"></div> Content</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#7B8FA1"></div> Business</div>
-  <div class="legend-item"><div class="legend-dot" style="background:#5B6B7A"></div> Website Build</div>
+  <div>
+    <div class="calendar-wrap">
+      <div class="calendar-month-label" id="calMonthLabel"></div>
+      <div class="cal-header">
+        <div class="cal-header-cell">Mon</div>
+        <div class="cal-header-cell">Tue</div>
+        <div class="cal-header-cell">Wed</div>
+        <div class="cal-header-cell">Thu</div>
+        <div class="cal-header-cell">Fri</div>
+        <div class="cal-header-cell">Sat</div>
+        <div class="cal-header-cell">Sun</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#8B2841"></div> Admin</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#6B8F71"></div> Research</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#C17B41"></div> Creative</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#B85C38"></div> Product</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8FAF8B"></div> Content</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#7B8FA1"></div> Business</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#5B6B7A"></div> Website Build</div>
+    </div>
+  </div>
+
+  <!-- Journal Panel -->
+  <div class="journal-panel">
+    <div class="journal-heading">Journal</div>
+    <div class="journal-subheading">Ruh — Private Notes</div>
+    <div class="journal-date-label" id="journalTodayLabel"></div>
+    <textarea class="journal-textarea" id="journalInput" placeholder="Write here — thoughts, observations, questions, feelings about today..."></textarea>
+    <button class="journal-save-btn" id="journalSaveBtn">Save Entry</button>
+    <div class="journal-saved-msg" id="journalSavedMsg"></div>
+    <hr class="journal-divider">
+    <div class="journal-entries-label">Previous Entries</div>
+    <div class="journal-entries" id="journalEntries"></div>
+  </div>
+
 </div>
 
 <!-- Modal -->
@@ -2088,6 +2261,74 @@ if (todayMonthIdx >= 0) currentMonthIdx = todayMonthIdx;
 
 buildNav();
 renderCalendar();
+
+// ─────────────────────────────────────────────
+//  JOURNAL
+// ─────────────────────────────────────────────
+const JOURNAL_KEY = 'ruh_journal_entries';
+const DAY_FULL = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTH_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function journalDateStr(d) {
+  return `${DAY_FULL[d.getDay()]}, ${d.getDate()} ${MONTH_FULL[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function loadEntries() {
+  try { return JSON.parse(localStorage.getItem(JOURNAL_KEY)) || []; }
+  catch { return []; }
+}
+
+function saveEntries(entries) {
+  localStorage.setItem(JOURNAL_KEY, JSON.stringify(entries));
+}
+
+function renderEntries() {
+  const entries = loadEntries();
+  const container = document.getElementById('journalEntries');
+  container.innerHTML = '';
+  if (entries.length === 0) {
+    container.innerHTML = '<div class="journal-empty">Your entries will appear here. Write something — even one line counts.</div>';
+    return;
+  }
+  [...entries].reverse().forEach((entry, idx) => {
+    const realIdx = entries.length - 1 - idx;
+    const el = document.createElement('div');
+    el.className = 'journal-entry';
+    el.innerHTML = `
+      <div class="journal-entry-date">${entry.date}</div>
+      <div class="journal-entry-text">${entry.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+      <button class="journal-entry-delete" data-idx="${realIdx}">Delete</button>
+    `;
+    container.appendChild(el);
+  });
+  container.querySelectorAll('.journal-entry-delete').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const entries = loadEntries();
+      entries.splice(parseInt(btn.dataset.idx), 1);
+      saveEntries(entries);
+      renderEntries();
+    });
+  });
+}
+
+// Set today label
+document.getElementById('journalTodayLabel').textContent = journalDateStr(today);
+
+// Save button
+document.getElementById('journalSaveBtn').addEventListener('click', () => {
+  const text = document.getElementById('journalInput').value.trim();
+  if (!text) return;
+  const entries = loadEntries();
+  entries.push({ date: journalDateStr(today), text });
+  saveEntries(entries);
+  document.getElementById('journalInput').value = '';
+  const msg = document.getElementById('journalSavedMsg');
+  msg.textContent = 'Entry saved.';
+  setTimeout(() => msg.textContent = '', 2000);
+  renderEntries();
+});
+
+renderEntries();
 </script>
 </body>
 </html>
