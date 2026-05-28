@@ -652,8 +652,8 @@ const schedule = {
       { time: "11:30 – 13:00", task: "Write the Ruh Brand Vision Document", desc: "Open a Google Doc titled 'Ruh — Brand Vision'. Write out everything in your own words: the brand soul, the making ritual, the Ruh woman, the tiered experience, what Ruh refuses to be. Use your sessions with Claude as reference. This document is yours — write it like you mean it.", cat: "creative" },
       { time: "13:00 – 14:00", task: "Lunch", desc: "Step away completely. Eat, rest, no screens if you can manage it.", cat: "break" },
       { time: "14:00 – 15:00", task: "Ingredient Research — Your Current Heroes", desc: "Open a Google Doc called 'Ruh — Ingredient Stories'. Research the cultural origins of coconut oil, shea butter, and jojoba oil. Where do they come from? What traditions used them? Document what you find.", cat: "research" },
-      { time: "15:00 – 16:00", task: "Formula Botanica — Beginner Guides", desc: "Go to formulabotanica.com and read their free beginner articles. Focus on: what makes a product stable, preservatives in natural products, pH basics. Take notes. This is your first formulation education.", cat: "research" },
-      { time: "16:00 – 16:30", task: "First Ruh Mood Board", desc: "Open Pinterest, create a board called 'Ruh'. Pull images that feel like Ruh — not product images, but feelings. Textures, light, botanicals, earthy colours, sacred spaces. Minimum 20 pins.", cat: "creative" },
+      { time: "15:00 – 16:00", task: "Ingredient Discussion — Body Butters", desc: "With Claude, go through body butter product range and establish the confirmed ingredient list for each. Cover concerns, carrier oils, butters, actives, and essential oils. Save everything to the Ruh Workbook.", cat: "product" },
+      { time: "16:00 – 16:30", task: "Ingredient Discussion — Soaps", desc: "With Claude, establish the confirmed soap ingredient list — base, added oils, botanicals, and essential oils per soap type. Save to Workbook.", cat: "product" },
       { time: "16:30 – 17:00", task: "Day Review", desc: "Write 3 things in your journal: what felt right today, what felt unclear, one question you want to answer tomorrow.", cat: "break" }
     ]
   },
@@ -674,26 +674,17 @@ const schedule = {
   "2026-06-01": {
     phase: "Phase 1 — Brand Foundation",
     tasks: [
-      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
-      { time: "09:15 – 10:30", task: "Colour Palette Formalisation", desc: "Open Canva. Create a brand kit called 'Ruh'. Input your confirmed colours: Burgundy #6B1F30, Sage #6B8F71, Amber #C17B41, Terracotta #B85C38, Cream #F8F4EE. Name each one and save.", cat: "creative" },
-      { time: "10:30 – 12:00", task: "Typography Setup", desc: "Add Cormorant Garamond and Raleway to your Canva brand kit. Create a type specimen showing each font at various sizes — heading, subheading, body, caption. Print or screenshot it.", cat: "creative" },
-      { time: "12:00 – 13:00", task: "Logo Concept Research", desc: "Search 'wordmark logo design natural apothecary' and 'typographic logo botanical brand'. You are NOT copying — you are training your eye. Save 10 references that feel close to what Ruh should look like.", cat: "research" },
+      { time: "09:00 – 09:15", task: "Morning Intention — Week 2", desc: "First day of week 2. Write one sentence: what does this week need to accomplish?", cat: "break" },
+      { time: "09:15 – 10:15", task: "Colour Palette Formalisation", desc: "Open Canva. Create a brand kit called 'Ruh'. Input your confirmed colours: Burgundy #6B1F30, Sage #6B8F71, Amber #C17B41, Terracotta #B85C38, Cream #F8F4EE. Name each one and save.", cat: "creative" },
+      { time: "10:15 – 11:15", task: "Typography Setup", desc: "Add Cormorant Garamond and Raleway to your Canva brand kit. Create a type specimen showing each font at various sizes — heading, subheading, body, caption. Screenshot and save.", cat: "creative" },
+      { time: "11:15 – 11:30", task: "Break", desc: "Step away. Make tea.", cat: "break" },
+      { time: "11:30 – 12:30", task: "INCI Labelling Requirements", desc: "Research INCI (International Nomenclature of Cosmetic Ingredients) naming. Every ingredient on your label must use its INCI name. Start building your INCI reference list for your confirmed ingredients in the Workbook.", cat: "research" },
+      { time: "12:30 – 13:00", task: "Week 1 Review", desc: "Quick honest review of the past week. What is done, what surprised you, what needs more time. Write it in your journal.", cat: "business" },
       { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
-      { time: "14:00 – 15:30", task: "First Logo Attempts in Canva", desc: "Start playing with the Ruh wordmark. Large 'RUH' in Cormorant Garamond. Try different weights and layouts. Don't overthink — just explore. You are not finalising today.", cat: "creative" },
-      { time: "15:30 – 16:00", task: "Day Review", desc: "Save all logo attempts, even the ones you don't like. Note which direction feels closest.", cat: "break" }
-    ]
-  },
-
-  "2026-06-01": {
-    phase: "Phase 1 — Brand Foundation",
-    tasks: [
-      { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
-      { time: "09:15 – 10:30", task: "South African Cosmetics Regulations", desc: "Research the Foodstuffs, Cosmetics and Disinfectants Act (Act 54 of 1972). Understand what labels must include. Note the difference between cosmetic claims and medicinal claims. Ask Claude any questions.", cat: "research" },
-      { time: "10:30 – 11:30", task: "INCI Labelling Requirements", desc: "Research INCI (International Nomenclature of Cosmetic Ingredients) naming. Every ingredient on your label must use its INCI name. Start a reference document of INCI names for your ingredients.", cat: "research" },
-      { time: "11:30 – 13:00", task: "Week 1 Review", desc: "Go through everything completed this week. What is done? What still needs action? What surprised you? Write an honest assessment in your brand journal.", cat: "business" },
-      { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
-      { time: "14:00 – 15:30", task: "Monthly Budget Allocation for Ruh", desc: "Transfer your first R3,500 into your Ruh business bank account. This is Phase 1 budget. Log it in Wave Accounting as 'Initial Capital'. Do not spend it yet — next week we plan the first order.", cat: "business" },
-      { time: "15:30 – 16:00", task: "Week 1 Close + Rest Plan", desc: "Write your wins for the week. Rest this weekend completely. Let ideas come to you without forcing them.", cat: "break" }
+      { time: "14:00 – 15:00", task: "Logo Concept Research", desc: "Search 'wordmark logo design natural apothecary' and 'typographic logo botanical brand'. You are NOT copying — training your eye. Save 10 references that feel close to Ruh.", cat: "research" },
+      { time: "15:00 – 16:00", task: "First Logo Attempts in Canva", desc: "Start playing with the Ruh wordmark. Large 'RUH' in Cormorant Garamond. Try different weights, spacing, layouts. Don't overthink — just explore. You are not finalising today.", cat: "creative" },
+      { time: "16:00 – 16:30", task: "Monthly Budget Allocation for Ruh", desc: "Transfer your first R3,500 into your Ruh business bank account. Log it in Wave Accounting as 'Initial Capital'. Do not spend it yet.", cat: "business" },
+      { time: "16:30 – 17:00", task: "Day Review", desc: "Save all logo attempts. Note which direction feels closest to Ruh. Write your wins.", cat: "break" }
     ]
   },
 
@@ -704,13 +695,13 @@ const schedule = {
   "2026-06-03": {
     phase: "Phase 1 — Brand Foundation",
     tasks: [
-      { time: "09:00 – 09:15", task: "Morning Intention", desc: "New week. Write what you want to walk away with by Friday.", cat: "break" },
-      { time: "09:15 – 11:00", task: "Cosmetic Chemistry Basics", desc: "Study: emulsifiers (what they are, why you need them), preservatives (why even natural products need them), and pH (what it is, why it matters for skin). Formula Botanica and Point of Interest (blog) are excellent sources.", cat: "research" },
+      { time: "09:00 – 09:15", task: "Morning Intention — Research Week", desc: "This week is deep ingredient research. Write your intention: what do you want to understand by Friday?", cat: "break" },
+      { time: "09:15 – 11:00", task: "Formula Botanica — Cosmetic Chemistry Foundations", desc: "Go to formulabotanica.com. Read their free beginner guides on: emulsion theory (oil phase, water phase, emulsifier), why water-containing products need preservation, pH basics and why it matters for skin. Take notes in your Workbook under Formulation Research.", cat: "research" },
       { time: "11:00 – 11:15", task: "Break", desc: "Step outside briefly if you can.", cat: "break" },
-      { time: "11:15 – 13:00", task: "Ingredient Research — Baobab + Marula", desc: "Deep research into baobab oil and marula oil. Find: where they originate, what cultures used them and how, their INCI names, their skin benefits and any contraindications. Document in your Ingredient Stories file.", cat: "research" },
+      { time: "11:15 – 13:00", task: "Ingredient Research — Carrier Oils Part 1", desc: "Deep research into: jojoba oil, rosehip seed oil, marula oil, baobab oil. For each: where it originates, what cultures used it and how, INCI name, skin benefits, usage rate, contraindications. Document in Ingredient Stories in the Workbook.", cat: "research" },
       { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
-      { time: "14:00 – 15:30", task: "Ingredient Research — Rooibos + Rosehip", desc: "Same deep research for rooibos (South African, rich cultural and botanical history) and rosehip oil. These are your local heroes — know them inside out.", cat: "research" },
-      { time: "15:30 – 16:00", task: "Day Review", desc: "What was the most interesting thing you discovered today?", cat: "break" }
+      { time: "14:00 – 15:30", task: "Ingredient Research — Carrier Oils Part 2", desc: "Same deep research for: tamanu oil, hemp seed oil, calendula-infused oil, rooibos extract. These are your healing and South African heroes — know their stories inside out. Document in Workbook.", cat: "research" },
+      { time: "15:30 – 16:00", task: "Day Review", desc: "What was the most interesting cultural story you discovered today?", cat: "break" }
     ]
   },
 
@@ -722,8 +713,8 @@ const schedule = {
       { time: "10:30 – 12:00", task: "Preservation Systems Research", desc: "Research preservation options for natural cosmetics: Optiphen, Geogard Ultra, Leucidal, Naticide. Understand why every water-containing product MUST be preserved. Document options and where to source in SA.", cat: "research" },
       { time: "12:00 – 13:00", task: "Shelf Life and Stability", desc: "Research how to test shelf life at home (heat stress testing, observation logs). Understand rancidity in oils, CPSR (Cosmetic Product Safety Report), and PAO symbols. Start your stability tracking template.", cat: "research" },
       { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
-      { time: "14:00 – 15:30", task: "Recipe Notebook Setup", desc: "Create your digital lab notebook (Google Sheet or Notion). Columns: Date, Product Name, Batch Number, Ingredients + Percentages, Method, pH, Observations, Changes Made. This is your production record from day one.", cat: "business" },
-      { time: "15:30 – 16:00", task: "Day Review", desc: "What safety information are you most glad you now know?", cat: "break" }
+      { time: "14:00 – 15:30", task: "Ingredient Research — Butters + Actives", desc: "Research: shea butter (Shea Belt, West African women's cooperatives), mango butter, aloe vera, rose hydrosol, sea buckthorn, centella asiatica (Ayurvedic tradition), oat extract, willow bark extract, bakuchiol (Babchi plant, Ayurvedic), vitamin E. INCI names, origins, usage rates. Document in Workbook.", cat: "research" },
+      { time: "15:30 – 16:00", task: "First Ruh Mood Board", desc: "Open Pinterest, create a board called 'Ruh'. Pull images that feel like Ruh — not product images, but feelings. Textures, light, botanicals, earthy colours, sacred spaces, ritual. Minimum 20 pins.", cat: "creative" }
     ]
   },
 
@@ -733,9 +724,9 @@ const schedule = {
       { time: "09:00 – 09:15", task: "Morning Intention", desc: "Write your intention.", cat: "break" },
       { time: "09:15 – 11:00", task: "Essentially Natural — Full Catalogue Browse", desc: "Go to essentiallynatural.co.za. Go through the entire catalogue. Do not buy yet. Add every ingredient you want to your wishlist. Note prices per size. This is your research session — get familiar with what exists.", cat: "research" },
       { time: "11:00 – 11:15", task: "Break", desc: "Tea and rest.", cat: "break" },
-      { time: "11:15 – 13:00", task: "Hero Product List + Ingredients Per Product", desc: "Decide your 5 launch products: 1 face cream, 1 body butter, 1 soap, 1 tea blend, 1 face oil or serum. For each product, list every ingredient you'll need. This is your first ingredient map.", cat: "product" },
+      { time: "11:15 – 13:00", task: "Ingredient Research — Essential Oils Part 1", desc: "Research your 12 core launch EOs: lavender, frankincense, rose, neroli, German chamomile, geranium, helichrysum, tea tree. For each: botanical origin, traditional/cultural use, skin benefits, INCI name, dilution rate, contraindications. Tisserandinstitute.org is your safety reference.", cat: "research" },
       { time: "13:00 – 14:00", task: "Lunch", desc: "Rest completely.", cat: "break" },
-      { time: "14:00 – 15:30", task: "First Ingredient Order — Quantities + Cost", desc: "For Phase 1 testing, you need small quantities only. Calculate the minimum you need for 3 test batches of each product. Build a shopping list with quantities and estimated cost. Total should stay under R2,000 for this first order.", cat: "business" },
+      { time: "14:00 – 15:30", task: "Ingredient Research — Essential Oils Part 2", desc: "Continue with remaining core EOs: patchouli, sandalwood, carrot seed, ylang ylang. Then research Phase 2 EOs and add all to the Ingredient Library in the Workbook. Note which are photosensitive, which to avoid in pregnancy.", cat: "research" },
       { time: "15:30 – 16:00", task: "Day Review", desc: "How does your product list feel? Exciting? Overwhelming? Write it honestly.", cat: "break" }
     ]
   },
