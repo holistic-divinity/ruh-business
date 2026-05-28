@@ -896,8 +896,19 @@ function updateCounts() {
 //  BRAND VISION
 // ─────────────────────────────────────────────
 const visionFields = ['soul','statement','woman','ritual','tiered','refuses','tagline'];
+const visionDefaults = {
+  soul: `Ruh exists to send real energy and pure love out into the world. Every product is an act of conscious creation — an intentional energy exchange between maker and receiver. The whole point of this brand is not to sell skincare. It is to see the person on the other end, and hand them something made with complete devotion.`,
+  statement: `A conscious apothecary rooted in real tradition. Every product made as an act of devotion — researched, ritualled, and sent with intention. Not for everyone. For the woman who knows the difference.`,
+  woman: `She is the woman in the middle of her becoming. Graceful and elegant, yet wild and fully in touch with herself. Her intuition is loud. She believes in real magic. She may feel lost, overly sensitive, unsure of her power — but she is reaching for the thing that will bring her back home to herself. She doesn't want a product. She wants to be seen.\n\nShe reads Coelho and underlines things. She moves through the world with an inner life richer than most people around her can see. She has been burned by fake spirituality enough times that she can feel the real thing immediately. When she does, she doesn't just buy — she stays.`,
+  ritual: `Before every batch: set the space, play music or singing bowls, sit with the intention of what this product carries and who will receive it.\n\nWhile making: acknowledge each ingredient as it's added — a breath, a word of gratitude, knowing its story and where it comes from. We don't invent the symbolism — we uncover it. Real research into where each ingredient originates and what traditions it belongs to.\n\nWhen the batch is sealed: a closing. Singing bowl, a word, whatever feels true. Nothing ships in a rush, a bad mood, or when depleted. The closing meditation before dispatch is the final act of every order.`,
+  tiered: `Every order — no exceptions — receives full ritual making, beautiful packaging, and a handwritten note. Nobody gets a lesser product. The love goes into every batch regardless.\n\nSpecial orders, where someone has reached out and shared what they need ("I need rest", "I'm going through something heavy", "I need grounding"), receive an oracle or tarot card with a personal message written specifically for them. Not a reading — a gift. One sentence on what the card brought up in relation to what they shared. Personal, warm, humble.`,
+  refuses: `Fake spirituality. Mass-produced wellness dressed up in pretty packaging. Generalised chakra language used only for what it can do FOR someone, rather than real involvement and practice. Crystals and tools made for mass consumption with no genuine energy exchange. Anything that claims to restore energy for anyone, generalised, found on a shelf.\n\nRuh is not mainstream spiritual practice. It is real practice, real involvement, real ease.`,
+  tagline: `Enter a realm of ethereal ease.`
+};
+
 function loadVision() {
-  const data = JSON.parse(localStorage.getItem('ruh_wb_vision') || '{}');
+  const saved = JSON.parse(localStorage.getItem('ruh_wb_vision') || '{}');
+  const data = Object.keys(saved).length ? saved : visionDefaults;
   visionFields.forEach(f => {
     const el = document.getElementById('vision-' + f);
     if (el && data[f]) el.value = data[f];
