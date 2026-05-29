@@ -497,6 +497,17 @@
       overflow-y: auto;
       flex: 1;
     }
+    #journalTodayEntries {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      flex: 1;
+    }
+    #journalPrevEntries {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+    }
     .journal-entry {
       background: var(--cream);
       border: 1px solid var(--cream-dark);
@@ -2475,8 +2486,8 @@ function renderEntries() {
 
 document.getElementById('journalPrevBtn').addEventListener('click', function() {
   const prev = document.getElementById('journalPrevEntries');
-  const open = prev.style.display === 'block';
-  prev.style.display = open ? 'none' : 'block';
+  const open = prev.style.display === 'flex';
+  prev.style.display = open ? 'none' : 'flex';
   this.textContent = open ? 'Previous Notes ▾' : 'Previous Notes ▴';
 });
 
