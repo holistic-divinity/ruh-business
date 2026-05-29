@@ -380,6 +380,8 @@
     .lib-detail-label { font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); margin-bottom:0.2rem; }
     .lib-detail-value { font-size:0.78rem; color:var(--text-mid); line-height:1.65; }
     .lib-detail-empty { font-size:0.75rem; color:var(--burgundy-pale); font-style:italic; }
+    .lib-group-header { font-size:0.62rem; letter-spacing:0.18em; text-transform:uppercase; color:var(--text-light); padding:1.75rem 0 0.6rem; border-bottom:1px solid var(--cream-dark); margin-bottom:0.85rem; }
+    .lib-group-header.first { padding-top:0; }
 
     /* ── COMPATIBILITY CHECKER ── */
     .compat-tag-cloud { display:flex; flex-wrap:wrap; gap:0.4rem; padding:1.25rem; background:white; border:1px solid var(--cream-dark); border-radius:4px; max-height:240px; overflow-y:auto; margin-bottom:0.75rem; }
@@ -1479,6 +1481,37 @@ const PRODUCT_LABELS = {
 let libFilter = 'all';
 let libSearch = '';
 
+const TYPE_ORDER = ['carrier-oil','butter','emulsifier','active','essential-oil','botanical','soap-base'];
+const TYPE_GROUP_LABELS = {
+  'carrier-oil':'Carrier Oils','butter':'Butters','emulsifier':'Emulsifiers',
+  'active':'Actives','essential-oil':'Essential Oils','botanical':'Botanicals','soap-base':'Soap Bases'
+};
+
+function makeLibCard(item, realIdx) {
+  const div = document.createElement('div');
+  div.className = 'card';
+  const productTags = (item.products || []).map(p => `<span class="product-tag">${PRODUCT_LABELS[p] || p}</span>`).join('');
+  div.innerHTML = `
+    <div class="card-header">
+      <div>
+        <div class="card-title">${esc(item.name)}</div>
+        <div class="lib-card-products">${productTags}</div>
+      </div>
+      <button class="btn-danger" data-libidx="${realIdx}">Delete</button>
+    </div>
+    <div style="font-size:0.72rem;color:var(--text-light);margin-top:0.4rem">${esc(item.origin)}</div>
+    <button class="lib-expand-btn" data-expanded="false">Show details ▾</button>
+    <div class="lib-detail">
+      ${item.background ? `<div class="lib-detail-row"><div class="lib-detail-label">Background</div><div class="lib-detail-value">${esc(item.background)}</div></div>` : ''}
+      ${item.benefits ? `<div class="lib-detail-row"><div class="lib-detail-label">Benefits</div><div class="lib-detail-value">${esc(item.benefits)}</div></div>` : ''}
+      ${item.precautions ? `<div class="lib-detail-row"><div class="lib-detail-label">Precautions</div><div class="lib-detail-value">${esc(item.precautions)}</div></div>` : ''}
+      <div class="lib-detail-row"><div class="lib-detail-label">Usage Rate</div><div class="lib-detail-value">${item.usageRate ? esc(item.usageRate) : '<span class="lib-detail-empty">To fill in during June research</span>'}</div></div>
+      <div class="lib-detail-row"><div class="lib-detail-label">SA Supplier</div><div class="lib-detail-value">${item.saSource ? esc(item.saSource) : '<span class="lib-detail-empty">To fill in during June research</span>'}</div></div>
+      ${item.notes ? `<div class="lib-detail-row"><div class="lib-detail-label">Notes</div><div class="lib-detail-value">${esc(item.notes)}</div></div>` : ''}
+    </div>`;
+  return div;
+}
+
 function renderLibrary() {
   const list = loadLib();
   const el = document.getElementById('lib-list');
@@ -1494,33 +1527,22 @@ function renderLibrary() {
     el.innerHTML = '<div class="empty-state">No ingredients match this filter yet.</div>';
     return;
   }
-  filtered.forEach((item, idx) => {
-    const realIdx = list.findIndex(i => i.id === item.id);
-    const div = document.createElement('div');
-    div.className = 'card';
-    const productTags = (item.products || []).map(p => `<span class="product-tag">${PRODUCT_LABELS[p] || p}</span>`).join('');
-    div.innerHTML = `
-      <div class="card-header">
-        <div>
-          <div class="card-title">${esc(item.name)}</div>
-          <div style="margin-top:0.3rem">
-            <span class="type-badge type-${item.type}">${TYPE_LABELS[item.type] || item.type}</span>
-          </div>
-          <div class="lib-card-products">${productTags}</div>
-        </div>
-        <button class="btn-danger" data-libidx="${realIdx}">Delete</button>
-      </div>
-      <div style="font-size:0.72rem;color:var(--text-light);margin-top:0.4rem">${esc(item.origin)}</div>
-      <button class="lib-expand-btn" data-expanded="false">Show details ▾</button>
-      <div class="lib-detail">
-        ${item.background ? `<div class="lib-detail-row"><div class="lib-detail-label">Background</div><div class="lib-detail-value">${esc(item.background)}</div></div>` : ''}
-        ${item.benefits ? `<div class="lib-detail-row"><div class="lib-detail-label">Benefits</div><div class="lib-detail-value">${esc(item.benefits)}</div></div>` : ''}
-        ${item.precautions ? `<div class="lib-detail-row"><div class="lib-detail-label">Precautions</div><div class="lib-detail-value">${esc(item.precautions)}</div></div>` : ''}
-        <div class="lib-detail-row"><div class="lib-detail-label">Usage Rate</div><div class="lib-detail-value">${item.usageRate ? esc(item.usageRate) : '<span class="lib-detail-empty">To fill in during June research</span>'}</div></div>
-        <div class="lib-detail-row"><div class="lib-detail-label">SA Supplier</div><div class="lib-detail-value">${item.saSource ? esc(item.saSource) : '<span class="lib-detail-empty">To fill in during June research</span>'}</div></div>
-        ${item.notes ? `<div class="lib-detail-row"><div class="lib-detail-label">Notes</div><div class="lib-detail-value">${esc(item.notes)}</div></div>` : ''}
-      </div>`;
-    el.appendChild(div);
+  const grouped = {};
+  TYPE_ORDER.forEach(t => { grouped[t] = []; });
+  filtered.forEach(item => { if (grouped[item.type]) grouped[item.type].push(item); });
+  let firstGroup = true;
+  TYPE_ORDER.forEach(type => {
+    const items = grouped[type];
+    if (!items.length) return;
+    const header = document.createElement('div');
+    header.className = 'lib-group-header' + (firstGroup ? ' first' : '');
+    header.textContent = TYPE_GROUP_LABELS[type];
+    el.appendChild(header);
+    firstGroup = false;
+    items.forEach(item => {
+      const realIdx = list.findIndex(i => i.id === item.id);
+      el.appendChild(makeLibCard(item, realIdx));
+    });
   });
   el.querySelectorAll('.lib-expand-btn').forEach(btn => {
     btn.addEventListener('click', () => {
