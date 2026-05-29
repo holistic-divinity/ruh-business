@@ -410,9 +410,13 @@
     .flag-hormone-sensitivity .compat-flag-badge { background:#7838C8; color:white; }
     .flag-blood-thinners .compat-flag-badge { background:#3870C8; color:white; }
 
-    /* ── RECIPE QUICK-LOAD ── */
-    .recipe-load-bar { display:flex; gap:0.75rem; align-items:center; margin-bottom:1.75rem; padding:1rem 1.25rem; background:white; border:1px solid var(--cream-dark); border-radius:4px; }
-    .recipe-load-label { font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); white-space:nowrap; }
+    /* ── RECIPE NAVIGATION ── */
+    .recipe-nav { margin-bottom:1.75rem; padding:1.25rem; background:white; border:1px solid var(--cream-dark); border-radius:4px; }
+    .recipe-nav-label { font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); margin-bottom:0.6rem; }
+    .recipe-nav-list { display:flex; flex-wrap:wrap; gap:0.5rem; margin-top:0.85rem; }
+    .recipe-nav-btn { background:none; border:1px solid var(--cream-dark); border-radius:2px; padding:0.45rem 0.9rem; font-family:'Raleway',sans-serif; font-size:0.7rem; letter-spacing:0.05em; color:var(--text-mid); cursor:pointer; transition:all 0.15s; }
+    .recipe-nav-btn:hover { border-color:var(--burgundy-pale); color:var(--text-dark); }
+    .recipe-nav-btn.active { background:var(--burgundy); border-color:var(--burgundy); color:var(--cream); }
   </style>
 </head>
 <body>
@@ -785,12 +789,17 @@
       <div class="section-title">Recipes / Lab Notebook</div>
       <div class="section-desc">Every batch you make, documented. This is your production record — legally important and practically essential for replicating what works.</div>
 
-      <div class="recipe-load-bar">
-        <span class="recipe-load-label">Load a recipe</span>
-        <select class="form-select" id="rec-load-select" style="flex:1;margin:0">
-          <option value="">— Select a saved recipe —</option>
+      <div class="recipe-nav">
+        <div class="recipe-nav-label">Select a product to load its recipe</div>
+        <select class="form-select" id="rec-cat-select">
+          <option value="">— Select a product —</option>
+          <option value="face-cream">Face Creams</option>
+          <option value="body-butter">Body Butters</option>
+          <option value="soap">Soaps</option>
+          <option value="teas">Teas</option>
+          <option value="tinctured-serums">Tinctured Serums</option>
         </select>
-        <button class="btn btn-ghost btn-sm" id="rec-load-btn">Load</button>
+        <div class="recipe-nav-list" id="rec-nav-list"></div>
       </div>
 
       <div class="form-row">
@@ -1865,37 +1874,71 @@ document.getElementById('compat-check-btn').addEventListener('click', () => {
 renderCompatCloud();
 
 // ─────────────────────────────────────────────
-//  RECIPE QUICK-LOAD
+//  RECIPE TEMPLATES
 // ─────────────────────────────────────────────
-function populateRecipeDropdown() {
-  const select = document.getElementById('rec-load-select');
-  const list = load('recipes');
-  select.innerHTML = '<option value="">— Select a saved recipe —</option>';
-  list.forEach((item, idx) => {
-    const opt = document.createElement('option');
-    opt.value = idx;
-    opt.textContent = `${item.product}${item.batch ? ' — Batch ' + item.batch : ''}${item.date ? ' (' + item.date + ')' : ''}`;
-    select.appendChild(opt);
+const RECIPE_TEMPLATES = {
+  'face-cream': [
+    { label: 'Hydration', product: 'Ruh Face Cream — Hydration', ingredients: 'CARRIER OILS\nJojoba Oil\nRosehip Seed Oil\n\nBUTTERS\nShea Butter\nMango Butter\n\nACTIVES\nVitamin E (Natural d-alpha)\nRooibos Extract\nAloe Vera\nRose Hydrosol\n\nEMULSIFIER\nSunflower Lecithin\n\nESSENTIAL OILS\nRose EO\nNeroli EO\nFrankincense EO' },
+    { label: 'Glow + Brightening', product: 'Ruh Face Cream — Glow + Brightening', ingredients: 'CARRIER OILS\nRosehip Seed Oil\nMarula Oil\nBaobab Oil\n\nBUTTERS\nMango Butter\n\nACTIVES\nRooibos Extract\nSea Buckthorn (1–3% max)\nRose Hydrosol\nVitamin E (Natural d-alpha)\n\nESSENTIAL OILS\nCarrot Seed EO\nNeroli EO\nFrankincense EO\nGeranium EO' },
+    { label: 'Sensitive + Calming', product: 'Ruh Face Cream — Sensitive + Calming', ingredients: 'CARRIER OILS\nJojoba Oil\nCalendula-Infused Oil\n\nBUTTERS\nMango Butter\n\nACTIVES\nAloe Vera\nChamomile Extract\nRooibos Extract\nColloidal Oatmeal\nCentella Asiatica\n\nESSENTIAL OILS\nGerman Chamomile EO\nLavender EO\nRose EO' },
+    { label: 'Balancing', product: 'Ruh Face Cream — Balancing', ingredients: 'CARRIER OILS\nJojoba Oil\nHemp Seed Oil\nRosehip Seed Oil\n\nBUTTERS\nMango Butter\n\nACTIVES\nAloe Vera\nWillow Bark Extract\nRooibos Extract\nRose Hydrosol\n\nESSENTIAL OILS\nTea Tree EO\nGeranium EO\nLavender EO\nCedarwood EO' },
+    { label: 'Repair + Healing', product: 'Ruh Face Cream — Repair + Healing', ingredients: 'CARRIER OILS\nTamanu Oil\nRosehip Seed Oil\nBaobab Oil\nCalendula-Infused Oil\n\nBUTTERS\nShea Butter\n\nACTIVES\nCentella Asiatica\nAloe Vera\nVitamin E (Natural d-alpha)\nRooibos Extract\nBakuchiol\n\nESSENTIAL OILS\nHelichrysum EO\nFrankincense EO\nLavender EO\nMyrrh EO\nCarrot Seed EO' }
+  ],
+  'body-butter': [
+    { label: 'Deep Dryness + Dehydration', product: 'Ruh Body Butter — Deep Dryness', ingredients: 'CARRIER OILS\nCoconut Oil\nBaobab Oil\n\nBUTTERS\nShea Butter\nMango Butter\nCocoa Butter\n\nACTIVES\nVitamin E (Natural d-alpha)\nRooibos Extract\n\nESSENTIAL OILS\nLavender EO\nFrankincense EO\nSandalwood EO' },
+    { label: 'Stretch Marks + Elasticity', product: 'Ruh Body Butter — Stretch Marks + Elasticity', ingredients: 'CARRIER OILS\nRosehip Seed Oil\nTamanu Oil\nSweet Almond Oil\n\nBUTTERS\nShea Butter\nMango Butter\n\nACTIVES\nVitamin E (Natural d-alpha)\nCentella Asiatica\nBakuchiol\nRooibos Extract\n\nESSENTIAL OILS\nHelichrysum EO\nFrankincense EO\nNeroli EO\nLavender EO' },
+    { label: 'Uneven Tone + Body Glow', product: 'Ruh Body Butter — Uneven Tone + Glow', ingredients: 'CARRIER OILS\nRosehip Seed Oil\nMarula Oil\nBaobab Oil\n\nBUTTERS\nMango Butter\nShea Butter\n\nACTIVES\nSea Buckthorn (1–3% max)\nRooibos Extract\nVitamin E (Natural d-alpha)\nRose Hydrosol\n\nESSENTIAL OILS\nCarrot Seed EO\nGeranium EO\nNeroli EO\nFrankincense EO' },
+    { label: 'Sensitive + Reactive', product: 'Ruh Body Butter — Sensitive + Reactive', ingredients: 'CARRIER OILS\nJojoba Oil\nCalendula-Infused Oil\nSweet Almond Oil\n\nBUTTERS\nShea Butter (Unrefined)\nMango Butter\n\nACTIVES\nColloidal Oatmeal\nAloe Vera\nChamomile Extract\nRooibos Extract\nCentella Asiatica\n\nESSENTIAL OILS\nGerman Chamomile EO\nLavender EO\nRoman Chamomile EO' },
+    { label: 'Repair + Scarring', product: 'Ruh Body Butter — Repair + Scarring', ingredients: 'CARRIER OILS\nTamanu Oil\nRosehip Seed Oil\nBaobab Oil\nCalendula-Infused Oil\n\nBUTTERS\nShea Butter\nCocoa Butter\n\nACTIVES\nBakuchiol\nCentella Asiatica\nVitamin E (Natural d-alpha)\nRooibos Extract\n\nESSENTIAL OILS\nHelichrysum EO\nFrankincense EO\nMyrrh EO\nLavender EO\nCarrot Seed EO' }
+  ],
+  'soap': [
+    { label: 'Normal / Everyday', product: 'Ruh Soap — Normal / Everyday', ingredients: 'SOAP BASE\nShea Butter M&P Base\n\nADD-IN OILS\nJojoba Oil\nSweet Almond Oil\n\nBOTANICALS\nDried Rooibos\nDried Lavender\n\nESSENTIAL OILS\nLavender EO\nFrankincense EO' },
+    { label: 'Oily / Acne-Prone', product: 'Ruh Soap — Oily / Acne-Prone', ingredients: 'SOAP BASE\nOlive Oil M&P Base\n\nADD-IN OILS\nHemp Seed Oil\nJojoba Oil\n\nACTIVES\nWillow Bark Extract\nRooibos Extract\n\nESSENTIAL OILS\nTea Tree EO\nGeranium EO\nLavender EO' },
+    { label: 'Dry / Sensitive', product: 'Ruh Soap — Dry / Sensitive', ingredients: 'SOAP BASE\nShea Butter M&P Base\n\nADD-IN OILS\nSweet Almond Oil\nCalendula-Infused Oil\n\nACTIVES\nColloidal Oatmeal\nChamomile Extract\n\nESSENTIAL OILS\nRoman Chamomile EO\nLavender EO' },
+    { label: 'Soothing', product: 'Ruh Soap — Soothing', ingredients: 'SOAP BASE\nGoat Milk M&P Base\n\nADD-IN OILS\nCalendula-Infused Oil\nJojoba Oil\n\nACTIVES\nColloidal Oatmeal\nRooibos Extract\nChamomile Extract\n\nESSENTIAL OILS\nGerman Chamomile EO\nLavender EO' },
+    { label: 'Healing', product: 'Ruh Soap — Healing', ingredients: 'SOAP BASE\nShea Butter M&P Base\n\nADD-IN OILS\nTamanu Oil\nRosehip Seed Oil\n\nACTIVES\nCentella Asiatica\nRooibos Extract\n\nESSENTIAL OILS\nHelichrysum EO\nFrankincense EO\nLavender EO' }
+  ],
+  'teas': [
+    { label: 'Grounding + Meditation', product: 'Ruh Tea — Grounding + Meditation', ingredients: 'Tulsi / Holy Basil\nAshwagandha\nOat Straw\nLemon Balm\nCacao Husks\nBlue Lotus\nCardamom\n\nNote: Ratios to be confirmed during formulation session.' },
+    { label: 'Wild Dreaming', product: 'Ruh Tea — Wild Dreaming', ingredients: 'Mugwort\nPassionflower\nBlue Lotus\nValerian Root\nLemon Balm\nJasmine (Dried Flowers)\n\nNote: Ratios to be confirmed during formulation session.\nCAUTION: Contains mugwort — not for use during pregnancy.' },
+    { label: 'Release', product: 'Ruh Tea — Release', ingredients: 'Dandelion Root\nNettle\nLemon Verbena\nPeppermint\nGinger Root\nHibiscus\nRosehip (Dried)\n\nNote: Ratios to be confirmed during formulation session.' },
+    { label: 'Clarity', product: 'Ruh Tea — Clarity', ingredients: 'Tulsi / Holy Basil\nPeppermint\nSpearmint\nRosehip (Dried)\nLemon Verbena\nCardamom\n\nNote: Ratios to be confirmed during formulation session.' },
+    { label: 'Rest + Anxiety Relief', product: 'Ruh Tea — Rest + Anxiety Relief', ingredients: 'Valerian Root\nPassionflower\nLemon Balm\nOat Straw\nCalendula Flower (Dried)\nSpearmint\n\nNote: Ratios to be confirmed during formulation session.' }
+  ],
+  'tinctured-serums': [
+    { label: 'Repair + Regeneration', product: 'Ruh Tinctured Serum — Repair + Regeneration', ingredients: 'HERBAL INFUSION BASE\nComfrey (6-week oil infusion)\n\nCARRIER OILS\nRosehip Seed Oil\nTamanu Oil\nBaobab Oil\nPomegranate Seed Oil\n\nACTIVES\nCentella Asiatica\nVitamin E (Natural d-alpha)\nBakuchiol\nRooibos Extract\n\nESSENTIAL OILS\nHelichrysum EO\nFrankincense EO\nCarrot Seed EO\nMyrrh EO' },
+    { label: 'Brightening + Glow', product: 'Ruh Tinctured Serum — Brightening + Glow', ingredients: 'CARRIER OILS\nRosehip Seed Oil\nMarula Oil\nArgan Oil\n\nACTIVES\nCarrot Root CO2 Extract (0.5–2% max)\nSea Buckthorn (1–3% max)\nRooibos Extract\nVitamin E (Natural d-alpha)\nGreen Tea Extract\n\nESSENTIAL OILS\nNeroli EO\nCarrot Seed EO\nFrankincense EO\nGeranium EO' },
+    { label: 'Calming + Sensitive Skin', product: 'Ruh Tinctured Serum — Calming + Sensitive Skin', ingredients: 'HERBAL INFUSION BASE\nComfrey (6-week oil infusion)\n\nCARRIER OILS\nJojoba Oil\nCalendula-Infused Oil\nSweet Almond Oil\n\nACTIVES\nChamomile Extract\nCentella Asiatica\nRooibos Extract\nVitamin E (Natural d-alpha)\n\nESSENTIAL OILS\nGerman Chamomile EO\nBlue Tansy EO (0.5–1% max)\nLavender EO\nRose EO' },
+    { label: 'Balancing + Clarifying', product: 'Ruh Tinctured Serum — Balancing + Clarifying', ingredients: 'CARRIER OILS\nJojoba Oil\nHemp Seed Oil\nArgan Oil\nNeem Oil (1–3% max)\n\nACTIVES\nRooibos Extract\nWillow Bark Extract\nGreen Tea Extract\nVitamin E (Natural d-alpha)\n\nESSENTIAL OILS\nTea Tree EO\nGeranium EO\nLavender EO\nCedarwood EO' },
+    { label: 'Deeply Nourishing + Protective', product: 'Ruh Tinctured Serum — Deeply Nourishing + Protective', ingredients: 'CARRIER OILS\nArgan Oil\nBaobab Oil\nMarula Oil\nPomegranate Seed Oil\n\nACTIVES\nVitamin E (Natural d-alpha)\nRooibos Extract\nGreen Tea Extract\n\nESSENTIAL OILS\nSandalwood EO\nFrankincense EO\nNeroli EO\nRose EO' }
+  ]
+};
+
+document.getElementById('rec-cat-select').addEventListener('change', function() {
+  const navList = document.getElementById('rec-nav-list');
+  navList.innerHTML = '';
+  const cat = this.value;
+  if (!cat) return;
+  (RECIPE_TEMPLATES[cat] || []).forEach(template => {
+    const btn = document.createElement('button');
+    btn.className = 'recipe-nav-btn';
+    btn.textContent = template.label;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.recipe-nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('rec-product').value = template.product;
+      document.getElementById('rec-ingredients').value = template.ingredients;
+      document.getElementById('rec-batch').value = '';
+      document.getElementById('rec-date').value = '';
+      document.getElementById('rec-size').value = '';
+      document.getElementById('rec-method').value = '';
+      document.getElementById('rec-ph').value = '';
+      document.getElementById('rec-observations').value = '';
+      document.getElementById('rec-changes').value = '';
+    });
+    navList.appendChild(btn);
   });
-}
-document.getElementById('rec-load-btn').addEventListener('click', () => {
-  const idx = document.getElementById('rec-load-select').value;
-  if (idx === '') return;
-  const list = load('recipes');
-  const item = list[parseInt(idx)];
-  if (!item) return;
-  document.getElementById('rec-product').value = item.product || '';
-  document.getElementById('rec-batch').value = item.batch || '';
-  document.getElementById('rec-date').value = item.date || '';
-  document.getElementById('rec-size').value = item.size || '';
-  document.getElementById('rec-ingredients').value = item.ingredients || '';
-  document.getElementById('rec-method').value = item.method || '';
-  document.getElementById('rec-ph').value = item.ph || '';
-  document.getElementById('rec-observations').value = item.observations || '';
-  document.getElementById('rec-changes').value = item.changes || '';
-  flash('rec-saved-msg', 'Recipe loaded.');
 });
-populateRecipeDropdown();
 
 updateCounts();
 </script>
