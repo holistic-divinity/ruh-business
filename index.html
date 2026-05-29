@@ -536,6 +536,24 @@
       font-style: italic;
       line-height: 1.6;
     }
+    .journal-prev-btn {
+      display: none;
+      width: 100%;
+      background: none;
+      border: 1px solid var(--cream-dark);
+      border-radius: 2px;
+      padding: 0.5rem;
+      font-family: 'Raleway', sans-serif;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      cursor: pointer;
+      margin-top: 1rem;
+      transition: all 0.15s;
+    }
+    .journal-prev-btn:hover { background: var(--cream); color: var(--text-dark); }
+    #journalPrevEntries { display: none; margin-top: 0.75rem; }
 
     @media (max-width: 900px) {
       .main-layout { flex-direction: column; }
@@ -602,8 +620,10 @@
     <button class="journal-save-btn" id="journalSaveBtn">Save Entry</button>
     <div class="journal-saved-msg" id="journalSavedMsg"></div>
     <hr class="journal-divider">
-    <div class="journal-entries-label">Previous Entries</div>
-    <div class="journal-entries" id="journalEntries"></div>
+    <div class="journal-entries-label">Today</div>
+    <div id="journalTodayEntries"></div>
+    <button class="journal-prev-btn" id="journalPrevBtn">Previous Notes ▾</button>
+    <div id="journalPrevEntries"></div>
   </div>
 
 </div>
@@ -2409,34 +2429,56 @@ function saveEntries(entries) {
   localStorage.setItem(JOURNAL_KEY, JSON.stringify(entries));
 }
 
+function makeEntryEl(entry, realIdx) {
+  const el = document.createElement('div');
+  el.className = 'journal-entry';
+  el.innerHTML = `
+    <div class="journal-entry-date">${entry.date}</div>
+    <div class="journal-entry-text">${entry.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+    <button class="journal-entry-delete" data-idx="${realIdx}">Delete</button>
+  `;
+  el.querySelector('.journal-entry-delete').addEventListener('click', () => {
+    const entries = loadEntries();
+    entries.splice(realIdx, 1);
+    saveEntries(entries);
+    renderEntries();
+  });
+  return el;
+}
+
 function renderEntries() {
   const entries = loadEntries();
-  const container = document.getElementById('journalEntries');
-  container.innerHTML = '';
-  if (entries.length === 0) {
-    container.innerHTML = '<div class="journal-empty">Your entries will appear here. Write something — even one line counts.</div>';
-    return;
+  const todayStr = journalDateStr(today);
+  const todayContainer = document.getElementById('journalTodayEntries');
+  const prevContainer = document.getElementById('journalPrevEntries');
+  const prevBtn = document.getElementById('journalPrevBtn');
+
+  todayContainer.innerHTML = '';
+  prevContainer.innerHTML = '';
+
+  const todayEntries = entries.map((e, i) => ({ e, i })).filter(({ e }) => e.date === todayStr);
+  const prevEntries = entries.map((e, i) => ({ e, i })).filter(({ e }) => e.date !== todayStr);
+
+  if (todayEntries.length === 0) {
+    todayContainer.innerHTML = '<div class="journal-empty">Nothing written today yet.</div>';
+  } else {
+    [...todayEntries].reverse().forEach(({ e, i }) => todayContainer.appendChild(makeEntryEl(e, i)));
   }
-  [...entries].reverse().forEach((entry, idx) => {
-    const realIdx = entries.length - 1 - idx;
-    const el = document.createElement('div');
-    el.className = 'journal-entry';
-    el.innerHTML = `
-      <div class="journal-entry-date">${entry.date}</div>
-      <div class="journal-entry-text">${entry.text.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-      <button class="journal-entry-delete" data-idx="${realIdx}">Delete</button>
-    `;
-    container.appendChild(el);
-  });
-  container.querySelectorAll('.journal-entry-delete').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const entries = loadEntries();
-      entries.splice(parseInt(btn.dataset.idx), 1);
-      saveEntries(entries);
-      renderEntries();
-    });
-  });
+
+  if (prevEntries.length === 0) {
+    prevBtn.style.display = 'none';
+  } else {
+    prevBtn.style.display = 'block';
+    [...prevEntries].reverse().forEach(({ e, i }) => prevContainer.appendChild(makeEntryEl(e, i)));
+  }
 }
+
+document.getElementById('journalPrevBtn').addEventListener('click', function() {
+  const prev = document.getElementById('journalPrevEntries');
+  const open = prev.style.display === 'block';
+  prev.style.display = open ? 'none' : 'block';
+  this.textContent = open ? 'Previous Notes ▾' : 'Previous Notes ▴';
+});
 
 // Set today label
 document.getElementById('journalTodayLabel').textContent = journalDateStr(today);
