@@ -349,6 +349,56 @@
       .stability-grid { grid-template-columns: 1fr 1fr; }
       .form-row { flex-direction: column; gap: 0; }
     }
+
+    /* ── FILTER TABS ── */
+    .filter-tabs { display:flex; flex-wrap:wrap; gap:0.35rem; margin-bottom:1.25rem; }
+    .filter-tab { background:none; border:1px solid var(--cream-dark); border-radius:2px; padding:0.35rem 0.85rem; font-family:'Raleway',sans-serif; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); cursor:pointer; transition:all 0.15s; }
+    .filter-tab:hover { background:var(--cream-dark); color:var(--text-dark); }
+    .filter-tab.active { background:var(--burgundy); border-color:var(--burgundy); color:var(--cream); }
+
+    /* ── TYPE BADGES ── */
+    .type-badge { display:inline-block; font-size:0.56rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.18rem 0.55rem; border-radius:2px; margin-right:0.35rem; margin-top:0.25rem; }
+    .type-carrier-oil { background:#E8F0E9; color:var(--sage); }
+    .type-butter { background:#F5EBD8; color:var(--amber); }
+    .type-active { background:#EDE6F5; color:#7A5BA8; }
+    .type-essential-oil { background:#F5E8EB; color:var(--burgundy); }
+    .type-botanical { background:#E8EFE8; color:#4A7A50; }
+    .type-emulsifier { background:#E8E8F0; color:#5B6AA8; }
+    .type-soap-base { background:#F0EBE8; color:var(--terracotta); }
+
+    /* ── INGREDIENT LIBRARY ── */
+    .lib-search { width:100%; background:white; border:1px solid var(--cream-dark); border-radius:3px; padding:0.55rem 0.85rem; font-family:'Raleway',sans-serif; font-size:0.82rem; color:var(--text-dark); outline:none; margin-bottom:0.85rem; transition:border-color 0.2s; }
+    .lib-search:focus { border-color:rgba(107,31,48,0.35); }
+    .lib-count { font-size:0.65rem; color:var(--text-light); letter-spacing:0.08em; margin-bottom:1.25rem; }
+    .lib-card-products { display:flex; flex-wrap:wrap; gap:0.3rem; margin-top:0.5rem; }
+    .product-tag { font-size:0.56rem; letter-spacing:0.08em; text-transform:uppercase; padding:0.15rem 0.5rem; border-radius:2px; background:var(--cream-dark); color:var(--text-light); }
+    .lib-expand-btn { font-size:0.6rem; letter-spacing:0.08em; text-transform:uppercase; color:var(--burgundy-pale); background:none; border:none; cursor:pointer; padding:0; margin-top:0.6rem; display:block; }
+    .lib-expand-btn:hover { color:var(--burgundy); }
+    .lib-detail { display:none; margin-top:0.75rem; border-top:1px solid var(--cream-dark); padding-top:0.75rem; }
+    .lib-detail.open { display:block; }
+    .lib-detail-row { margin-bottom:0.6rem; }
+    .lib-detail-label { font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); margin-bottom:0.2rem; }
+    .lib-detail-value { font-size:0.78rem; color:var(--text-mid); line-height:1.65; }
+    .lib-detail-empty { font-size:0.75rem; color:var(--burgundy-pale); font-style:italic; }
+
+    /* ── COMPATIBILITY CHECKER ── */
+    .compat-tag-cloud { display:flex; flex-wrap:wrap; gap:0.4rem; padding:1.25rem; background:white; border:1px solid var(--cream-dark); border-radius:4px; max-height:240px; overflow-y:auto; margin-bottom:0.75rem; }
+    .compat-tag { background:var(--cream); border:1px solid var(--cream-dark); border-radius:2px; padding:0.3rem 0.75rem; font-size:0.68rem; cursor:pointer; transition:all 0.15s; color:var(--text-mid); }
+    .compat-tag:hover { border-color:var(--burgundy-pale); color:var(--text-dark); }
+    .compat-tag.selected { background:var(--burgundy); border-color:var(--burgundy); color:var(--cream); }
+    .compat-selected-count { font-size:0.65rem; color:var(--text-light); letter-spacing:0.08em; margin-bottom:0.75rem; min-height:1rem; }
+    .compat-result { padding:1.25rem 1.5rem; border-radius:4px; margin-top:1rem; display:none; }
+    .compat-result.show { display:block; }
+    .compat-compatible { background:#E8F0E9; border:1px solid var(--sage-light); }
+    .compat-caution { background:#F5EBD8; border:1px solid var(--amber); }
+    .compat-result-title { font-family:'Cormorant Garamond',serif; font-size:1.3rem; margin-bottom:0.6rem; }
+    .compat-result-body { font-size:0.78rem; color:var(--text-mid); line-height:1.75; }
+    .compat-pair-note { margin-bottom:0.5rem; padding-bottom:0.5rem; border-bottom:1px solid rgba(0,0,0,0.06); }
+    .compat-pair-note:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+
+    /* ── RECIPE QUICK-LOAD ── */
+    .recipe-load-bar { display:flex; gap:0.75rem; align-items:center; margin-bottom:1.75rem; padding:1rem 1.25rem; background:white; border:1px solid var(--cream-dark); border-radius:4px; }
+    .recipe-load-label { font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); white-space:nowrap; }
   </style>
 </head>
 <body>
@@ -381,17 +431,23 @@
     </button>
 
     <div class="sidebar-label">Formulation</div>
+    <button class="sidebar-item" data-section="ingredient-library">
+      <span class="sidebar-icon">⬡</span> Ingredient Library
+    </button>
     <button class="sidebar-item" data-section="ingredients">
-      <span class="sidebar-icon">⬡</span> Ingredient Stories
+      <span class="sidebar-icon">◌</span> Ingredient Stories
     </button>
     <button class="sidebar-item" data-section="research">
       <span class="sidebar-icon">◎</span> Formulation Research
     </button>
     <button class="sidebar-item" data-section="recipes">
-      <span class="sidebar-icon">⊞</span> Lab Notebook
+      <span class="sidebar-icon">⊞</span> Recipes / Lab Notebook
     </button>
     <button class="sidebar-item" data-section="stability">
       <span class="sidebar-icon">◷</span> Stability Log
+    </button>
+    <button class="sidebar-item" data-section="compatibility">
+      <span class="sidebar-icon">⊕</span> Compatibility Checker
     </button>
 
     <div class="sidebar-label">Business</div>
@@ -427,10 +483,16 @@
           <div class="index-card-desc">Label concepts, website ideas, packaging references, mood board notes, visual direction.</div>
           <div class="index-card-count" id="count-design"></div>
         </div>
-        <div class="index-card" data-goto="ingredients">
+        <div class="index-card" data-goto="ingredient-library">
           <div class="index-card-icon">⬡</div>
+          <div class="index-card-title">Ingredient Library</div>
+          <div class="index-card-desc">Your confirmed ingredient database. Origin, background, benefits, precautions, and which products each ingredient lives in.</div>
+          <div class="index-card-count" id="count-ingredient-library"></div>
+        </div>
+        <div class="index-card" data-goto="ingredients">
+          <div class="index-card-icon">◌</div>
           <div class="index-card-title">Ingredient Stories</div>
-          <div class="index-card-desc">Every ingredient — its origin, its tradition, its INCI name, its story within Ruh.</div>
+          <div class="index-card-desc">Ingredients being researched and considered — not yet confirmed for a product. Move them to the Library once locked in.</div>
           <div class="index-card-count" id="count-ingredients"></div>
         </div>
         <div class="index-card" data-goto="research">
@@ -441,9 +503,15 @@
         </div>
         <div class="index-card" data-goto="recipes">
           <div class="index-card-icon">⊞</div>
-          <div class="index-card-title">Lab Notebook</div>
+          <div class="index-card-title">Recipes / Lab Notebook</div>
           <div class="index-card-desc">Every batch you make. Ingredients, percentages, method, pH, observations, adjustments.</div>
           <div class="index-card-count" id="count-recipes"></div>
+        </div>
+        <div class="index-card" data-goto="compatibility">
+          <div class="index-card-icon">⊕</div>
+          <div class="index-card-title">Compatibility Checker</div>
+          <div class="index-card-desc">Select two or more ingredients and check whether they work together, need caution, or should be avoided.</div>
+          <div class="index-card-count"></div>
         </div>
         <div class="index-card" data-goto="stability">
           <div class="index-card-icon">◷</div>
@@ -538,10 +606,95 @@
       <div class="card-list" id="design-list"></div>
     </div>
 
+    <!-- INGREDIENT LIBRARY -->
+    <div class="section" id="section-ingredient-library">
+      <div class="section-title">Ingredient Library</div>
+      <div class="section-desc">Your confirmed ingredient database. Pre-populated with everything confirmed so far — face creams, body butters, soaps. Usage rates and SA sources get filled in during June research.</div>
+
+      <div class="filter-tabs" id="lib-filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="face-cream">Face Cream</button>
+        <button class="filter-tab" data-filter="body-butter">Body Butter</button>
+        <button class="filter-tab" data-filter="soap">Soap</button>
+        <button class="filter-tab" data-filter="teas">Teas</button>
+        <button class="filter-tab" data-filter="tinctures">Tinctures</button>
+        <button class="filter-tab" data-filter="serums">Serums</button>
+      </div>
+
+      <input class="lib-search" id="lib-search" placeholder="Search ingredients..." />
+      <div class="lib-count" id="lib-count"></div>
+      <div class="card-list" id="lib-list"></div>
+
+      <hr class="divider">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--burgundy);margin-bottom:1.25rem;">Add New Ingredient</div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Ingredient Name</label>
+          <input class="form-input" id="lib-name" placeholder="e.g. Argan Oil" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select class="form-select" id="lib-type">
+            <option value="carrier-oil">Carrier Oil</option>
+            <option value="butter">Butter</option>
+            <option value="active">Active</option>
+            <option value="essential-oil">Essential Oil</option>
+            <option value="botanical">Botanical</option>
+            <option value="emulsifier">Emulsifier</option>
+            <option value="soap-base">Soap Base</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Products (tick all that apply)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.3rem">
+          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="face-cream" class="lib-product-check"> Face Cream</label>
+          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="body-butter" class="lib-product-check"> Body Butter</label>
+          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="soap" class="lib-product-check"> Soap</label>
+          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="teas" class="lib-product-check"> Teas</label>
+          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="tinctures" class="lib-product-check"> Tinctures</label>
+          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="serums" class="lib-product-check"> Serums</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Origin / Region</label>
+        <input class="form-input" id="lib-origin" placeholder="e.g. West Africa" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Background + Cultural Story</label>
+        <textarea class="form-textarea" id="lib-background" placeholder="Where does it come from? What traditions used it? What story does it carry?"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Benefits</label>
+        <textarea class="form-textarea" style="min-height:80px" id="lib-benefits" placeholder="What does it do for the skin?"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Usage Rate (fill in during research)</label>
+          <input class="form-input" id="lib-usage" placeholder="e.g. 5–15%" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">SA Supplier Source</label>
+          <input class="form-input" id="lib-source" placeholder="e.g. essentiallynatural.co.za" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Precautions</label>
+        <textarea class="form-textarea" style="min-height:70px" id="lib-precautions" placeholder="Any safety notes, dilution limits, allergen flags..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Personal Notes</label>
+        <textarea class="form-textarea" style="min-height:70px" id="lib-notes" placeholder="Anything personal — why you chose it, how it fits the brand..."></textarea>
+      </div>
+      <button class="btn" id="lib-save-btn">Add to Library</button>
+      <div id="lib-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+    </div>
+
     <!-- INGREDIENT STORIES -->
     <div class="section" id="section-ingredients">
       <div class="section-title">Ingredient Stories</div>
-      <div class="section-desc">Every ingredient Ruh uses — its origin, its tradition, its INCI name, what it does, and what story it carries into the product.</div>
+      <div class="section-desc">For ingredients you're researching and considering — not yet confirmed for a product. Once confirmed, add them to the Ingredient Library.</div>
 
       <div class="form-row">
         <div class="form-group">
@@ -571,9 +724,23 @@
         <label class="form-label">Skin Benefits + Properties</label>
         <textarea class="form-textarea" style="min-height:80px" id="ing-benefits" placeholder="What does it do for the skin? pH, recommended usage percentage, any contraindications?"></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <textarea class="form-textarea" style="min-height:70px" id="ing-notes" placeholder="Anything else — sourcing notes, ritual significance, what product it's going into and why..."></textarea>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" style="min-height:70px" id="ing-notes" placeholder="Anything else — sourcing notes, ritual significance, what product it's going into and why..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Product Category (if confirmed)</label>
+          <select class="form-select" id="ing-product-cat">
+            <option value="">— Still researching —</option>
+            <option value="face-cream">Face Cream</option>
+            <option value="body-butter">Body Butter</option>
+            <option value="soap">Soap</option>
+            <option value="teas">Teas</option>
+            <option value="tinctures">Tinctures</option>
+            <option value="serums">Serums</option>
+          </select>
+        </div>
       </div>
       <button class="btn" id="ing-save-btn">Add Ingredient</button>
       <div id="ing-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
@@ -602,10 +769,18 @@
       <div class="card-list" id="res-list"></div>
     </div>
 
-    <!-- LAB NOTEBOOK -->
+    <!-- RECIPES / LAB NOTEBOOK -->
     <div class="section" id="section-recipes">
-      <div class="section-title">Lab Notebook</div>
+      <div class="section-title">Recipes / Lab Notebook</div>
       <div class="section-desc">Every batch you make, documented. This is your production record — legally important and practically essential for replicating what works.</div>
+
+      <div class="recipe-load-bar">
+        <span class="recipe-load-label">Load a recipe</span>
+        <select class="form-select" id="rec-load-select" style="flex:1;margin:0">
+          <option value="">— Select a saved recipe —</option>
+        </select>
+        <button class="btn btn-ghost btn-sm" id="rec-load-btn">Load</button>
+      </div>
 
       <div class="form-row">
         <div class="form-group">
@@ -700,6 +875,31 @@
       <button class="btn" id="stab-save-btn">Save Log</button>
       <div id="stab-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
       <div class="card-list" id="stab-list"></div>
+    </div>
+
+    <!-- COMPATIBILITY CHECKER -->
+    <div class="section" id="section-compatibility">
+      <div class="section-title">Compatibility Checker</div>
+      <div class="section-desc">Select two or more ingredients from your library, then hit Check. Returns Compatible or Use with Caution with the reason why. Matrix expands during ingredient research in June.</div>
+
+      <div class="filter-tabs" id="compat-filter-tabs">
+        <button class="filter-tab active" data-cfilter="all">All</button>
+        <button class="filter-tab" data-cfilter="carrier-oil">Carrier Oils</button>
+        <button class="filter-tab" data-cfilter="butter">Butters</button>
+        <button class="filter-tab" data-cfilter="active">Actives</button>
+        <button class="filter-tab" data-cfilter="essential-oil">Essential Oils</button>
+        <button class="filter-tab" data-cfilter="botanical">Botanicals</button>
+      </div>
+
+      <div class="compat-tag-cloud" id="compat-cloud"></div>
+      <div class="compat-selected-count" id="compat-count">No ingredients selected.</div>
+
+      <div style="display:flex;gap:0.75rem;align-items:center;">
+        <button class="btn" id="compat-check-btn">Check Compatibility</button>
+        <button class="btn btn-ghost btn-sm" id="compat-clear-btn">Clear</button>
+      </div>
+
+      <div class="compat-result" id="compat-result"></div>
     </div>
 
     <!-- COSTING SHEET -->
@@ -890,6 +1090,11 @@ function updateCounts() {
     const count = load(s).length;
     el.textContent = count > 0 ? `${count} entr${count === 1 ? 'y' : 'ies'}` : '';
   });
+  const libEl = document.getElementById('count-ingredient-library');
+  if (libEl) {
+    const count = loadLib().length;
+    libEl.textContent = count > 0 ? `${count} ingredient${count !== 1 ? 's' : ''}` : '';
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -979,9 +1184,10 @@ document.getElementById('ing-save-btn').addEventListener('click', () => {
   const name = document.getElementById('ing-name').value.trim();
   if (!name) return;
   const list = load('ingredients');
-  list.push({ name, inci: document.getElementById('ing-inci').value.trim(), origin: document.getElementById('ing-origin').value.trim(), products: document.getElementById('ing-products').value.trim(), story: document.getElementById('ing-story').value.trim(), benefits: document.getElementById('ing-benefits').value.trim(), notes: document.getElementById('ing-notes').value.trim() });
+  list.push({ name, inci: document.getElementById('ing-inci').value.trim(), origin: document.getElementById('ing-origin').value.trim(), products: document.getElementById('ing-products').value.trim(), story: document.getElementById('ing-story').value.trim(), benefits: document.getElementById('ing-benefits').value.trim(), notes: document.getElementById('ing-notes').value.trim(), productCat: document.getElementById('ing-product-cat').value });
   save('ingredients', list);
   clearInputs(['ing-name','ing-inci','ing-origin','ing-products','ing-story','ing-benefits','ing-notes']);
+  document.getElementById('ing-product-cat').selectedIndex = 0;
   flash('ing-saved-msg', 'Ingredient saved.');
   renderIngredients(); updateCounts();
 });
@@ -1045,7 +1251,7 @@ document.getElementById('rec-save-btn').addEventListener('click', () => {
   save('recipes', list);
   clearInputs(['rec-product','rec-batch','rec-date','rec-size','rec-ingredients','rec-method','rec-ph','rec-observations','rec-changes']);
   flash('rec-saved-msg', 'Batch saved.');
-  renderRecipes(); updateCounts();
+  renderRecipes(); updateCounts(); populateRecipeDropdown();
 });
 renderRecipes();
 
@@ -1190,6 +1396,346 @@ function esc(str) {
   if (!str) return '';
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
 }
+
+updateCounts();
+
+// ─────────────────────────────────────────────
+//  INGREDIENT LIBRARY — DEFAULT DATA
+// ─────────────────────────────────────────────
+const LIB_DEFAULTS = [
+  // CARRIER OILS
+  {id:'jojoba',name:'Jojoba Oil',type:'carrier-oil',products:['face-cream','body-butter','soap'],origin:'Sonoran Desert, USA / Mexico',background:'Liquid wax, not a true oil — mimics human sebum more closely than any other plant oil. Used by the O\'odham people of the Sonoran Desert for skin and hair for centuries.',benefits:'Balancing, non-comedogenic, regulates sebum, fast-absorbing, all skin types. Antioxidant-rich. Exceptionally stable shelf life.',usageRate:'',saSource:'',precautions:'Very well tolerated. Rare sensitization.',notes:''},
+  {id:'rosehip',name:'Rosehip Seed Oil',type:'carrier-oil',products:['face-cream','body-butter','soap'],origin:'Andes, Chile / Argentina (Rosa rubiginosa)',background:'Used for centuries by the Mapuche people of Chile and Argentina for wound healing and skin repair. Rich in natural vitamin A precursors.',benefits:'Skin regeneration, fades scars and hyperpigmentation, anti-ageing, high in linoleic acid and natural vitamin A. Excellent for Repair and Glow formulas.',usageRate:'',saSource:'',precautions:'Short shelf life — use within 6 months. Store away from light and heat. Can oxidise.',notes:''},
+  {id:'marula',name:'Marula Oil',type:'carrier-oil',products:['face-cream','body-butter'],origin:'Southern Africa — the Marula Belt (SA, Zimbabwe, Mozambique, Namibia)',background:'From the Sclerocarya birrea tree, called the "Marriage Tree" in some southern African traditions. Used by women across the region for skin, hair, and leather conditioning for centuries. A deeply local ingredient.',benefits:'Lightweight, fast-absorbing, high in oleic acid (antioxidant protection), anti-ageing, excellent for dry and mature skin. Produced locally in South Africa.',usageRate:'',saSource:'',precautions:'Generally well tolerated. Store carefully — can oxidise.',notes:''},
+  {id:'baobab',name:'Baobab Oil',type:'carrier-oil',products:['face-cream','body-butter'],origin:'African continent (Adansonia species — the "Tree of Life")',background:'From the Adansonia tree, revered across sub-Saharan Africa. Trees can live thousands of years. Called the "Tree of Life" across many African traditions. Oil extracted from the seeds.',benefits:'Rich in vitamins A, D, E and F. Deep moisturiser, improves skin elasticity, non-greasy, regenerating and anti-inflammatory.',usageRate:'',saSource:'',precautions:'Very stable oil. Excellent tolerance.',notes:''},
+  {id:'hemp-seed',name:'Hemp Seed Oil',type:'carrier-oil',products:['face-cream','soap'],origin:'Central Asia (Cannabis sativa L.)',background:'Hemp cultivation is one of humanity\'s oldest agricultural practices — thousands of years of use across Asia, Europe, and the Americas. Hemp seed oil contains zero THC and is legal globally.',benefits:'Perfectly balanced omega 3:6 ratio, non-comedogenic, regulates sebum, calming and anti-inflammatory. Ideal for oily, combination, and acne-prone skin.',usageRate:'',saSource:'',precautions:'Short shelf life — oxidises quickly. Store refrigerated or with vitamin E. Legal in SA.',notes:''},
+  {id:'tamanu',name:'Tamanu Oil',type:'carrier-oil',products:['face-cream','body-butter','soap'],origin:'Southeast Asia and Pacific Islands (Calophyllum inophyllum)',background:'Sacred oil in Polynesian and Pacific Island traditions. Used in traditional medicine across Fiji, Tahiti, and South Asia for wound healing and skin repair. Called "beauty leaf" in some cultures.',benefits:'Exceptional wound healing, scar reduction, anti-inflammatory, antimicrobial. High in calophyllolide — a healing compound unique to tamanu.',usageRate:'',saSource:'',precautions:'Potential cross-reaction with tree nut allergies. Typically used at 2–10% — not a base oil.',notes:''},
+  {id:'calendula-infused',name:'Calendula-Infused Oil',type:'carrier-oil',products:['face-cream','body-butter','soap'],origin:'Mediterranean and Western Europe (Calendula officinalis)',background:'Pot marigold has been used since ancient Egypt and Rome for wound healing. Deeply embedded in European herbal tradition. Made by infusing dried calendula flowers in a carrier oil.',benefits:'Anti-inflammatory, wound healing, soothing for eczema and reactive skin, gentle enough for sensitive skin and babies.',usageRate:'',saSource:'',precautions:'Avoid if allergic to Asteraceae family plants (same family as chamomile).',notes:''},
+  {id:'coconut',name:'Coconut Oil',type:'carrier-oil',products:['body-butter'],origin:'South and Southeast Asia, Pacific Islands',background:'One of the most widely used natural oils in the world. Sacred in Ayurvedic medicine, Pacific Island culture, and South Asian tradition. Used for skin and hair for thousands of years.',benefits:'Deep moisturising, antimicrobial (lauric acid), barrier repair, excellent for very dry skin. Occlusive — seals moisture in.',usageRate:'',saSource:'',precautions:'Can be comedogenic for some — keep to body use in Ruh.',notes:''},
+  {id:'sweet-almond',name:'Sweet Almond Oil',type:'carrier-oil',products:['body-butter','soap'],origin:'Mediterranean, Middle East (Prunus dulcis)',background:'Used in Ayurvedic medicine for centuries and referenced in ancient Greek, Roman, and Chinese medicine. Traditional massage and skin care base.',benefits:'Softening, emollient, rich in vitamin E and oleic acid. Gentle for sensitive skin. Medium absorption.',usageRate:'',saSource:'',precautions:'Tree nut allergy consideration. Sweet almond only — not bitter almond.',notes:''},
+  // BUTTERS
+  {id:'shea',name:'Shea Butter',type:'butter',products:['face-cream','body-butter','soap'],origin:'Shea Belt, West Africa (Vitellaria paradoxa)',background:'Central to the economies and cultures of West African women for centuries. The Shea Belt spans 21 countries. Shea trees are sacred in many communities and traditionally cannot be cut down — harvested and processed by women\'s cooperatives.',benefits:'Deep moisturising, anti-inflammatory, high in cinnamic acid (mild UV protection), vitamins A, E and F. Heals eczema, dry skin, stretch marks. All skin types.',usageRate:'',saSource:'',precautions:'Use unrefined/raw shea to retain more nutrients. Rare cross-reaction in tree nut allergy.',notes:''},
+  {id:'mango',name:'Mango Butter',type:'butter',products:['face-cream','body-butter'],origin:'South Asia (Mangifera indica)',background:'Extracted from mango kernels. Mango has been cultivated in South Asia for over 4,000 years. Deeply embedded in Ayurvedic practice for skin treatment.',benefits:'Rich in stearic and oleic acids. Deeply emollient, softens skin, creates a protective barrier without heaviness. Melts at skin contact. Anti-inflammatory.',usageRate:'',saSource:'',precautions:'Very well tolerated. Rare allergy.',notes:''},
+  {id:'cocoa',name:'Cocoa Butter',type:'butter',products:['body-butter'],origin:'Mesoamerica and West Africa (Theobroma cacao — "food of the gods")',background:'Cacao has been cultivated and revered by Mesoamerican civilisations (Olmec, Maya, Aztec) for over 3,000 years. Cocoa butter has been used for skin across the Americas and West Africa.',benefits:'Extremely occlusive and moisturising, improves skin elasticity, rich in antioxidants. Creates a lasting moisture barrier. Traditional use for stretch marks.',usageRate:'',saSource:'',precautions:'Heavy and occlusive — best in body formulas.',notes:''},
+  // SOAP BASES
+  {id:'shea-mp-base',name:'Shea Butter M&P Soap Base',type:'soap-base',products:['soap'],origin:'Manufactured — shea butter as primary ingredient',background:'Melt and pour bases allow soapmakers to add custom oils, botanicals, and essential oils without handling lye. Shea butter base is rich and conditioning — the right starting point for Ruh.',benefits:'Conditioning, creamy lather, gentle and moisturising. Less stripping than commercial soaps.',usageRate:'',saSource:'',precautions:'Source from reputable natural suppliers. Check ingredient list for any synthetics.',notes:''},
+  {id:'olive-mp-base',name:'Olive Oil M&P Soap Base',type:'soap-base',products:['soap'],origin:'Mediterranean (Olea europaea)',background:'Castile soap (pure olive oil) is one of the oldest soap traditions — originating in the Levant/Syria (Aleppo soap) and spreading through the Mediterranean.',benefits:'Gentle, conditioning, excellent for oily and acne-prone skin. Rich in squalene and polyphenols.',usageRate:'',saSource:'',precautions:'Source natural base. Olive-based lather is different from synthetic soap — natural.',notes:''},
+  {id:'goat-milk-mp-base',name:'Goat Milk M&P Soap Base',type:'soap-base',products:['soap'],origin:'Traditional soapmaking with goat milk',background:'Milk soaps have been used for millennia — referenced in ancient Egyptian, Greek, and Roman skin care. Goat milk is rich in alpha-hydroxy acids and fat molecules that support the skin barrier.',benefits:'Gentle natural AHA exfoliation, soothes sensitive and reactive skin, suitable for eczema-prone skin. Rich and conditioning.',usageRate:'',saSource:'',precautions:'Dairy-based — note for clients with dairy sensitivity.',notes:''},
+  // EMULSIFIERS
+  {id:'sunflower-lecithin',name:'Sunflower Lecithin',type:'emulsifier',products:['face-cream'],origin:'Sunflower seeds (Helianthus annuus)',background:'A phospholipid found in all living cells. Sunflower lecithin is the natural alternative to soy lecithin (often GMO). Used as both an emulsifier and to enhance skin penetration of actives.',benefits:'Natural emulsifier, supports skin barrier function, helps actives penetrate deeper. Skin-identical component.',usageRate:'',saSource:'',precautions:'Non-irritating. Sunflower sourcing avoids GMO concerns of soy lecithin.',notes:''},
+  // ACTIVES
+  {id:'vitamin-e',name:'Vitamin E (Natural d-alpha Tocopherol)',type:'active',products:['face-cream','body-butter'],origin:'Plant-derived — typically sunflower or mixed natural tocopherols',background:'Natural vitamin E (d-alpha tocopherol) is significantly more bioavailable than synthetic (dl-alpha). Functions as both a skin active and a natural antioxidant preservative in formula.',benefits:'Antioxidant protection, skin barrier repair, moisturising, reduces formula oxidation. Supports healing.',usageRate:'',saSource:'',precautions:'Use natural d-alpha ONLY — not dl-alpha (synthetic). 0.5–1% as antioxidant, up to 5% as skin active.',notes:''},
+  {id:'rooibos-extract',name:'Rooibos Extract',type:'active',products:['face-cream','body-butter','soap'],origin:'Cederberg Mountains, Western Cape, South Africa (Aspalathus linearis)',background:'Endemic to the Cederberg — grows nowhere else on Earth. The San people are believed to be the original harvesters. Contains aspalathin, a flavonoid unique to rooibos. One of SA\'s most iconic botanical exports and a Ruh signature ingredient.',benefits:'Powerful antioxidant (SOD-like activity), anti-inflammatory, anti-ageing, brightening, soothing for eczema and rosacea.',usageRate:'',saSource:'',precautions:'Non-irritating, non-photosensitising. Very well tolerated across all skin types.',notes:''},
+  {id:'aloe-vera',name:'Aloe Vera',type:'active',products:['face-cream','body-butter'],origin:'North Africa, Arabian Peninsula (Aloe barbadensis)',background:'Used for over 6,000 years — referenced in ancient Egyptian papyri, Ayurvedic texts, and Chinese herbal medicine. Called the "plant of immortality" by the Egyptians.',benefits:'Deep hydration without heaviness, wound healing, anti-inflammatory, soothing for burns and irritation. Polysaccharides form a protective film on skin.',usageRate:'',saSource:'',precautions:'Use inner leaf gel only (not aloe latex). Patch test for very sensitive skin.',notes:''},
+  {id:'rose-hydrosol',name:'Rose Hydrosol',type:'active',products:['face-cream','body-butter'],origin:'Bulgaria, Turkey, Iran, Morocco (Rosa damascena — Damask Rose)',background:'Rose water has been distilled for thousands of years in Persia and the Arab world. The Bulgarian Rose Valley has produced rose oil and hydrosol for over 300 years. Rose is central to Rumi\'s poetry — deeply aligned with the soul of Ruh.',benefits:'Toning, anti-inflammatory, antioxidant, gentle hydration, pH balancing. Adds a natural rose quality without EO volatility.',usageRate:'',saSource:'',precautions:'Use genuine rose hydrosol — not rose water with added fragrance. Refrigerate after opening.',notes:''},
+  {id:'sea-buckthorn',name:'Sea Buckthorn',type:'active',products:['face-cream','body-butter'],origin:'Himalayas, Siberia, Europe (Hippophae rhamnoides)',background:'Used in Tibetan, Mongolian, and Chinese medicine for over 1,000 years. Called "holy fruit of the Himalayas." The most carotenoid-rich plant known.',benefits:'Extremely rich in carotenoids, vitamins C and E, omega-7. Brightening, anti-ageing, wound healing.',usageRate:'',saSource:'',precautions:'POWERFUL ORANGE PIGMENT — use at 1–3% maximum or it will stain the formula and skin orange. CO2 extract is more concentrated than carrier oil version.',notes:''},
+  {id:'chamomile-extract',name:'Chamomile Extract',type:'active',products:['face-cream','body-butter','soap'],origin:'Europe and Western Asia (Matricaria chamomilla)',background:'Used medicinally since ancient Egypt and Rome. One of the most widely studied herbs in European tradition. "Chamomile" is Greek for "ground apple."',benefits:'Anti-inflammatory (bisabolol, chamazulene), soothing for sensitive and reactive skin, antioxidant.',usageRate:'',saSource:'',precautions:'Avoid if allergic to Asteraceae family plants (same family as calendula, arnica).',notes:''},
+  {id:'colloidal-oatmeal',name:'Colloidal Oatmeal',type:'active',products:['face-cream','body-butter','soap'],origin:'Avena sativa — cultivated globally',background:'Oatmeal baths for soothing skin irritation have been documented for over 2,000 years. Colloidal oatmeal (finely milled) is an FDA-recognised over-the-counter skin protectant.',benefits:'Anti-itch, barrier repair, soothing for eczema and reactive skin. Contains avenanthramides — anti-inflammatory compounds unique to oats.',usageRate:'',saSource:'',precautions:'Source certified gluten-free if needed for clients with severe gluten sensitivity.',notes:''},
+  {id:'centella',name:'Centella Asiatica (Cica / Gotu Kola)',type:'active',products:['face-cream','body-butter','soap'],origin:'Asia, Africa, Madagascar (Centella asiatica — also called Tiger Herb)',background:'One of the most important herbs in Ayurveda, Traditional Chinese Medicine, and Indonesian traditional medicine. Used for thousands of years for wound healing and longevity. Tigers are said to roll in it when injured.',benefits:'Wound healing, skin barrier repair, collagen synthesis, scar reduction, anti-inflammatory. Rich in triterpenoids (asiaticoside, madecassoside).',usageRate:'',saSource:'',precautions:'Generally very well tolerated. Rare sensitization at prolonged high concentrations.',notes:''},
+  {id:'willow-bark',name:'Willow Bark Extract',type:'active',products:['face-cream','soap'],origin:'Europe, Asia (Salix alba)',background:'Contains salicin — the natural precursor to salicylic acid. Used in folk medicine for pain and fever for thousands of years across European and Native American traditions. Aspirin was derived from willow bark.',benefits:'Natural BHA (beta hydroxy acid), gently exfoliating, pore-clarifying, antibacterial, anti-inflammatory. Natural alternative to synthetic salicylic acid.',usageRate:'',saSource:'',precautions:'Avoid in salicylate sensitivity. Milder than synthetic salicylic acid but still active.',notes:''},
+  {id:'bakuchiol',name:'Bakuchiol',type:'active',products:['face-cream','body-butter'],origin:'India and Sri Lanka (Psoralea corylifolia — babchi plant)',background:'Used in Ayurvedic medicine for centuries under the name "babchi" for skin conditions and as a rejuvenating herb. Rediscovered by natural cosmetics as a plant-based retinol alternative with none of the side effects.',benefits:'Natural retinol alternative — stimulates collagen, reduces fine lines, evens skin tone. No photosensitivity, no irritation, compatible with all other actives. Suitable for sensitive skin.',usageRate:'',saSource:'',precautions:'No photosensitivity (unlike retinol). Conservative caution during pregnancy until more long-term data.',notes:''},
+  // ESSENTIAL OILS
+  {id:'lavender-eo',name:'Lavender Essential Oil',type:'essential-oil',products:['face-cream','body-butter','soap'],origin:'Mediterranean (Lavandula angustifolia — True Lavender)',background:'From the Latin "lavare" (to wash). Used in Roman baths, medieval European medicine, and Provençal tradition for centuries. One of the safest and most versatile EOs in existence.',benefits:'Calming, anti-inflammatory, antimicrobial, wound healing, excellent for sensitive and reactive skin. The most versatile EO in natural skincare.',usageRate:'',saSource:'',precautions:'Very low sensitization risk. Tisserand maximum: 2% leave-on, 1% for sensitive skin.',notes:''},
+  {id:'frankincense-eo',name:'Frankincense Essential Oil',type:'essential-oil',products:['face-cream','body-butter','soap'],origin:'Oman, Somalia, Ethiopia (Boswellia sacra / carterii / serrata)',background:'One of the most sacred resins in human history — traded for thousands of years on the Arabian Peninsula. Central to Egyptian, Ayurvedic, and Sufi spiritual tradition. Referenced in ancient Egyptian medical papyri.',benefits:'Anti-inflammatory, anti-ageing, promotes skin cell regeneration. Boswellic acids provide specific anti-inflammatory action. Aromatically: grounding and centering.',usageRate:'',saSource:'',precautions:'Low irritation risk. Tisserand maximum: 2.5%. Ethically source — wild harvested Boswellia is under threat in some regions.',notes:''},
+  {id:'rose-eo',name:'Rose Essential Oil (Rose Otto)',type:'essential-oil',products:['face-cream'],origin:'Bulgaria, Turkey, Morocco (Rosa damascena)',background:'~4–5 tonnes of petals to produce 1 litre of rose otto. Central to Persian and Sufi spiritual tradition — roses in Rumi\'s poetry represent the soul\'s connection to the divine. The most emotionally resonant oil in perfumery.',benefits:'Anti-inflammatory, skin softening, deeply moisturising. Brings the true spirit of Ruh to the formula.',usageRate:'',saSource:'',precautions:'Very expensive — use wisely. Tisserand maximum: 0.6% leave-on. Use otto (steam distilled), not absolute (solvent extracted).',notes:''},
+  {id:'neroli-eo',name:'Neroli Essential Oil',type:'essential-oil',products:['face-cream','body-butter'],origin:'Mediterranean, North Africa (Citrus aurantium — Bitter Orange blossom)',background:'Named after the Princess of Nerola, 17th century Italy. Distilled from bitter orange blossoms. Central to North African and Middle Eastern perfumery.',benefits:'Cell regenerating, skin balancing, anti-inflammatory. Excellent for ageing, sensitive, and combination skin. Aromatically uplifting and calming.',usageRate:'',saSource:'',precautions:'Non-photosensitising (unlike expressed citrus oils). Low irritation. Tisserand maximum: 2%.',notes:''},
+  {id:'german-chamomile-eo',name:'German Chamomile Essential Oil',type:'essential-oil',products:['face-cream','body-butter','soap'],origin:'Central Europe (Matricaria chamomilla — Blue Chamomile)',background:'Steam distillation produces the signature deep blue colour (chamazulene). One of the most powerful anti-inflammatory EOs known. Central to German and Central European herbal traditions.',benefits:'Exceptional anti-inflammatory (chamazulene), soothing for eczema and rosacea, wound healing. For the most reactive skin.',usageRate:'',saSource:'',precautions:'Avoid in Asteraceae allergy. Potent — low dilution needed. Expensive.',notes:''},
+  {id:'roman-chamomile-eo',name:'Roman Chamomile Essential Oil',type:'essential-oil',products:['body-butter','soap'],origin:'Western Europe (Chamaemelum nobile)',background:'Different species from German chamomile — lighter, sweeter, apple-like scent. Traditional in English and French herbalism. More calming/nervous system-focused than German chamomile.',benefits:'Anti-inflammatory (lighter than German), deeply calming, gentle enough for children and very sensitive skin.',usageRate:'',saSource:'',precautions:'Avoid in Asteraceae allergy.',notes:''},
+  {id:'carrot-seed-eo',name:'Carrot Seed Essential Oil',type:'essential-oil',products:['face-cream','body-butter'],origin:'Europe, Asia (Daucus carota — Wild Carrot)',background:'Distilled from wild carrot seeds — not the same as carrot CO2 extract. Used in traditional European herbalism. Warm, earthy orange scent.',benefits:'Skin rejuvenating, antioxidant (carotol), brightening, anti-ageing. Excellent in the Glow and Repair ranges.',usageRate:'',saSource:'',precautions:'Not photosensitising. Do not confuse with carrot CO2 extract.',notes:''},
+  {id:'geranium-eo',name:'Geranium Essential Oil',type:'essential-oil',products:['face-cream','body-butter','soap'],origin:'Western Cape, South Africa (Pelargonium graveolens — Rose Geranium)',background:'Rose geranium is indigenous to the Western Cape — one of South Africa\'s most significant EO crops. Used in Cape Malay and traditional South African medicine. A deeply local South African ingredient alongside rooibos.',benefits:'Balancing (sebum regulation), anti-inflammatory, astringent, cell regenerating. Bridges oily and dry skin needs.',usageRate:'',saSource:'',precautions:'Tisserand maximum: 3.4%. Low sensitisation risk.',notes:''},
+  {id:'tea-tree-eo',name:'Tea Tree Essential Oil',type:'essential-oil',products:['face-cream','soap'],origin:'New South Wales, Australia (Melaleuca alternifolia)',background:'Used traditionally by the Bundjalung Aboriginal people of NSW for antiseptic purposes. Formalised in Australian medicine in the 1920s–30s. One of the most scientifically studied EOs.',benefits:'Antimicrobial, antifungal, antibacterial, blemish-treating. Excellent for oily and acne-prone skin.',usageRate:'',saSource:'',precautions:'Never use undiluted. Tisserand maximum: 1–2% leave-on. Oxidises and becomes sensitising — store away from light.',notes:''},
+  {id:'cedarwood-eo',name:'Cedarwood Essential Oil',type:'essential-oil',products:['face-cream'],origin:'Atlas: North Africa (Cedrus atlantica); Virginia: North America (Juniperus virginiana)',background:'Cedar has been used in sacred and medicinal contexts across many cultures — Native American ritual, ancient Egyptian embalming, and Sufi incense tradition. Grounding and protective energy.',benefits:'Astringent, sebum regulating, anti-inflammatory. Excellent for oily skin in the Balancing Cream.',usageRate:'',saSource:'',precautions:'Avoid in pregnancy (especially Virginia cedarwood). Prefer Atlas cedarwood. Tisserand maximum: 2.5%.',notes:''},
+  {id:'helichrysum-eo',name:'Helichrysum Essential Oil',type:'essential-oil',products:['face-cream','body-butter','soap'],origin:'Mediterranean (Helichrysum italicum — Immortelle / Everlasting)',background:'Also called "Immortelle" — grows primarily in Corsica, Sardinia, and the Balkans. One of the most valued EOs in natural skincare. Used in European folk medicine for wound healing and bruising.',benefits:'Exceptional healing — reduces bruising, heals scars, regenerates damaged skin cells, anti-inflammatory. For Repair and Healing ranges.',usageRate:'',saSource:'',precautions:'Very safe and well-tolerated. Very expensive — Corsican helichrysum is the gold standard.',notes:''},
+  {id:'myrrh-eo',name:'Myrrh Essential Oil',type:'essential-oil',products:['face-cream','body-butter'],origin:'East Africa, Arabian Peninsula, India (Commiphora myrrha)',background:'One of the oldest sacred resins known — traded alongside frankincense for millennia. Used in ancient Egyptian ritual, the three gifts of the Nativity, and Arab perfumery. As old as human civilisation.',benefits:'Anti-inflammatory, wound healing, anti-ageing, antimicrobial. Excellent alongside frankincense in Repair formulas.',usageRate:'',saSource:'',precautions:'Avoid in pregnancy. Tisserand maximum: 0.7%. Strong resinous note — use sparingly.',notes:''},
+  {id:'sandalwood-eo',name:'Sandalwood Essential Oil',type:'essential-oil',products:['body-butter'],origin:'Australia (Santalum spicatum); India (Santalum album)',background:'Indian sandalwood is sacred in Hindu, Buddhist, and Jain traditions — thousands of years of ritual and medicinal use. Now sustainably farmed in Australia as Indian sources became over-exploited.',benefits:'Emollient, moisturising, anti-inflammatory, skin softening. Aromatically deeply calming and grounding.',usageRate:'',saSource:'',precautions:'Source Australian sandalwood for sustainability. Indian sandalwood is threatened. Expensive.',notes:''},
+  // BOTANICALS
+  {id:'dried-lavender',name:'Dried Lavender (Botanical)',type:'botanical',products:['soap'],origin:'Mediterranean (Lavandula angustifolia)',background:'Dried lavender buds used as a visual and textural element in soap — adding natural beauty and a gentle aromatherapy quality to the bar.',benefits:'Visual appeal, mild antiseptic quality, gentle aromatherapy benefit in bath and shower.',usageRate:'',saSource:'',precautions:'Can brown slightly over time in soap — this is natural, not a defect.',notes:''},
+  {id:'dried-rooibos',name:'Dried Rooibos (Botanical)',type:'botanical',products:['soap'],origin:'Cederberg, Western Cape, South Africa (Aspalathus linearis)',background:'Used both as an extract (active) and as dried botanical in soap for visual texture. The dried herb adds a natural golden-red colour and gentle antioxidant presence.',benefits:'Antioxidant, gentle toning, natural golden-red colour, deeply South African identity.',usageRate:'',saSource:'',precautions:'Adds natural earthy golden colour to soap — variation per batch is normal.',notes:''}
+];
+
+function seedLibrary() {
+  const existing = localStorage.getItem('ruh_wb_ingredient_library');
+  if (!existing) {
+    localStorage.setItem('ruh_wb_ingredient_library', JSON.stringify(LIB_DEFAULTS));
+  }
+}
+function loadLib() {
+  try { return JSON.parse(localStorage.getItem('ruh_wb_ingredient_library')) || []; }
+  catch { return []; }
+}
+function saveLib(data) {
+  localStorage.setItem('ruh_wb_ingredient_library', JSON.stringify(data));
+}
+
+const TYPE_LABELS = {
+  'carrier-oil':'Carrier Oil','butter':'Butter','active':'Active','essential-oil':'Essential Oil',
+  'botanical':'Botanical','emulsifier':'Emulsifier','soap-base':'Soap Base'
+};
+const PRODUCT_LABELS = {
+  'face-cream':'Face Cream','body-butter':'Body Butter','soap':'Soap',
+  'teas':'Teas','tinctures':'Tinctures','serums':'Serums'
+};
+
+let libFilter = 'all';
+let libSearch = '';
+
+function renderLibrary() {
+  const list = loadLib();
+  const el = document.getElementById('lib-list');
+  const countEl = document.getElementById('lib-count');
+  el.innerHTML = '';
+  const filtered = list.filter(item => {
+    const matchFilter = libFilter === 'all' || (item.products && item.products.includes(libFilter));
+    const matchSearch = !libSearch || item.name.toLowerCase().includes(libSearch.toLowerCase());
+    return matchFilter && matchSearch;
+  });
+  countEl.textContent = `${filtered.length} ingredient${filtered.length !== 1 ? 's' : ''}${libFilter !== 'all' ? ' in ' + PRODUCT_LABELS[libFilter] : ''}`;
+  if (!filtered.length) {
+    el.innerHTML = '<div class="empty-state">No ingredients match this filter yet.</div>';
+    return;
+  }
+  filtered.forEach((item, idx) => {
+    const realIdx = list.findIndex(i => i.id === item.id);
+    const div = document.createElement('div');
+    div.className = 'card';
+    const productTags = (item.products || []).map(p => `<span class="product-tag">${PRODUCT_LABELS[p] || p}</span>`).join('');
+    div.innerHTML = `
+      <div class="card-header">
+        <div>
+          <div class="card-title">${esc(item.name)}</div>
+          <div style="margin-top:0.3rem">
+            <span class="type-badge type-${item.type}">${TYPE_LABELS[item.type] || item.type}</span>
+          </div>
+          <div class="lib-card-products">${productTags}</div>
+        </div>
+        <button class="btn-danger" data-libidx="${realIdx}">Delete</button>
+      </div>
+      <div style="font-size:0.72rem;color:var(--text-light);margin-top:0.4rem">${esc(item.origin)}</div>
+      <button class="lib-expand-btn" data-expanded="false">Show details ▾</button>
+      <div class="lib-detail">
+        ${item.background ? `<div class="lib-detail-row"><div class="lib-detail-label">Background</div><div class="lib-detail-value">${esc(item.background)}</div></div>` : ''}
+        ${item.benefits ? `<div class="lib-detail-row"><div class="lib-detail-label">Benefits</div><div class="lib-detail-value">${esc(item.benefits)}</div></div>` : ''}
+        ${item.precautions ? `<div class="lib-detail-row"><div class="lib-detail-label">Precautions</div><div class="lib-detail-value">${esc(item.precautions)}</div></div>` : ''}
+        <div class="lib-detail-row"><div class="lib-detail-label">Usage Rate</div><div class="lib-detail-value">${item.usageRate ? esc(item.usageRate) : '<span class="lib-detail-empty">To fill in during June research</span>'}</div></div>
+        <div class="lib-detail-row"><div class="lib-detail-label">SA Supplier</div><div class="lib-detail-value">${item.saSource ? esc(item.saSource) : '<span class="lib-detail-empty">To fill in during June research</span>'}</div></div>
+        ${item.notes ? `<div class="lib-detail-row"><div class="lib-detail-label">Notes</div><div class="lib-detail-value">${esc(item.notes)}</div></div>` : ''}
+      </div>`;
+    el.appendChild(div);
+  });
+  el.querySelectorAll('.lib-expand-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const detail = btn.nextElementSibling;
+      const open = btn.dataset.expanded === 'true';
+      detail.classList.toggle('open', !open);
+      btn.dataset.expanded = String(!open);
+      btn.textContent = open ? 'Show details ▾' : 'Hide details ▴';
+    });
+  });
+  el.querySelectorAll('.btn-danger[data-libidx]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const list = loadLib();
+      list.splice(parseInt(btn.dataset.libidx), 1);
+      saveLib(list);
+      renderLibrary();
+      updateCounts();
+    });
+  });
+}
+
+document.getElementById('lib-filter-tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-tab');
+  if (!btn) return;
+  document.querySelectorAll('#lib-filter-tabs .filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  libFilter = btn.dataset.filter;
+  renderLibrary();
+});
+
+document.getElementById('lib-search').addEventListener('input', e => {
+  libSearch = e.target.value;
+  renderLibrary();
+});
+
+document.getElementById('lib-save-btn').addEventListener('click', () => {
+  const name = document.getElementById('lib-name').value.trim();
+  if (!name) return;
+  const products = Array.from(document.querySelectorAll('.lib-product-check:checked')).map(c => c.value);
+  const list = loadLib();
+  list.push({
+    id: name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''),
+    name,
+    type: document.getElementById('lib-type').value,
+    products,
+    origin: document.getElementById('lib-origin').value.trim(),
+    background: document.getElementById('lib-background').value.trim(),
+    benefits: document.getElementById('lib-benefits').value.trim(),
+    usageRate: document.getElementById('lib-usage').value.trim(),
+    saSource: document.getElementById('lib-source').value.trim(),
+    precautions: document.getElementById('lib-precautions').value.trim(),
+    notes: document.getElementById('lib-notes').value.trim()
+  });
+  saveLib(list);
+  document.querySelectorAll('.lib-product-check').forEach(c => c.checked = false);
+  clearInputs(['lib-name','lib-origin','lib-background','lib-benefits','lib-usage','lib-source','lib-precautions','lib-notes']);
+  document.getElementById('lib-type').selectedIndex = 0;
+  flash('lib-saved-msg', 'Added to library.');
+  renderLibrary();
+  updateCounts();
+});
+
+seedLibrary();
+renderLibrary();
+
+// ─────────────────────────────────────────────
+//  COMPATIBILITY CHECKER
+// ─────────────────────────────────────────────
+const SPECIFIC_COMPAT = [
+  {ids:['sea-buckthorn'], result:'caution', note:'Sea buckthorn has intense orange pigment — keep at 1–3% maximum or it will stain the formula and skin orange. Compatible at the correct percentage.'},
+  {ids:['bakuchiol'], result:'compatible', note:'Bakuchiol is uniquely compatible with nearly all actives — unlike retinol, it doesn\'t conflict with AHAs, BHAs, vitamin C, or other actives. One of its key advantages.'},
+  {ids:['helichrysum-eo','frankincense-eo'], result:'compatible', note:'Classic repair pairing. Both are regenerating and healing — they work synergistically in Repair formulas.'},
+  {ids:['german-chamomile-eo','roman-chamomile-eo'], result:'compatible', note:'Can be blended together — German chamomile for anti-inflammatory power, Roman chamomile for calming and soothing. Together: very gentle and healing.'},
+  {ids:['rose-hydrosol','rose-eo'], result:'compatible', note:'Complementary forms of rose. Hydrosol for toning and base, EO for fragrance and active benefit. The two forms work beautifully together.'},
+  {ids:['willow-bark','colloidal-oatmeal'], result:'compatible', note:'Excellent pairing — willow bark (gentle exfoliant) balanced with colloidal oatmeal (barrier support and soothing). Exfoliation without irritation.'},
+  {ids:['tamanu','helichrysum-eo'], result:'compatible', note:'The repair pairing. Both have exceptional wound healing and regenerative properties — used together in the Repair range.'},
+  {ids:['centella','bakuchiol'], result:'compatible', note:'Outstanding anti-ageing and repair pairing. Centella builds collagen from below, bakuchiol stimulates surface renewal. Together: comprehensive repair.'},
+  {ids:['tea-tree-eo','geranium-eo'], result:'compatible', note:'Both sebum-regulating and anti-inflammatory. Good pairing for oily and balancing formulas.'},
+  {ids:['rooibos-extract','aloe-vera'], result:'compatible', note:'Both calming and anti-inflammatory — they stack well. Rooibos adds antioxidant depth, aloe adds hydration and soothing.'},
+];
+
+const TYPE_COMPAT_DEFAULTS = {
+  'carrier-oil':{'carrier-oil':'compatible','butter':'compatible','active':'compatible','essential-oil':'compatible','botanical':'compatible','emulsifier':'compatible','soap-base':'compatible'},
+  'butter':{'carrier-oil':'compatible','butter':'compatible','active':'compatible','essential-oil':'compatible','botanical':'compatible','emulsifier':'compatible','soap-base':'compatible'},
+  'active':{'carrier-oil':'compatible','butter':'compatible','active':'caution','essential-oil':'compatible','botanical':'compatible','emulsifier':'compatible'},
+  'essential-oil':{'carrier-oil':'compatible','butter':'compatible','active':'compatible','essential-oil':'compatible','botanical':'compatible','emulsifier':'compatible'},
+  'botanical':{'carrier-oil':'compatible','butter':'compatible','active':'compatible','essential-oil':'compatible','botanical':'compatible'},
+  'emulsifier':{'carrier-oil':'compatible','butter':'compatible','active':'compatible','essential-oil':'compatible','botanical':'compatible','emulsifier':'compatible'},
+  'soap-base':{'carrier-oil':'compatible','butter':'compatible','active':'compatible','essential-oil':'compatible','botanical':'compatible'}
+};
+
+let compatSelected = new Set();
+let compatTypeFilter = 'all';
+
+function renderCompatCloud() {
+  const list = loadLib();
+  const cloud = document.getElementById('compat-cloud');
+  cloud.innerHTML = '';
+  const filtered = compatTypeFilter === 'all' ? list : list.filter(i => i.type === compatTypeFilter);
+  filtered.forEach(item => {
+    const tag = document.createElement('button');
+    tag.className = 'compat-tag' + (compatSelected.has(item.id) ? ' selected' : '');
+    tag.textContent = item.name;
+    tag.dataset.id = item.id;
+    tag.addEventListener('click', () => {
+      if (compatSelected.has(item.id)) {
+        compatSelected.delete(item.id);
+        tag.classList.remove('selected');
+      } else {
+        compatSelected.add(item.id);
+        tag.classList.add('selected');
+      }
+      const n = compatSelected.size;
+      document.getElementById('compat-count').textContent = n === 0 ? 'No ingredients selected.' : `${n} ingredient${n !== 1 ? 's' : ''} selected.`;
+      document.getElementById('compat-result').classList.remove('show');
+    });
+    cloud.appendChild(tag);
+  });
+}
+
+document.getElementById('compat-filter-tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.filter-tab');
+  if (!btn) return;
+  document.querySelectorAll('#compat-filter-tabs .filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  compatTypeFilter = btn.dataset.cfilter;
+  renderCompatCloud();
+});
+
+document.getElementById('compat-clear-btn').addEventListener('click', () => {
+  compatSelected.clear();
+  renderCompatCloud();
+  document.getElementById('compat-count').textContent = 'No ingredients selected.';
+  document.getElementById('compat-result').classList.remove('show');
+});
+
+document.getElementById('compat-check-btn').addEventListener('click', () => {
+  if (compatSelected.size < 2) {
+    const res = document.getElementById('compat-result');
+    res.className = 'compat-result compat-caution show';
+    res.innerHTML = '<div class="compat-result-title">Select at least 2 ingredients.</div>';
+    return;
+  }
+  const list = loadLib();
+  const selectedItems = list.filter(i => compatSelected.has(i.id));
+  const selectedIds = Array.from(compatSelected);
+  const notes = [];
+  let worstResult = 'compatible';
+
+  SPECIFIC_COMPAT.forEach(rule => {
+    const matched = rule.ids.filter(id => selectedIds.includes(id));
+    if (matched.length === rule.ids.length || (rule.ids.length === 1 && selectedIds.includes(rule.ids[0]))) {
+      if (rule.result === 'caution' && worstResult !== 'caution') worstResult = 'caution';
+      notes.push({result: rule.result, note: rule.note, label: matched.map(id => { const item = list.find(i => i.id === id); return item ? item.name : id; }).join(' + ')});
+    }
+  });
+
+  for (let i = 0; i < selectedItems.length; i++) {
+    for (let j = i + 1; j < selectedItems.length; j++) {
+      const a = selectedItems[i];
+      const b = selectedItems[j];
+      const alreadyCovered = notes.some(n => n.note.includes(a.name) || n.note.includes(b.name));
+      if (!alreadyCovered) {
+        const typeResult = (TYPE_COMPAT_DEFAULTS[a.type] || {})[b.type] || 'compatible';
+        if (typeResult === 'caution' && worstResult !== 'caution') {
+          worstResult = 'caution';
+          notes.push({result:'caution', note: `Multiple actives in the same formula can have cumulative effects — test at a small batch scale first. Each is safe individually; combined action needs observation.`, label: `${a.name} + ${b.name}`});
+        }
+      }
+    }
+  }
+
+  const res = document.getElementById('compat-result');
+  res.className = `compat-result compat-${worstResult} show`;
+  const titleMap = {compatible:'✓ Compatible', caution:'△ Use with Caution'};
+  const bodyLines = notes.length
+    ? notes.map(n => `<div class="compat-pair-note"><strong style="font-size:0.68rem;letter-spacing:0.05em">${esc(n.label)}</strong><br>${esc(n.note)}</div>`).join('')
+    : `<div class="compat-pair-note">These ingredients work well together. No known conflicts.</div>`;
+  res.innerHTML = `<div class="compat-result-title">${titleMap[worstResult]}</div><div class="compat-result-body">${bodyLines}<div style="margin-top:0.75rem;font-size:0.7rem;color:var(--text-light)">Full compatibility matrix expands during ingredient research in June.</div></div>`;
+});
+
+renderCompatCloud();
+
+// ─────────────────────────────────────────────
+//  RECIPE QUICK-LOAD
+// ─────────────────────────────────────────────
+function populateRecipeDropdown() {
+  const select = document.getElementById('rec-load-select');
+  const list = load('recipes');
+  select.innerHTML = '<option value="">— Select a saved recipe —</option>';
+  list.forEach((item, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = `${item.product}${item.batch ? ' — Batch ' + item.batch : ''}${item.date ? ' (' + item.date + ')' : ''}`;
+    select.appendChild(opt);
+  });
+}
+document.getElementById('rec-load-btn').addEventListener('click', () => {
+  const idx = document.getElementById('rec-load-select').value;
+  if (idx === '') return;
+  const list = load('recipes');
+  const item = list[parseInt(idx)];
+  if (!item) return;
+  document.getElementById('rec-product').value = item.product || '';
+  document.getElementById('rec-batch').value = item.batch || '';
+  document.getElementById('rec-date').value = item.date || '';
+  document.getElementById('rec-size').value = item.size || '';
+  document.getElementById('rec-ingredients').value = item.ingredients || '';
+  document.getElementById('rec-method').value = item.method || '';
+  document.getElementById('rec-ph').value = item.ph || '';
+  document.getElementById('rec-observations').value = item.observations || '';
+  document.getElementById('rec-changes').value = item.changes || '';
+  flash('rec-saved-msg', 'Recipe loaded.');
+});
+populateRecipeDropdown();
 
 updateCounts();
 </script>
