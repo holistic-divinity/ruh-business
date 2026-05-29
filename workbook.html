@@ -1269,7 +1269,7 @@ document.getElementById('rec-save-btn').addEventListener('click', () => {
   save('recipes', list);
   clearInputs(['rec-product','rec-batch','rec-date','rec-size','rec-ingredients','rec-method','rec-ph','rec-observations','rec-changes']);
   flash('rec-saved-msg', 'Batch saved.');
-  renderRecipes(); updateCounts(); populateRecipeDropdown();
+  renderRecipes(); updateCounts();
 });
 renderRecipes();
 
