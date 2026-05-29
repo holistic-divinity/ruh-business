@@ -1509,11 +1509,16 @@ function seedLibrary() {
     localStorage.setItem('ruh_wb_ingredient_library', JSON.stringify(LIB_DEFAULTS));
     return;
   }
+  const defaultsById = {};
+  LIB_DEFAULTS.forEach(i => { defaultsById[i.id] = i; });
+  const updated = existing.map(item => {
+    const def = defaultsById[item.id];
+    if (def) return { ...item, products: def.products, type: def.type };
+    return item;
+  });
   const existingIds = new Set(existing.map(i => i.id));
   const toAdd = LIB_DEFAULTS.filter(i => !existingIds.has(i.id));
-  if (toAdd.length > 0) {
-    localStorage.setItem('ruh_wb_ingredient_library', JSON.stringify([...existing, ...toAdd]));
-  }
+  localStorage.setItem('ruh_wb_ingredient_library', JSON.stringify([...updated, ...toAdd]));
 }
 function loadLib() {
   try { return JSON.parse(localStorage.getItem('ruh_wb_ingredient_library')) || []; }
