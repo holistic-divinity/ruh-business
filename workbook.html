@@ -397,6 +397,18 @@
     .compat-result-body { font-size:0.78rem; color:var(--text-mid); line-height:1.75; }
     .compat-pair-note { margin-bottom:0.5rem; padding-bottom:0.5rem; border-bottom:1px solid rgba(0,0,0,0.06); }
     .compat-pair-note:last-child { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+    .compat-flag-section { margin-top:1rem; padding-top:0.85rem; border-top:1px solid rgba(0,0,0,0.1); }
+    .compat-flag-title { font-size:0.6rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-light); margin-bottom:0.6rem; }
+    .compat-flag-item { margin-bottom:0.5rem; font-size:0.78rem; color:var(--text-dark); line-height:1.65; padding:0.55rem 0.75rem; border-radius:3px; }
+    .flag-pregnancy { background:#FFECEC; border-left:3px solid #C83030; }
+    .flag-blood-pressure { background:#FFF2E8; border-left:3px solid #C87828; }
+    .flag-hormone-sensitivity { background:#F2EAFF; border-left:3px solid #7838C8; }
+    .flag-blood-thinners { background:#E8F2FF; border-left:3px solid #3870C8; }
+    .compat-flag-badge { display:inline-block; font-size:0.54rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.12rem 0.48rem; border-radius:2px; margin-left:0.4rem; font-weight:600; vertical-align:middle; }
+    .flag-pregnancy .compat-flag-badge { background:#C83030; color:white; }
+    .flag-blood-pressure .compat-flag-badge { background:#C87828; color:white; }
+    .flag-hormone-sensitivity .compat-flag-badge { background:#7838C8; color:white; }
+    .flag-blood-thinners .compat-flag-badge { background:#3870C8; color:white; }
 
     /* ── RECIPE QUICK-LOAD ── */
     .recipe-load-bar { display:flex; gap:0.75rem; align-items:center; margin-bottom:1.75rem; padding:1rem 1.25rem; background:white; border:1px solid var(--cream-dark); border-radius:4px; }
@@ -619,8 +631,7 @@
         <button class="filter-tab" data-filter="body-butter">Body Butter</button>
         <button class="filter-tab" data-filter="soap">Soap</button>
         <button class="filter-tab" data-filter="teas">Teas</button>
-        <button class="filter-tab" data-filter="tinctures">Tinctures</button>
-        <button class="filter-tab" data-filter="serums">Serums</button>
+        <button class="filter-tab" data-filter="tinctured-serums">Tinctured Serums</button>
       </div>
 
       <input class="lib-search" id="lib-search" placeholder="Search ingredients..." />
@@ -655,8 +666,7 @@
           <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="body-butter" class="lib-product-check"> Body Butter</label>
           <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="soap" class="lib-product-check"> Soap</label>
           <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="teas" class="lib-product-check"> Teas</label>
-          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="tinctures" class="lib-product-check"> Tinctures</label>
-          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="serums" class="lib-product-check"> Serums</label>
+          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="tinctured-serums" class="lib-product-check"> Tinctured Serums</label>
         </div>
       </div>
       <div class="form-group">
@@ -739,8 +749,7 @@
             <option value="body-butter">Body Butter</option>
             <option value="soap">Soap</option>
             <option value="teas">Teas</option>
-            <option value="tinctures">Tinctures</option>
-            <option value="serums">Serums</option>
+            <option value="tinctured-serums">Tinctured Serums</option>
           </select>
         </div>
       </div>
@@ -886,11 +895,9 @@
 
       <div class="filter-tabs" id="compat-filter-tabs">
         <button class="filter-tab active" data-cfilter="all">All</button>
-        <button class="filter-tab" data-cfilter="carrier-oil">Carrier Oils</button>
-        <button class="filter-tab" data-cfilter="butter">Butters</button>
-        <button class="filter-tab" data-cfilter="active">Actives</button>
-        <button class="filter-tab" data-cfilter="essential-oil">Essential Oils</button>
-        <button class="filter-tab" data-cfilter="botanical">Botanicals</button>
+        <button class="filter-tab" data-cfilter="skincare">Skincare</button>
+        <button class="filter-tab" data-cfilter="teas">Teas</button>
+        <button class="filter-tab" data-cfilter="tinctured-serums">Tinctured Serums</button>
       </div>
 
       <div class="compat-tag-cloud" id="compat-cloud"></div>
@@ -1452,13 +1459,60 @@ const LIB_DEFAULTS = [
   {id:'sandalwood-eo',name:'Sandalwood Essential Oil',type:'essential-oil',products:['body-butter'],origin:'Australia (Santalum spicatum); India (Santalum album)',background:'Indian sandalwood is sacred in Hindu, Buddhist, and Jain traditions — thousands of years of ritual and medicinal use. Now sustainably farmed in Australia as Indian sources became over-exploited.',benefits:'Emollient, moisturising, anti-inflammatory, skin softening. Aromatically deeply calming and grounding.',usageRate:'',saSource:'',precautions:'Source Australian sandalwood for sustainability. Indian sandalwood is threatened. Expensive.',notes:''},
   // BOTANICALS
   {id:'dried-lavender',name:'Dried Lavender (Botanical)',type:'botanical',products:['soap'],origin:'Mediterranean (Lavandula angustifolia)',background:'Dried lavender buds used as a visual and textural element in soap — adding natural beauty and a gentle aromatherapy quality to the bar.',benefits:'Visual appeal, mild antiseptic quality, gentle aromatherapy benefit in bath and shower.',usageRate:'',saSource:'',precautions:'Can brown slightly over time in soap — this is natural, not a defect.',notes:''},
-  {id:'dried-rooibos',name:'Dried Rooibos (Botanical)',type:'botanical',products:['soap'],origin:'Cederberg, Western Cape, South Africa (Aspalathus linearis)',background:'Used both as an extract (active) and as dried botanical in soap for visual texture. The dried herb adds a natural golden-red colour and gentle antioxidant presence.',benefits:'Antioxidant, gentle toning, natural golden-red colour, deeply South African identity.',usageRate:'',saSource:'',precautions:'Adds natural earthy golden colour to soap — variation per batch is normal.',notes:''}
+  {id:'dried-rooibos',name:'Dried Rooibos (Botanical)',type:'botanical',products:['soap'],origin:'Cederberg, Western Cape, South Africa (Aspalathus linearis)',background:'Used both as an extract (active) and as dried botanical in soap for visual texture. The dried herb adds a natural golden-red colour and gentle antioxidant presence.',benefits:'Antioxidant, gentle toning, natural golden-red colour, deeply South African identity.',usageRate:'',saSource:'',precautions:'Adds natural earthy golden colour to soap — variation per batch is normal.',notes:''},
+  // TEA BOTANICALS
+  {id:'honeybush',name:'Honeybush',type:'botanical',products:['teas'],origin:'Cederberg and Garden Route, Western Cape, South Africa',background:'Endemic to South Africa — a close relative of rooibos. Used traditionally by the Khoikhoi people. Part of South Africa\'s fynbos heritage. Commercially cultivated since the 1990s.',benefits:'Naturally caffeine-free. Rich in hesperidin and isoflavanones. Mildly phytoestrogenic, anti-inflammatory, antioxidant-rich. Sweet honey-like flavour.',usageRate:'',saSource:'',precautions:'Generally very safe. Contains mild phytoestrogens (isoflavanones). Well tolerated.',notes:''},
+  {id:'tulsi',name:'Tulsi / Holy Basil',type:'botanical',products:['teas'],origin:'Indian subcontinent (Ocimum tenuiflorum)',background:'Called "The Queen of Herbs" in Ayurveda. Sacred in Hinduism — a living goddess, grown in most Hindu households. Used for thousands of years for stress, immunity, and spiritual clarity.',benefits:'Adaptogenic, reduces cortisol and stress, anti-inflammatory, antimicrobial. Supports adrenal function and calm focus.',usageRate:'',saSource:'',precautions:'May interact with blood thinners in large amounts. Avoid in medicinal amounts in pregnancy.',notes:''},
+  {id:'cardamom',name:'Cardamom',type:'botanical',products:['teas'],origin:'South India, Guatemala (Elettaria cardamomum)',background:'Called "The Queen of Spices." Used in Ayurvedic medicine for digestive health and as a ritual spice. One of the most traded spices in history alongside pepper and cinnamon.',benefits:'Digestive, warming, carminative, freshens breath, mild stimulant, antioxidant. Adds beautiful complexity to blends.',usageRate:'',saSource:'',precautions:'Very safe in tea amounts. Gallstone consideration at very high therapeutic doses.',notes:''},
+  {id:'cinnamon',name:'Cinnamon (Ceylon)',type:'botanical',products:['teas'],origin:'Sri Lanka (Cinnamomum verum — True / Ceylon cinnamon)',background:'One of the oldest known spices — traded across the ancient world for thousands of years. Ceylon is "true" cinnamon and safe for daily use.',benefits:'Warming, digestive, blood sugar balancing, antimicrobial. Adds natural sweetness and warmth to blends.',usageRate:'',saSource:'',precautions:'MUST use Ceylon (true cinnamon). Cassia cinnamon (common cheap variety) contains coumarin, which is liver-toxic in regular amounts. Always source Ceylon.',notes:''},
+  {id:'blue-lotus',name:'Blue Lotus',type:'botanical',products:['teas'],origin:'Egypt, South and Southeast Asia (Nymphaea caerulea)',background:'Sacred in ancient Egypt — depicted throughout temple art and used in ceremony and medicine. The flower of Ra. Believed to produce euphoric and dream-like states. Central to Egyptian ritual life for thousands of years.',benefits:'Relaxing, mildly euphoric, supports sleep and meditation. Gently anti-anxiety. Opens the space for inner work and dreaming.',usageRate:'',saSource:'',precautions:'Mild psychoactive effects — not suitable before driving. Avoid in pregnancy due to limited safety data.',notes:''},
+  {id:'mugwort',name:'Mugwort',type:'botanical',products:['teas'],origin:'Europe, Asia, North America (Artemisia vulgaris)',background:'Ancient ceremonial herb used across European, Chinese, Japanese, and Native American traditions for dreaming and protection. Burned as mugwort incense (moxa) in Chinese medicine for thousands of years.',benefits:'Supports vivid dreams and lucid dreaming. Calming nervine, digestive. Used intentionally before sleep for dream work.',usageRate:'',saSource:'',precautions:'AVOID IN PREGNANCY — strong emmenagogue. Traditionally used to stimulate uterine contractions. Mild psychoactive properties — use with intention.',notes:''},
+  {id:'passionflower',name:'Passionflower',type:'botanical',products:['teas'],origin:'Americas, particularly Peru and Central America (Passiflora incarnata)',background:'Used by Native American peoples for anxiety and sleep long before European contact. Introduced to European botanical medicine in the 1500s. Named by Spanish missionaries who saw the Passion of Christ in its flower.',benefits:'Anxiety relief and sleep support. Naturally enhances GABA activity in the nervous system. One of the most studied herbs for anxiety.',usageRate:'',saSource:'',precautions:'Caution with sedative medications — enhances sedative effect. Do not combine with prescription benzodiazepines. Avoid in pregnancy.',notes:''},
+  {id:'hibiscus',name:'Hibiscus',type:'botanical',products:['teas'],origin:'Central Africa, Egypt, Caribbean, Southeast Asia (Hibiscus sabdariffa)',background:'Used across North Africa, the Middle East, the Caribbean, and Latin America for centuries. Central to Sudanese "karkade" and Caribbean "sorrel." One of the most beautiful and versatile tea botanicals.',benefits:'Tart and refreshing. Very rich in vitamin C and antioxidants. Lowers blood pressure, anti-inflammatory. Stunning deep crimson colour.',usageRate:'',saSource:'',precautions:'Can significantly lower blood pressure — caution if already on blood pressure medication.',notes:''},
+  {id:'lemon-balm',name:'Lemon Balm',type:'botanical',products:['teas'],origin:'Europe and West Asia (Melissa officinalis)',background:'From the Greek "melissa" (bee) — bees are drawn to its flowers. Used in European herbal medicine since the Middle Ages. Carmelite nuns distilled it into Carmelite Water for anxiety and headaches.',benefits:'Calming, anti-anxiety, sleep support, antiviral (particularly herpes simplex), digestive. Gentle and beautiful lemon flavour.',usageRate:'',saSource:'',precautions:'Generally very safe. May interact with thyroid medications at high doses.',notes:''},
+  {id:'damiana',name:'Damiana',type:'botanical',products:['teas'],origin:'Mexico, Central America, Caribbean (Turnera diffusa)',background:'Used by the Maya and indigenous Mexicans as an aphrodisiac and tonic for centuries. Often found in traditional love medicine and rituals. A deeply sensual and earthy herb.',benefits:'Mildly aphrodisiac, uplifting to mood, tonic for stress and anxiety. Brings warmth and aliveness to blends.',usageRate:'',saSource:'',precautions:'Avoid in pregnancy — emmenagogue properties. May affect blood sugar. High doses can have mild psychoactive effect.',notes:''},
+  {id:'cacao-husks',name:'Cacao Husks',type:'botanical',products:['teas'],origin:'Mesoamerica (Theobroma cacao — "food of the gods")',background:'The outer shell of the cacao bean — ceremonially used by Maya and Aztec peoples for millennia. Part of the cacao ritual tradition. Usually a byproduct of chocolate making, reclaimed here.',benefits:'Mild natural caffeine and theobromine — uplifting and heart-opening. Rich in magnesium and antioxidants. Mood-lifting, ceremonial energy.',usageRate:'',saSource:'',precautions:'Contains caffeine — avoid if caffeine-sensitive. Mild stimulant.',notes:''},
+  {id:'peppermint',name:'Peppermint (Herb)',type:'botanical',products:['teas'],origin:'Europe and Middle East (Mentha piperita)',background:'Used medicinally for at least 10,000 years. Roman and Greek cultures used mint extensively in food, medicine, and ritual. Ancient Egyptians used dried mint leaves.',benefits:'Cooling, digestive, relieves headaches and nausea, refreshing and cleansing. The most immediately invigorating herb in a blend.',usageRate:'',saSource:'',precautions:'Can aggravate acid reflux in some people. Avoid giving to very young children.',notes:''},
+  {id:'lemon-verbena',name:'Lemon Verbena',type:'botanical',products:['teas'],origin:'South America — Chile and Argentina (Aloysia citrodora)',background:'Brought to Europe by the Spanish in the 17th century. Used in South American and Spanish herbal tradition for digestive and nervous complaints. The most intensely lemony herb.',benefits:'Digestive, calming, anti-spasmodic, anti-inflammatory. Intensely fresh lemon flavour. Lifts any blend it\'s in.',usageRate:'',saSource:'',precautions:'Very safe. Avoid prolonged very excessive use.',notes:''},
+  {id:'ginger-root',name:'Ginger Root',type:'botanical',products:['teas'],origin:'South and Southeast Asia (Zingiber officinale)',background:'Used in cooking and medicine for at least 5,000 years. Referenced in ancient Chinese, Indian, and Arab medical texts. One of the most extensively studied herbs on earth.',benefits:'Digestive, deeply warming, anti-nausea, anti-inflammatory, circulation-boosting. A transformative ingredient in any warming blend.',usageRate:'',saSource:'',precautions:'Mild blood-thinning effect — caution with anticoagulant medications. Can cause heartburn in sensitive individuals.',notes:''},
+  {id:'rosehip-dried',name:'Rosehip (Dried)',type:'botanical',products:['teas'],origin:'Europe, Middle East, Asia (Rosa canina — Dog Rose)',background:'Used across Europe for jam, tea, and medicine for centuries. High in vitamin C — became critical in WWII Britain when imported citrus was unavailable. A humble and generous plant.',benefits:'Exceptionally high in vitamin C and antioxidants. Immune support, anti-inflammatory, skin-supporting from the inside. Tart and warming.',usageRate:'',saSource:'',precautions:'Very safe. High vitamin C content — large amounts can have a mild laxative effect.',notes:''},
+  {id:'valerian-root',name:'Valerian Root',type:'botanical',products:['teas'],origin:'Europe and Asia (Valeriana officinalis)',background:'Used in ancient Greek and Roman medicine as a sleep remedy and for anxiety. The name may come from the Latin "valere" (to be strong). One of the most studied herbs for sleep.',benefits:'Sleep support, reduces anxiety, quiets the nervous system. Naturally enhances GABA activity. For the deepest rest.',usageRate:'',saSource:'',precautions:'May interact with sedative medications — do not combine with prescription sedatives. Limited safety data in pregnancy. Can cause vivid dreams.',notes:''},
+  {id:'oat-straw',name:'Oat Straw',type:'botanical',products:['teas'],origin:'Europe (Avena sativa — green oats harvested before grain matures)',background:'Used in European herbal tradition as a deep nervine tonic. Harvested green before the grain sets. The phrase "wild oats" comes from oat\'s reputation for restoring vitality and resilience.',benefits:'Nourishes the nervous system over time. Reduces stress and anxiety, supports sleep without sedation. Rich in calcium, magnesium, and B vitamins.',usageRate:'',saSource:'',precautions:'Very safe. Oat-related gluten concern for severely gluten-sensitive individuals.',notes:''},
+  {id:'spearmint',name:'Spearmint',type:'botanical',products:['teas'],origin:'Europe and Middle East (Mentha spicata)',background:'Used in ancient Greek and Roman medicine. Gentler and sweeter than peppermint. Preferred for children and sensitive individuals. A cornerstone of Mediterranean and Middle Eastern tea culture.',benefits:'Digestive, cooling, freshening, mild anti-androgen properties (may help with hormonal acne in women). Gentler than peppermint.',usageRate:'',saSource:'',precautions:'Generally very safe. Anti-androgenic effect at high continuous intake is theoretical but noted in research.',notes:''},
+  {id:'nettle',name:'Nettle',type:'botanical',products:['teas'],origin:'Europe, Asia, North America (Urtica dioica)',background:'Used for food and medicine for thousands of years across Europe and North America. Nettle cloth has been found in Bronze Age European burial sites. One of the most complete nourishing plants known.',benefits:'Iron-rich and nutritive. Supports adrenal function, anti-inflammatory, diuretic, supports hair and skin health. A deeply nourishing tonic.',usageRate:'',saSource:'',precautions:'Very safe as tea. Mild diuretic — stay hydrated. May mildly affect blood thinners at very high doses.',notes:''},
+  {id:'liquorice-root',name:'Liquorice Root',type:'botanical',products:['teas'],origin:'Mediterranean and Middle East (Glycyrrhiza glabra)',background:'Used in Chinese and Ayurvedic medicine for thousands of years. Referenced in ancient Egyptian, Greek, and Chinese texts as a sweetener and tonic. One of the most used herbs in Traditional Chinese Medicine.',benefits:'Naturally sweet and warming. Soothes digestive and respiratory inflammation, supports adrenal function, antiviral. Adds sweetness to blends without sugar.',usageRate:'',saSource:'',precautions:'AVOID with hypertension — glycyrrhizin raises blood pressure with daily use. Avoid with certain heart and kidney conditions. Avoid in pregnancy.',notes:''},
+  {id:'dandelion-root',name:'Dandelion Root',type:'botanical',products:['teas'],origin:'Europe and Asia (Taraxacum officinale)',background:'Every part of the dandelion has been used medicinally across European, Native American, and Chinese traditions for centuries. One of the most nutritionally complete herbs known.',benefits:'Liver support, digestive tonic, rich in inulin (prebiotic), mild diuretic, supports detoxification. Deeply cleansing and earthy.',usageRate:'',saSource:'',precautions:'Diuretic — caution with diuretic medications. Can affect absorption of some medications.',notes:''},
+  {id:'shatavari',name:'Shatavari',type:'botanical',products:['teas'],origin:'India, South Asia (Asparagus racemosus)',background:'The name means "she who has 100 husbands" — referring to its deeply nourishing quality for women\'s vitality. A sacred female tonic herb in Ayurveda for over 3,000 years. A Phase 2 Ruh product ingredient.',benefits:'Female reproductive tonic, hormone balancing, adaptogenic. Supports fertility, menstrual health, and menopausal transition. Rich in steroidal saponins.',usageRate:'',saSource:'',precautions:'Contains phytoestrogens — avoid if hormone-sensitive conditions (e.g. oestrogen-sensitive cancers). Consult a practitioner before using in pregnancy. Phase 2 Ruh product.',notes:'Phase 2 — Hormonal Balance Tea Blend'},
+  {id:'elderflower',name:'Elderflower',type:'botanical',products:['teas'],origin:'Europe and North America (Sambucus nigra)',background:'One of the most beloved flowers in traditional European herbalism. Used for centuries for colds, fever, and as a spring tonic. Steeped in folklore — the elder tree was considered to be inhabited by protective spirits.',benefits:'Anti-inflammatory, immune support, gentle diaphoretic (helps fever break), beautiful floral flavour. Light and uplifting in blends.',usageRate:'',saSource:'',precautions:'Very safe. Use flowers only — other parts of the raw plant can cause nausea.',notes:''},
+  {id:'calendula-flower-dried',name:'Calendula Flower (Dried)',type:'botanical',products:['teas'],origin:'Mediterranean and Western Europe (Calendula officinalis)',background:'The same healing flower as the Calendula-Infused Oil in the library — here as dried petals for tea. Used since ancient Egypt and Rome for wound healing and medicine. A truly generous, radiant plant.',benefits:'Anti-inflammatory, soothes digestive inflammation, wound healing from the inside, gentle and beautiful in blends. Golden petals in the cup.',usageRate:'',saSource:'',precautions:'Avoid if allergic to Asteraceae family plants.',notes:''},
+  {id:'jasmine',name:'Jasmine (Dried Flowers)',type:'botanical',products:['teas'],origin:'Persia, India, South and Southeast Asia (Jasminum officinale)',background:'Sacred in Hindu offerings, Buddhist ceremony, and Sufi poetry. Rumi writes of jasmine. The most intoxicating flower in existence — worn in hair, used in ceremony, woven into garlands across Asia. One of the oldest perfume flowers known.',benefits:'Calming, mildly euphoric, anti-anxiety, sensual and romantic energy. A beautiful floral note that lifts any blend.',usageRate:'',saSource:'',precautions:'Very safe. Check for jasmine-specific allergy if new to the herb.',notes:''},
+  {id:'elderberry',name:'Elderberry',type:'botanical',products:['teas'],origin:'Europe and North America (Sambucus nigra)',background:'Used in folk medicine across Europe for millennia. Deep purple-black berries revered for their ability to shorten illness and support immunity. Both elderflower and elderberry come from the same sacred tree.',benefits:'Immune support, antiviral (particularly against influenza), anti-inflammatory, rich in vitamin C and flavonoids. Deep, dark, warming.',usageRate:'',saSource:'',precautions:'Must be used dried or cooked — raw elderberries cause nausea. May interact with immunosuppressants and diuretics.',notes:''},
+  {id:'fennel',name:'Fennel',type:'botanical',products:['teas'],origin:'Mediterranean (Foeniculum vulgare)',background:'Used medicinally and culinarily since ancient Egyptian and Roman times. Seeds, bulb, and fronds all used. A digestive herb par excellence in Mediterranean and Ayurvedic tradition.',benefits:'Digestive, carminative (reduces gas and bloating), mildly oestrogenic, warming and sweet. Helps blends move through the body.',usageRate:'',saSource:'',precautions:'Phytoestrogenic — avoid if oestrogen-sensitive conditions. Avoid medicinal amounts in pregnancy.',notes:''},
+  {id:'star-anise',name:'Star Anise',type:'botanical',products:['teas'],origin:'China, Vietnam (Illicium verum)',background:'Used in Traditional Chinese Medicine and cooking for thousands of years. The star-shaped fruit of a tree related to magnolia. Contains shikimic acid — the compound used to synthesise antiviral medications.',benefits:'Digestive, anti-spasmodic, warming, antimicrobial, carminative. Rich anise flavour that anchors warming blends.',usageRate:'',saSource:'',precautions:'Must be Chinese/Vietnamese star anise (Illicium verum). Japanese star anise (Illicium anisatum) is toxic. Always verify source.',notes:''},
+  {id:'cloves',name:'Cloves',type:'botanical',products:['teas'],origin:'Maluku Islands (Spice Islands), Indonesia (Syzygium aromaticum)',background:'Cloves were so valuable they triggered European colonial expansion and the Spice Wars of the 16th century. Maluku islanders used them medicinally for thousands of years before contact. A world-altering spice.',benefits:'Warming, antimicrobial, analgesic (eugenol), digestive, powerful antioxidant. One of the richest antioxidant foods known.',usageRate:'',saSource:'',precautions:'Potent — use sparingly in blends. High eugenol can be irritating if overused.',notes:''},
+  {id:'turmeric',name:'Turmeric',type:'botanical',products:['teas'],origin:'South and Southeast Asia (Curcuma longa)',background:'Used in Ayurvedic and Chinese medicine for over 4,000 years. Central to Indian cooking, ceremony, and medicine. The haldi ceremony in Hindu weddings. Curcumin is one of the most studied plant compounds.',benefits:'Powerful anti-inflammatory (curcumin), antioxidant, liver support, digestive, immune support. The colour of the sun.',usageRate:'',saSource:'',precautions:'Blood-thinning properties — caution with anticoagulant medications. Caution with gallstones. Low absorption as tea without fat or black pepper.',notes:''},
+  {id:'ashwagandha',name:'Ashwagandha',type:'botanical',products:['teas'],origin:'India, Middle East, North Africa (Withania somnifera)',background:'One of the most important herbs in Ayurveda — used for over 3,000 years as a Rasayana (rejuvenating) herb. The name means "smell of horse" — referring to its strength-giving properties. The great adaptogen.',benefits:'Adaptogenic, reduces cortisol and stress, supports thyroid function, anti-inflammatory, strengthening and calming. The long game — builds resilience over time.',usageRate:'',saSource:'',precautions:'Can lower blood pressure and blood sugar — monitor if on medication. Caution with thyroid medications. Avoid in pregnancy.',notes:''},
+  // TINCTURED SERUM INGREDIENTS
+  {id:'comfrey',name:'Comfrey (Herbal Infusion)',type:'botanical',products:['tinctured-serums'],origin:'Europe and Asia (Symphytum officinale)',background:'Also called "knitbone" — used for thousands of years in European herbal medicine for wound healing, bruising, and bone repair. Contains allantoin, one of the most potent wound-healing compounds found in plants. A cornerstone of the Ruh herbal oil infusion process.',benefits:'Exceptional wound healing and skin regeneration (allantoin), reduces bruising and inflammation, supports scar healing. One of the key herbs for the 6-week herbal oil infusion that becomes the tinctured serum base.',usageRate:'',saSource:'',precautions:'External use only in cosmetics — safe and highly effective topically. Internal use is now avoided (pyrrolizidine alkaloids, liver toxicity). Never ingest.',notes:'One of the primary infusion herbs — infuse in carrier oil for 4–6 weeks'},
+  {id:'carrot-root-co2',name:'Carrot Root CO2 Extract',type:'active',products:['face-cream','body-butter','tinctured-serums'],origin:'Europe, Asia (Daucus carota)',background:'CO2 extraction preserves far more of the carrot root\'s active compounds than any other method. Distinct from carrot seed EO (distilled from seeds). One of the most carotenoid-dense plant extracts known.',benefits:'Extremely rich in beta-carotene and carotenoids. Cell-renewing, brightening, anti-ageing. One of the richest plant sources of vitamin A precursors available to natural formulators.',usageRate:'',saSource:'',precautions:'Strongly orange-pigmented — use at 0.5–2% maximum. Will visibly colour the formula.',notes:''},
+  {id:'pomegranate-seed-oil',name:'Pomegranate Seed Oil',type:'carrier-oil',products:['face-cream','tinctured-serums'],origin:'Iran, South Asia, Mediterranean (Punica granatum)',background:'Pomegranate is mentioned in the Quran, ancient Egyptian texts, and Greek mythology. Used in Ayurvedic and Unani medicine for millennia. Pressed from the seeds — one of the most unique oils in natural skincare.',benefits:'Contains punicic acid (omega-5 CLA) — one of the most potent natural skin-regenerating fatty acids known. Reverses UV-induced damage, stimulates keratinocyte renewal, anti-ageing, strongly antioxidant.',usageRate:'',saSource:'',precautions:'Strong regenerative action — patch test. Short shelf life — oxidises easily. Use with vitamin E to extend stability.',notes:''},
+  {id:'blue-tansy',name:'Blue Tansy Essential Oil',type:'essential-oil',products:['face-cream','tinctured-serums'],origin:'Morocco (Tanacetum annuum)',background:'Moroccan blue chamomile — distinct from German chamomile despite the similar azulene content. Steam distillation produces the signature azure blue colour. A prized ingredient in natural skincare.',benefits:'Anti-inflammatory (chamazulene), deeply calming for reactive and acne-prone skin, sebum balancing. Visually distinctive blue colour in the final product.',usageRate:'',saSource:'',precautions:'AVOID IN PREGNANCY — high ketone content. Not for internal use. Low dilution — 0.5–1% maximum leave-on.',notes:''},
+  {id:'green-tea-extract',name:'Green Tea Extract',type:'active',products:['face-cream','body-butter','tinctured-serums'],origin:'China, Japan (Camellia sinensis)',background:'Tea cultivation began in China thousands of years ago. Green tea (unoxidised leaves) retains the highest catechin content. In Japan, green tea holds deep ritual significance in the chado (Way of Tea) tradition.',benefits:'Powerful antioxidant (EGCG — the most potent catechin), anti-inflammatory, reduces UV damage, anti-ageing, skin brightening. Excellent stability in formula.',usageRate:'',saSource:'',precautions:'Very well tolerated topically. Contains caffeine. One of the safest actives to combine with others.',notes:''},
+  {id:'neem',name:'Neem Oil',type:'carrier-oil',products:['face-cream','soap','tinctured-serums'],origin:'India, South Asia (Azadirachta indica — "the village pharmacy" of India)',background:'Used in Ayurveda for over 5,000 years. Considered a sacred tree in Hindu tradition — every part of the neem tree has medicinal use. "The village pharmacy" — communities relied on it entirely for healthcare.',benefits:'Powerful antimicrobial, antifungal, and anti-inflammatory. Exceptional for acne, eczema, psoriasis, and scalp conditions. Rich in azadirachtin and nimbin.',usageRate:'',saSource:'',precautions:'Strong smell — always blend at 1–3% with other oils, never use alone. Not recommended during pregnancy.',notes:''},
+  {id:'argan-oil',name:'Argan Oil',type:'carrier-oil',products:['face-cream','body-butter','tinctured-serums'],origin:'Morocco, Argan Forest (Argania spinosa — UNESCO Biosphere Reserve)',background:'Produced exclusively by Berber women\'s cooperatives in the argan forest of Morocco, a UNESCO World Heritage site. The cooperatives are central to the cultural and economic life of the region. Source ethically — this oil\'s story matters.',benefits:'Rich in oleic acid, linoleic acid, vitamin E, and squalene. Anti-ageing, deeply softening, fast-absorbing, non-greasy. One of the most complete and well-tolerated oils for skin.',usageRate:'',saSource:'',precautions:'Excellent tolerance. Source from Berber women\'s cooperatives — the ethics are part of the ingredient.',notes:''}
 ];
 
 function seedLibrary() {
-  const existing = localStorage.getItem('ruh_wb_ingredient_library');
-  if (!existing) {
+  let existing = [];
+  try { existing = JSON.parse(localStorage.getItem('ruh_wb_ingredient_library')) || []; } catch { existing = []; }
+  if (!existing.length) {
     localStorage.setItem('ruh_wb_ingredient_library', JSON.stringify(LIB_DEFAULTS));
+    return;
+  }
+  const existingIds = new Set(existing.map(i => i.id));
+  const toAdd = LIB_DEFAULTS.filter(i => !existingIds.has(i.id));
+  if (toAdd.length > 0) {
+    localStorage.setItem('ruh_wb_ingredient_library', JSON.stringify([...existing, ...toAdd]));
   }
 }
 function loadLib() {
@@ -1475,7 +1529,7 @@ const TYPE_LABELS = {
 };
 const PRODUCT_LABELS = {
   'face-cream':'Face Cream','body-butter':'Body Butter','soap':'Soap',
-  'teas':'Teas','tinctures':'Tinctures','serums':'Serums'
+  'teas':'Teas','tinctured-serums':'Tinctured Serums'
 };
 
 let libFilter = 'all';
@@ -1612,17 +1666,75 @@ renderLibrary();
 //  COMPATIBILITY CHECKER
 // ─────────────────────────────────────────────
 const SPECIFIC_COMPAT = [
+  // SKINCARE PAIRS
   {ids:['sea-buckthorn'], result:'caution', note:'Sea buckthorn has intense orange pigment — keep at 1–3% maximum or it will stain the formula and skin orange. Compatible at the correct percentage.'},
   {ids:['bakuchiol'], result:'compatible', note:'Bakuchiol is uniquely compatible with nearly all actives — unlike retinol, it doesn\'t conflict with AHAs, BHAs, vitamin C, or other actives. One of its key advantages.'},
-  {ids:['helichrysum-eo','frankincense-eo'], result:'compatible', note:'Classic repair pairing. Both are regenerating and healing — they work synergistically in Repair formulas.'},
-  {ids:['german-chamomile-eo','roman-chamomile-eo'], result:'compatible', note:'Can be blended together — German chamomile for anti-inflammatory power, Roman chamomile for calming and soothing. Together: very gentle and healing.'},
-  {ids:['rose-hydrosol','rose-eo'], result:'compatible', note:'Complementary forms of rose. Hydrosol for toning and base, EO for fragrance and active benefit. The two forms work beautifully together.'},
-  {ids:['willow-bark','colloidal-oatmeal'], result:'compatible', note:'Excellent pairing — willow bark (gentle exfoliant) balanced with colloidal oatmeal (barrier support and soothing). Exfoliation without irritation.'},
+  {ids:['helichrysum-eo','frankincense-eo'], result:'compatible', note:'Classic repair pairing. Both regenerating and healing — they work synergistically in Repair formulas.'},
+  {ids:['german-chamomile-eo','roman-chamomile-eo'], result:'compatible', note:'Can be blended together — German chamomile for anti-inflammatory power, Roman chamomile for calming. Together: very gentle and healing.'},
+  {ids:['rose-hydrosol','rose-eo'], result:'compatible', note:'Complementary forms of rose. Hydrosol for toning and base, EO for fragrance and active benefit. They work beautifully together.'},
+  {ids:['willow-bark','colloidal-oatmeal'], result:'compatible', note:'Excellent pairing — willow bark (gentle exfoliant) balanced with colloidal oatmeal (barrier support). Exfoliation without irritation.'},
   {ids:['tamanu','helichrysum-eo'], result:'compatible', note:'The repair pairing. Both have exceptional wound healing and regenerative properties — used together in the Repair range.'},
-  {ids:['centella','bakuchiol'], result:'compatible', note:'Outstanding anti-ageing and repair pairing. Centella builds collagen from below, bakuchiol stimulates surface renewal. Together: comprehensive repair.'},
-  {ids:['tea-tree-eo','geranium-eo'], result:'compatible', note:'Both sebum-regulating and anti-inflammatory. Good pairing for oily and balancing formulas.'},
+  {ids:['centella','bakuchiol'], result:'compatible', note:'Outstanding anti-ageing and repair pairing. Centella builds collagen from below, bakuchiol stimulates surface renewal. Comprehensive repair.'},
+  {ids:['tea-tree-eo','geranium-eo'], result:'compatible', note:'Both sebum-regulating and anti-inflammatory. Strong pairing for oily and balancing formulas.'},
   {ids:['rooibos-extract','aloe-vera'], result:'compatible', note:'Both calming and anti-inflammatory — they stack well. Rooibos adds antioxidant depth, aloe adds hydration and soothing.'},
+  {ids:['argan-oil','rosehip'], result:'compatible', note:'Classic anti-ageing oil blend. Argan brings oleic richness and squalene; rosehip brings regenerating linoleic acid and vitamin A precursors. Together: comprehensive nourishment.'},
+  {ids:['comfrey','helichrysum-eo'], result:'compatible', note:'The deep repair pairing for tinctured serums. Comfrey (allantoin) heals and regenerates; helichrysum (italidiones) reduces inflammation and scarring. Together: exceptional healing.'},
+  {ids:['blue-tansy','german-chamomile-eo'], result:'compatible', note:'Both chamazulene-rich — double anti-inflammatory and calming action. Blue tansy adds sebum balance, German chamomile adds depth. For sensitive and reactive formulas.'},
+  {ids:['neem','tea-tree-eo'], result:'caution', note:'Both are potent antimicrobials with strong action — individually excellent. Combined at high percentages can be irritating. Keep neem at 1–3% and tea tree at 1% or under when using together.'},
+  // TEA BOTANICAL PAIRS
+  {ids:['mugwort','passionflower'], result:'compatible', note:'Classic dream blend synergy. Mugwort invites vivid dreaming, passionflower calms the nervous system and deepens sleep. One of the most intentional dream-work combinations.'},
+  {ids:['valerian-root','passionflower'], result:'compatible', note:'Excellent sleep pairing — both naturally enhance GABA activity. Valerian is sedating, passionflower calming. Together: the most effective natural sleep combination known.'},
+  {ids:['valerian-root','lemon-balm'], result:'compatible', note:'Classic sleep and anxiety blend. Valerian sedates, lemon balm calms and lifts mood. One of the most studied herb combinations for sleep.'},
+  {ids:['lemon-balm','passionflower'], result:'compatible', note:'Gentle anxiety relief pairing. Both work on the nervous system through different pathways — lemon balm through mood, passionflower through GABA. Together: comprehensive calm.'},
+  {ids:['tulsi','ashwagandha'], result:'compatible', note:'Adaptogen synergy. Tulsi for mental clarity and stress resilience; ashwagandha for cortisol regulation and deep strength. Together: the foundation of an anti-stress blend.'},
+  {ids:['hibiscus','rosehip-dried'], result:'compatible', note:'Vitamin C powerhouse pairing. Both extraordinarily rich in vitamin C and antioxidants. Hibiscus adds tartness and blood pressure support; rosehip adds warming depth.'},
+  {ids:['ginger-root','turmeric'], result:'compatible', note:'Powerful anti-inflammatory warming blend. Ginger for circulation and digestion; turmeric for systemic inflammation. Both enhanced by each other. A core Ayurvedic pairing.'},
+  {ids:['honeybush','shatavari'], result:'compatible', note:'Female hormone support blend — honeybush provides a phytoestrogenic base (isoflavanones), shatavari adds targeted female reproductive tonic action. Natural, gentle, beautiful.'},
+  {ids:['blue-lotus','mugwort'], result:'compatible', note:'Dream and altered consciousness pairing. Blue lotus for euphoric calm and vision; mugwort for vivid dreams and inner journeying. For intentional dream work.'},
+  {ids:['damiana','cacao-husks'], result:'compatible', note:'Heart-opening, sensual blend. Damiana for mood-lifting and aphrodisiac energy; cacao for theobromine-driven heart expansion. Together: warmth and aliveness.'},
+  {ids:['elderberry','elderflower'], result:'compatible', note:'The full elder tree — elderflower for respiratory and immune support, elderberry for antiviral action. Both from Sambucus nigra. Beautiful and complete immunity blend.'},
 ];
+
+const CONDITION_FLAGS = {
+  'mugwort':          [{cls:'flag-pregnancy',       label:'Pregnancy',         warning:'Strong emmenagogue — traditionally used to stimulate uterine contractions. AVOID during pregnancy.'}],
+  'blue-lotus':       [{cls:'flag-pregnancy',       label:'Pregnancy',         warning:'Mild psychoactive herb — avoid in pregnancy due to limited safety data.'}],
+  'blue-tansy':       [{cls:'flag-pregnancy',       label:'Pregnancy',         warning:'High ketone content in essential oil form. Not recommended during pregnancy.'}],
+  'myrrh-eo':         [{cls:'flag-pregnancy',       label:'Pregnancy',         warning:'Avoid during pregnancy.'}],
+  'cedarwood-eo':     [{cls:'flag-pregnancy',       label:'Pregnancy',         warning:'Avoid especially Virginia cedarwood during pregnancy.'}],
+  'damiana':          [{cls:'flag-pregnancy',       label:'Pregnancy',         warning:'Emmenagogue properties — avoid during pregnancy.'}],
+  'neem':             [{cls:'flag-pregnancy',       label:'Pregnancy',         warning:'Not recommended during pregnancy.'}],
+  'ashwagandha':      [
+    {cls:'flag-pregnancy',          label:'Pregnancy',         warning:'Avoid in pregnancy — high doses may stimulate uterine contractions.'},
+    {cls:'flag-blood-pressure',     label:'Blood Pressure',    warning:'Can lower blood pressure — monitor if on blood pressure medication.'},
+    {cls:'flag-blood-thinners',     label:'Thyroid / Meds',    warning:'Can interact with thyroid medications. Consult a practitioner before use.'}
+  ],
+  'passionflower':    [
+    {cls:'flag-pregnancy',          label:'Pregnancy',         warning:'Avoid during pregnancy — limited safety data.'},
+    {cls:'flag-blood-thinners',     label:'Medications',       warning:'Enhances sedative effect — do not combine with prescription benzodiazepines or sedatives.'}
+  ],
+  'valerian-root':    [
+    {cls:'flag-pregnancy',          label:'Pregnancy',         warning:'Limited safety data in pregnancy — use with caution.'},
+    {cls:'flag-blood-thinners',     label:'Medications',       warning:'Do not combine with prescription sedatives — enhances sedative effect.'}
+  ],
+  'shatavari':        [
+    {cls:'flag-hormone-sensitivity', label:'Hormone Sensitive', warning:'Contains phytoestrogens (steroidal saponins). Avoid if oestrogen-sensitive conditions (e.g. certain cancers). Consult before use in pregnancy.'},
+    {cls:'flag-pregnancy',           label:'Pregnancy',         warning:'Consult a practitioner before using during pregnancy.'}
+  ],
+  'liquorice-root':   [
+    {cls:'flag-blood-pressure',     label:'Blood Pressure',    warning:'Glycyrrhizin raises blood pressure with daily use. AVOID with hypertension or blood pressure medication.'},
+    {cls:'flag-pregnancy',          label:'Pregnancy',         warning:'Avoid daily medicinal use during pregnancy.'}
+  ],
+  'fennel':           [
+    {cls:'flag-hormone-sensitivity', label:'Hormone Sensitive', warning:'Phytoestrogenic — avoid if oestrogen-sensitive conditions.'},
+    {cls:'flag-pregnancy',           label:'Pregnancy',         warning:'Avoid in medicinal amounts during pregnancy.'}
+  ],
+  'hibiscus':         [{cls:'flag-blood-pressure',  label:'Blood Pressure',    warning:'Significantly lowers blood pressure. Caution if already on blood pressure medication.'}],
+  'ginger-root':      [{cls:'flag-blood-thinners',  label:'Blood Thinners',    warning:'Mild blood-thinning effect — caution with anticoagulant medications (warfarin, aspirin, etc.).'}],
+  'turmeric':         [{cls:'flag-blood-thinners',  label:'Blood Thinners',    warning:'Curcumin has blood-thinning properties — caution with anticoagulant medications.'}],
+  'elderberry':       [{cls:'flag-blood-thinners',  label:'Medications',       warning:'May interact with immunosuppressants and diuretics.'}],
+  'dandelion-root':   [{cls:'flag-blood-thinners',  label:'Medications',       warning:'Diuretic — caution with diuretic medications. Can affect absorption of other medications.'}],
+  'honeybush':        [{cls:'flag-hormone-sensitivity', label:'Hormone Sensitive', warning:'Contains mild phytoestrogens (isoflavanones). Generally safe — note for those monitoring hormone-sensitive conditions.'}],
+};
 
 const TYPE_COMPAT_DEFAULTS = {
   'carrier-oil':{'carrier-oil':'compatible','butter':'compatible','active':'compatible','essential-oil':'compatible','botanical':'compatible','emulsifier':'compatible','soap-base':'compatible'},
@@ -1641,7 +1753,14 @@ function renderCompatCloud() {
   const list = loadLib();
   const cloud = document.getElementById('compat-cloud');
   cloud.innerHTML = '';
-  const filtered = compatTypeFilter === 'all' ? list : list.filter(i => i.type === compatTypeFilter);
+  let filtered;
+  if (compatTypeFilter === 'all') {
+    filtered = list;
+  } else if (compatTypeFilter === 'skincare') {
+    filtered = list.filter(i => i.products && ['face-cream','body-butter','soap'].some(p => i.products.includes(p)));
+  } else {
+    filtered = list.filter(i => i.products && i.products.includes(compatTypeFilter));
+  }
   filtered.forEach(item => {
     const tag = document.createElement('button');
     tag.className = 'compat-tag' + (compatSelected.has(item.id) ? ' selected' : '');
@@ -1715,13 +1834,27 @@ document.getElementById('compat-check-btn').addEventListener('click', () => {
     }
   }
 
+  // Collect condition flags for any selected ingredient
+  const flagItems = [];
+  selectedIds.forEach(id => {
+    const flags = CONDITION_FLAGS[id];
+    if (flags) {
+      const item = list.find(i => i.id === id);
+      const name = item ? item.name : id;
+      flags.forEach(flag => flagItems.push({name, ...flag}));
+    }
+  });
+
   const res = document.getElementById('compat-result');
   res.className = `compat-result compat-${worstResult} show`;
   const titleMap = {compatible:'✓ Compatible', caution:'△ Use with Caution'};
   const bodyLines = notes.length
     ? notes.map(n => `<div class="compat-pair-note"><strong style="font-size:0.68rem;letter-spacing:0.05em">${esc(n.label)}</strong><br>${esc(n.note)}</div>`).join('')
     : `<div class="compat-pair-note">These ingredients work well together. No known conflicts.</div>`;
-  res.innerHTML = `<div class="compat-result-title">${titleMap[worstResult]}</div><div class="compat-result-body">${bodyLines}<div style="margin-top:0.75rem;font-size:0.7rem;color:var(--text-light)">Full compatibility matrix expands during ingredient research in June.</div></div>`;
+  const flagsHtml = flagItems.length
+    ? `<div class="compat-flag-section"><div class="compat-flag-title">Safety Awareness</div>${flagItems.map(f => `<div class="compat-flag-item ${esc(f.cls)}"><strong style="font-size:0.75rem">${esc(f.name)}</strong><span class="compat-flag-badge">${esc(f.label)}</span><br><span style="font-size:0.77rem">${esc(f.warning)}</span></div>`).join('')}</div>`
+    : '';
+  res.innerHTML = `<div class="compat-result-title">${titleMap[worstResult]}</div><div class="compat-result-body">${bodyLines}</div>${flagsHtml}`;
 });
 
 renderCompatCloud();
