@@ -1104,6 +1104,22 @@ function clearInputs(ids) {
 }
 
 // ─────────────────────────────────────────────
+//  DESIGN NOTES — PRE-LOAD JUNE 2 SESSION
+// ─────────────────────────────────────────────
+(function() {
+  if (load('design').length === 0) {
+    const entry = {
+      title: "Brand Identity — June 2 Session",
+      category: "logo",
+      notes: `COLOUR PALETTE\nSix confirmed brand colours:\n- Burgundy #6B1F30\n- Sage #6B8F71\n- Moss #2D4A3E\n- Amber #C17B41\n- Terracotta #B85C38\n- Cream #F8F4EE\n\nMoss was added on June 2 — it brings a deeper, wilder green energy that the original palette was missing. The palette as a whole is earthy, warm, botanical and intentional.\n\n---\n\nTYPOGRAPHY\nThree-font system, each with a specific role:\n- Malibu — website hero text only. Big, dramatic, flowing. Needs space to breathe.\n- Cinzel — headings on labels, packaging, and all brand materials. Sacred, timeless, ceremonial.\n- Philosopher — body text on labels, packaging, and brand materials. Grounded and readable.\n\nCormorant Garamond and Raleway were both considered and dropped. This system was decided June 2 after testing multiple options in Canva.\n\n---\n\nLOGO CONCEPT\nDirection confirmed June 2:\n- A sacred symbol above the RUH wordmark\n- Symbol: concentric circles radiating from a single centre point — organic and slightly irregular, like sound waves or ripples. Not mechanical. Alive.\n- The centre dot represents the point of intention. The rings represent that intention moving outward into the world — directly connected to the making ritual.\n- Wordmark: RUH in Cinzel. Clean, still, grounded.\n- A thin horizontal line sits between the symbol and the wordmark.\n- Logo is not finalised — first attempt made, refinement session scheduled for later in June.`,
+      images: [],
+      date: "02/06/2026"
+    };
+    save('design', [entry]);
+  }
+})();
+
+// ─────────────────────────────────────────────
 //  INDEX COUNTS
 // ─────────────────────────────────────────────
 function updateCounts() {
