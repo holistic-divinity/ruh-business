@@ -627,7 +627,22 @@
       </div>
       <button class="btn" id="design-save-btn">Add Note</button>
       <div id="design-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
-      <div class="card-list" id="design-list"></div>
+
+      <div style="margin-top:2rem;border-top:1px solid var(--sage);padding-top:1.5rem;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <div style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.08em;color:var(--burgundy);">Saved Notes</div>
+          <select id="design-filter" class="form-select" style="width:auto;font-size:0.7rem;padding:0.3rem 0.8rem;">
+            <option value="all">All Categories</option>
+            <option value="logo">Logo</option>
+            <option value="label">Label Design</option>
+            <option value="website">Website</option>
+            <option value="packaging">Packaging</option>
+            <option value="photography">Photography</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="card-list" id="design-list"></div>
+      </div>
     </div>
 
     <!-- INGREDIENT LIBRARY -->
@@ -1177,9 +1192,11 @@ function renderDesign() {
   const list = load('design');
   const el = document.getElementById('design-list');
   el.innerHTML = '';
-  if (!list.length) { el.innerHTML = '<div class="empty-state">No design notes yet. Start capturing ideas.</div>'; return; }
-  [...list].reverse().forEach((item, idx) => {
-    const realIdx = list.length - 1 - idx;
+  const filter = document.getElementById('design-filter') ? document.getElementById('design-filter').value : 'all';
+  const filtered = filter === 'all' ? list : list.filter(item => item.category === filter);
+  if (!filtered.length) { el.innerHTML = '<div class="empty-state">No notes in this category yet.</div>'; return; }
+  [...filtered].reverse().forEach((item) => {
+    const realIdx = list.indexOf(item);
     const div = document.createElement('div');
     div.className = 'card';
     const imagesHtml = (item.images && item.images.length)
@@ -1232,6 +1249,7 @@ document.getElementById('design-save-btn').addEventListener('click', () => {
   flash('design-saved-msg', 'Saved.');
   renderDesign(); updateCounts();
 });
+document.getElementById('design-filter').addEventListener('change', renderDesign);
 renderDesign();
 
 // ─────────────────────────────────────────────
