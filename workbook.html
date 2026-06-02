@@ -600,6 +600,24 @@
       <div class="section-title">Design Notes</div>
       <div class="section-desc">Label ideas, website concepts, packaging references, visual direction. Capture it before it disappears.</div>
 
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+        <div style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.08em;color:var(--burgundy);">Browse by Category</div>
+        <select id="design-filter" class="form-select" style="width:auto;font-size:0.7rem;padding:0.3rem 0.8rem;">
+          <option value="all">All Categories</option>
+          <option value="logo">Logo</option>
+          <option value="label">Label Design</option>
+          <option value="website">Website</option>
+          <option value="packaging">Packaging</option>
+          <option value="photography">Photography</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+      <div class="card-list" id="design-list"></div>
+
+      <div style="margin-top:2rem;border-top:1px solid var(--sage);padding-top:1.5rem;">
+        <div style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.08em;color:var(--burgundy);margin-bottom:1rem;">Add a Note</div>
+      </div>
+
       <div class="form-group">
         <label class="form-label">Title</label>
         <input class="form-input" id="design-title" placeholder="e.g. Label concept for face cream, Homepage hero ideas..." />
@@ -628,21 +646,6 @@
       <button class="btn" id="design-save-btn">Add Note</button>
       <div id="design-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
 
-      <div style="margin-top:2rem;border-top:1px solid var(--sage);padding-top:1.5rem;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-          <div style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.08em;color:var(--burgundy);">Saved Notes</div>
-          <select id="design-filter" class="form-select" style="width:auto;font-size:0.7rem;padding:0.3rem 0.8rem;">
-            <option value="all">All Categories</option>
-            <option value="logo">Logo</option>
-            <option value="label">Label Design</option>
-            <option value="website">Website</option>
-            <option value="packaging">Packaging</option>
-            <option value="photography">Photography</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="card-list" id="design-list"></div>
-      </div>
     </div>
 
     <!-- INGREDIENT LIBRARY -->
