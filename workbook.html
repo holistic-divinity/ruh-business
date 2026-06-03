@@ -478,6 +478,9 @@
     <button class="sidebar-item" data-section="customers">
       <span class="sidebar-icon">◇</span> Customer Notes
     </button>
+    <button class="sidebar-item" data-section="equipment">
+      <span class="sidebar-icon">◧</span> Equipment
+    </button>
 
     <div class="sidebar-label">Finance</div>
     <button class="sidebar-item" data-section="budget">
@@ -559,6 +562,12 @@
           <div class="index-card-title">Customer Notes</div>
           <div class="index-card-desc">Special orders. What they need, what you made, what you pulled for them, how they felt.</div>
           <div class="index-card-count" id="count-customers"></div>
+        </div>
+        <div class="index-card" data-goto="equipment">
+          <div class="index-card-icon">◧</div>
+          <div class="index-card-title">Equipment</div>
+          <div class="index-card-desc">What you have, what you need, what to order. Your making space inventory.</div>
+          <div class="index-card-count" id="count-equipment"></div>
         </div>
       </div>
 
@@ -1089,6 +1098,35 @@
       <div class="card-list" id="cust-list"></div>
     </div>
 
+    <!-- EQUIPMENT INVENTORY -->
+    <div class="section" id="section-equipment">
+      <div class="section-title">Equipment</div>
+      <div class="section-desc">Everything you need to make Ruh products. Track what you have, what you need, and what to order on June 9.</div>
+
+      <div id="equipment-list" style="margin-bottom:1.5rem;"></div>
+
+      <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.75rem;padding-top:1rem;border-top:1px solid var(--cream-dark);">Add Equipment</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Item</label>
+          <input class="form-input" id="equip-item" placeholder="e.g. Digital thermometer" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="equip-status">
+            <option value="need">Need to buy</option>
+            <option value="have">Have it</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes (optional)</label>
+        <input class="form-input" id="equip-notes" placeholder="e.g. Order from Takealot, R150–R250" />
+      </div>
+      <button class="btn" id="equip-save-btn">Add Item</button>
+      <div id="equip-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+    </div>
+
     <!-- BUDGET TRACKER -->
     <div class="section" id="section-budget">
       <div class="section-title">Budget Tracker</div>
@@ -1231,7 +1269,7 @@ function clearInputs(ids) {
 //  INDEX COUNTS
 // ─────────────────────────────────────────────
 function updateCounts() {
-  const sections = ['design','ingredients','research','recipes','stability','costing','suppliers','customers','budget'];
+  const sections = ['design','ingredients','research','recipes','stability','costing','suppliers','customers','budget','equipment'];
   sections.forEach(s => {
     const el = document.getElementById('count-' + s);
     if (!el) return;
@@ -1572,6 +1610,73 @@ document.getElementById('cust-save-btn').addEventListener('click', () => {
   renderCustomers(); updateCounts();
 });
 renderCustomers();
+
+// ─────────────────────────────────────────────
+//  EQUIPMENT INVENTORY
+// ─────────────────────────────────────────────
+const EQUIP_DEFAULTS = [
+  { item: 'Kitchen scale', status: 'have', notes: 'Only goes to 1g — not precise enough for EO measurements. Needs replacing.' },
+  { item: 'Precision scale (0.01g accuracy)', status: 'need', notes: 'Essential for measuring EOs at 0.5–1% of batch. Order from Takealot, R150–R250.' },
+  { item: 'Stainless or glass mixing bowls (x3)', status: 'need', notes: 'Different sizes. Order from Takealot, R150–R250.' },
+  { item: 'Digital thermometer', status: 'need', notes: 'Needs to read up to 100°C. Order from Takealot, R80–R150.' },
+  { item: 'pH strips (range 4–7)', status: 'need', notes: 'For testing face cream. Range 4–7 is ideal for skincare. R50–R100.' },
+  { item: 'Silicone spatulas (x3)', status: 'need', notes: 'Dedicated Ruh only — not kitchen. Keep separate from food equipment. R80–R150.' },
+];
+
+function loadEquipment() {
+  try { return JSON.parse(localStorage.getItem('ruh_wb_equipment')) || null; }
+  catch { return null; }
+}
+function saveEquipment(data) { localStorage.setItem('ruh_wb_equipment', JSON.stringify(data)); }
+
+function renderEquipment() {
+  let items = loadEquipment();
+  if (!items) { items = EQUIP_DEFAULTS; saveEquipment(items); }
+  const el = document.getElementById('equipment-list');
+  const have = items.map((e,i) => ({...e,idx:i})).filter(e => e.status === 'have');
+  const need = items.map((e,i) => ({...e,idx:i})).filter(e => e.status === 'need');
+
+  function renderGroup(list, label, color) {
+    if (!list.length) return '';
+    let html = `<div style="margin-bottom:1.25rem;"><div style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:${color};font-weight:600;padding-bottom:0.4rem;border-bottom:1px solid var(--cream-dark);margin-bottom:0.6rem;">${label} — ${list.length} item${list.length !== 1 ? 's' : ''}</div>`;
+    list.forEach(e => {
+      html += `<div class="card" style="margin-bottom:0.4rem;"><div class="card-header"><div><div class="card-title">${esc(e.item)}</div>${e.notes ? `<div class="card-meta">${esc(e.notes)}</div>` : ''}</div><button class="btn-danger" data-equip-idx="${e.idx}">Remove</button></div></div>`;
+    });
+    html += '</div>';
+    return html;
+  }
+
+  el.innerHTML = renderGroup(have, 'Have it', 'var(--sage)') + renderGroup(need, 'Need to buy', 'var(--terracotta)');
+
+  el.querySelectorAll('[data-equip-idx]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const items = loadEquipment() || EQUIP_DEFAULTS;
+      items.splice(parseInt(btn.dataset.equipIdx), 1);
+      saveEquipment(items);
+      renderEquipment();
+      updateCounts();
+    });
+  });
+}
+
+document.getElementById('equip-save-btn').addEventListener('click', () => {
+  const item = document.getElementById('equip-item').value.trim();
+  if (!item) { flash('equip-saved-msg', 'Item name is required.'); return; }
+  const entry = {
+    item,
+    status: document.getElementById('equip-status').value,
+    notes: document.getElementById('equip-notes').value.trim()
+  };
+  const items = loadEquipment() || EQUIP_DEFAULTS;
+  items.push(entry);
+  saveEquipment(items);
+  clearInputs(['equip-item','equip-notes']);
+  flash('equip-saved-msg', 'Item added.');
+  renderEquipment();
+  updateCounts();
+});
+
+renderEquipment();
 
 // ─────────────────────────────────────────────
 //  BUDGET TRACKER
