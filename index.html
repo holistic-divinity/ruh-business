@@ -2509,6 +2509,23 @@ document.getElementById('journalSaveBtn').addEventListener('click', () => {
 });
 
 renderEntries();
+
+// Seed backdated journal entries (only adds if not already present)
+(function seedJournalEntries() {
+  const seeded = [
+    {
+      date: "Monday, 2 June 2026",
+      text: "Sorted out colour palette for the brand and worked on some logo ideas. Had a look at wordmarks. Trying to find better platforms to create logo and wordmark."
+    }
+  ];
+  const entries = loadEntries();
+  seeded.forEach(seed => {
+    const exists = entries.some(e => e.date === seed.date && e.text === seed.text);
+    if (!exists) entries.push(seed);
+  });
+  saveEntries(entries);
+  renderEntries();
+})();
 </script>
 </body>
 </html>
