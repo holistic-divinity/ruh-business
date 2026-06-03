@@ -478,6 +478,11 @@
     <button class="sidebar-item" data-section="customers">
       <span class="sidebar-icon">◇</span> Customer Notes
     </button>
+
+    <div class="sidebar-label">Finance</div>
+    <button class="sidebar-item" data-section="budget">
+      <span class="sidebar-icon">◈</span> Budget Tracker
+    </button>
   </nav>
 
   <!-- Main Content -->
@@ -554,6 +559,18 @@
           <div class="index-card-title">Customer Notes</div>
           <div class="index-card-desc">Special orders. What they need, what you made, what you pulled for them, how they felt.</div>
           <div class="index-card-count" id="count-customers"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:2px solid var(--amber);">
+        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:0.75rem;">Finance</div>
+        <div class="index-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
+          <div class="index-card" data-goto="budget" style="border-top:2px solid var(--amber);">
+            <div class="index-card-icon">◈</div>
+            <div class="index-card-title">Budget Tracker</div>
+            <div class="index-card-desc">Rough budget vs actual spend. Every rand tracked from day one.</div>
+            <div class="index-card-count" id="count-budget"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -1072,6 +1089,79 @@
       <div class="card-list" id="cust-list"></div>
     </div>
 
+    <!-- BUDGET TRACKER -->
+    <div class="section" id="section-budget">
+      <div class="section-title">Budget Tracker</div>
+      <div class="section-desc">Phase 1 — Brand Foundation. R3,500 allocated. Rough estimates on the left, real numbers on the right as you spend.</div>
+
+      <!-- Two Column Overview -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-bottom:2rem;">
+
+        <!-- LEFT: Rough Budget -->
+        <div style="background:white;border:1px solid var(--cream-dark);border-radius:4px;padding:1.25rem;">
+          <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:1rem;">Rough Budget — Phase 1</div>
+          <table style="width:100%;border-collapse:collapse;">
+            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Equipment</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R510–R900</td></tr>
+            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Ingredients (test order)</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R800–R1,200</td></tr>
+            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Domain</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R150–R300</td></tr>
+            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">CIPC Registration</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R0–R200</td></tr>
+            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Canva</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R0</td></tr>
+            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.76rem;font-weight:600;color:var(--text-dark);padding:0.6rem 0;">Total estimate</td><td style="font-size:0.76rem;font-weight:600;color:var(--text-dark);text-align:right;padding:0.6rem 0;">R1,460–R2,600</td></tr>
+            <tr><td style="font-size:0.76rem;color:var(--sage);padding:0.4rem 0;">Buffer</td><td style="font-size:0.76rem;color:var(--sage);text-align:right;padding:0.4rem 0;">R900–R2,040</td></tr>
+          </table>
+          <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--cream-dark);font-size:0.7rem;color:var(--text-light);">Allocated: <strong style="color:var(--burgundy);font-size:0.82rem;">R3,500</strong></div>
+        </div>
+
+        <!-- RIGHT: Actual Spend -->
+        <div style="background:white;border:1px solid var(--cream-dark);border-radius:4px;padding:1.25rem;">
+          <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:1rem;">Actual Spend — Phase 1</div>
+          <div id="budget-actual-breakdown"></div>
+        </div>
+
+      </div>
+
+      <!-- Log Expense Form -->
+      <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.75rem;padding-top:1rem;border-top:1px solid var(--cream-dark);">Log an Expense</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input class="form-input" type="date" id="budget-date" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-select" id="budget-category">
+            <option value="Equipment">Equipment</option>
+            <option value="Ingredients">Ingredients</option>
+            <option value="Domain & Registration">Domain & Registration</option>
+            <option value="Admin / Legal">Admin / Legal</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Marketing">Marketing</option>
+            <option value="Insurance">Insurance</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">What did you buy?</label>
+        <input class="form-input" id="budget-item" placeholder="e.g. Precision scale — Takealot" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Amount (R)</label>
+          <input class="form-input" type="number" id="budget-amount" placeholder="e.g. 250" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes (optional)</label>
+          <input class="form-input" id="budget-notes" placeholder="Order number, supplier, etc." />
+        </div>
+      </div>
+      <button class="btn" id="budget-save-btn">Log Expense</button>
+      <div id="budget-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+
+      <!-- Expense List -->
+      <div id="budget-list" style="margin-top:1.5rem;"></div>
+    </div>
+
   </main>
 </div>
 
@@ -1141,7 +1231,7 @@ function clearInputs(ids) {
 //  INDEX COUNTS
 // ─────────────────────────────────────────────
 function updateCounts() {
-  const sections = ['design','ingredients','research','recipes','stability','costing','suppliers','customers'];
+  const sections = ['design','ingredients','research','recipes','stability','costing','suppliers','customers','budget'];
   sections.forEach(s => {
     const el = document.getElementById('count-' + s);
     if (!el) return;
@@ -1482,6 +1572,96 @@ document.getElementById('cust-save-btn').addEventListener('click', () => {
   renderCustomers(); updateCounts();
 });
 renderCustomers();
+
+// ─────────────────────────────────────────────
+//  BUDGET TRACKER
+// ─────────────────────────────────────────────
+const BUDGET_PHASE1 = 3500;
+const BUDGET_CATS = ['Equipment','Ingredients','Domain & Registration','Admin / Legal','Packaging','Marketing','Insurance','Other'];
+
+function loadBudget() {
+  try { return JSON.parse(localStorage.getItem('ruh_wb_budget')) || []; }
+  catch { return []; }
+}
+function saveBudgetData(data) { localStorage.setItem('ruh_wb_budget', JSON.stringify(data)); }
+
+function renderBudgetActual() {
+  const expenses = loadBudget();
+  const el = document.getElementById('budget-actual-breakdown');
+  const totals = {};
+  BUDGET_CATS.forEach(c => totals[c] = 0);
+  expenses.forEach(e => {
+    if (totals[e.category] !== undefined) totals[e.category] += parseFloat(e.amount) || 0;
+    else totals['Other'] += parseFloat(e.amount) || 0;
+  });
+  const totalSpent = expenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+  const remaining = BUDGET_PHASE1 - totalSpent;
+  const overBudget = remaining < 0;
+  const pct = Math.min(100, (totalSpent / BUDGET_PHASE1) * 100);
+  const showCats = BUDGET_CATS.filter(c => totals[c] > 0 || ['Equipment','Ingredients','Domain & Registration','Admin / Legal'].includes(c));
+  let html = '<table style="width:100%;border-collapse:collapse;">';
+  showCats.forEach((cat, i) => {
+    const isLast = i === showCats.length - 1;
+    html += `<tr style="${!isLast ? 'border-bottom:1px solid var(--cream-dark);' : ''}"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">${cat}</td><td style="font-size:0.78rem;color:${totals[cat] > 0 ? 'var(--text-dark)' : 'var(--text-light)'};text-align:right;padding:0.4rem 0;">${totals[cat] > 0 ? 'R' + totals[cat].toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td></tr>`;
+  });
+  html += `<tr style="border-top:1px solid var(--cream-dark);"><td style="font-size:0.76rem;font-weight:600;color:var(--text-dark);padding:0.6rem 0;">Total spent</td><td style="font-size:0.76rem;font-weight:600;color:var(--terracotta);text-align:right;padding:0.6rem 0;">R${totalSpent.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}</td></tr>`;
+  html += `<tr><td style="font-size:0.76rem;color:${overBudget?'#c0392b':'var(--sage)'};padding:0.4rem 0;">Remaining</td><td style="font-size:0.76rem;font-weight:600;color:${overBudget?'#c0392b':'var(--sage)'};text-align:right;padding:0.4rem 0;">${overBudget?'-':''}R${Math.abs(remaining).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}</td></tr></table>`;
+  html += `<div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--cream-dark);"><div style="font-size:0.62rem;color:var(--text-light);margin-bottom:0.4rem;">${pct.toFixed(0)}% of R3,500 used</div><div style="height:6px;background:var(--cream-dark);border-radius:3px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:${overBudget?'#c0392b':'var(--burgundy)'};border-radius:3px;transition:width 0.3s;"></div></div></div>`;
+  el.innerHTML = html;
+}
+
+function renderBudgetList() {
+  const expenses = loadBudget();
+  const el = document.getElementById('budget-list');
+  if (!expenses.length) { el.innerHTML = '<div class="empty-state">No expenses logged yet.</div>'; return; }
+  let html = '';
+  BUDGET_CATS.forEach(cat => {
+    const catExp = expenses.map((e,i) => ({...e,idx:i})).filter(e => e.category === cat);
+    if (!catExp.length) return;
+    const catTotal = catExp.reduce((sum,e) => sum + (parseFloat(e.amount)||0), 0);
+    html += `<div style="margin-bottom:1.25rem;"><div style="font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--burgundy);font-weight:600;padding-bottom:0.4rem;border-bottom:1px solid var(--cream-dark);margin-bottom:0.6rem;display:flex;justify-content:space-between;"><span>${cat}</span><span>R${catTotal.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}</span></div>`;
+    [...catExp].reverse().forEach(e => {
+      html += `<div class="card" style="margin-bottom:0.4rem;"><div class="card-header"><div><div class="card-title">${esc(e.item)}</div><div class="card-meta">${e.date}${e.notes?' · '+esc(e.notes):''}</div></div><div style="display:flex;align-items:center;gap:0.75rem;"><span style="font-size:0.85rem;font-weight:600;color:var(--text-dark);">R${parseFloat(e.amount).toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}</span><button class="btn-danger" data-budget-idx="${e.idx}">Delete</button></div></div></div>`;
+    });
+    html += '</div>';
+  });
+  el.innerHTML = html;
+  el.querySelectorAll('[data-budget-idx]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expenses = loadBudget();
+      expenses.splice(parseInt(btn.dataset.budgetIdx), 1);
+      saveBudgetData(expenses);
+      renderBudget();
+      updateCounts();
+    });
+  });
+}
+
+function renderBudget() { renderBudgetActual(); renderBudgetList(); }
+
+document.getElementById('budget-date').valueAsDate = new Date();
+
+document.getElementById('budget-save-btn').addEventListener('click', () => {
+  const item = document.getElementById('budget-item').value.trim();
+  const amount = document.getElementById('budget-amount').value.trim();
+  if (!item || !amount) { flash('budget-saved-msg', 'Item and amount are required.'); return; }
+  const entry = {
+    date: document.getElementById('budget-date').value,
+    category: document.getElementById('budget-category').value,
+    item, amount: parseFloat(amount),
+    notes: document.getElementById('budget-notes').value.trim()
+  };
+  const expenses = loadBudget();
+  expenses.push(entry);
+  saveBudgetData(expenses);
+  clearInputs(['budget-item','budget-amount','budget-notes']);
+  document.getElementById('budget-date').valueAsDate = new Date();
+  flash('budget-saved-msg', 'Expense logged.');
+  renderBudget();
+  updateCounts();
+});
+
+renderBudget();
 
 // ─────────────────────────────────────────────
 //  ESCAPE HELPER
