@@ -1583,7 +1583,7 @@ function renderSuppliers() {
   filtered.forEach((item) => {
     const realIdx = list.findIndex(s => s.name === item.name);
     const div = document.createElement('div');
-    div.style.cssText = 'background:#F2DDE2;border:1px solid rgba(107,31,48,0.25);border-radius:3px;margin-bottom:0.4rem;overflow:hidden;';
+    div.style.cssText = 'background:#E8F0E9;border:1px solid rgba(107,143,113,0.3);border-radius:3px;margin-bottom:0.4rem;overflow:hidden;';
     div.innerHTML = `
       <div class="sup-row" data-idx="${realIdx}" style="display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1rem;cursor:pointer;transition:background 0.15s;">
         <div style="font-size:0.82rem;font-weight:600;color:var(--text-dark);letter-spacing:0.02em;">${esc(item.name)}</div>
@@ -1604,7 +1604,7 @@ function renderSuppliers() {
     el.appendChild(div);
   });
   el.querySelectorAll('.sup-row').forEach(row => {
-    row.addEventListener('mouseenter', () => row.style.background = 'rgba(107,31,48,0.08)');
+    row.addEventListener('mouseenter', () => row.style.background = 'rgba(107,143,113,0.15)');
     row.addEventListener('mouseleave', () => row.style.background = 'transparent');
     row.addEventListener('click', () => {
       const detail = row.nextElementSibling;
