@@ -1158,6 +1158,14 @@
 
       </div>
 
+      <!-- Ingredient Sourcing Table -->
+      <div style="margin-bottom:2rem;">
+        <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.35rem;padding-top:1rem;border-top:1px solid var(--cream-dark);">Ingredient Sourcing Plan</div>
+        <div style="font-size:0.7rem;color:var(--text-light);margin-bottom:1rem;">Click a status pill to cycle through stages. Click Edit to update supplier, quantity or price.</div>
+        <div id="sourcing-table"></div>
+        <div id="sourcing-total" style="margin-top:0.75rem;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-dark);border-top:1px solid var(--cream-dark);padding-top:0.75rem;"></div>
+      </div>
+
       <!-- Log Expense Form -->
       <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.75rem;padding-top:1rem;border-top:1px solid var(--cream-dark);">Log an Expense</div>
       <div class="form-row">
@@ -1578,6 +1586,32 @@ document.getElementById('sup-save-btn').addEventListener('click', () => {
   flash('sup-saved-msg', 'Supplier saved.');
   renderSuppliers(); updateCounts();
 });
+
+// Seed supplier directory with known suppliers
+(function seedSuppliers() {
+  const existing = load('suppliers');
+  if (existing.length > 0) return;
+  const defaults = [
+    {
+      name: 'Essentially Natural',
+      website: 'essentiallynatural.co.za',
+      supplies: 'Carrier oils, butters, essential oils, actives, botanicals, hydrosols, dried herbs. Most comprehensive natural cosmetic ingredient supplier in SA.',
+      min: 'No minimum order',
+      delivery: '2–3 business days to Johannesburg. Check site for free delivery threshold.',
+      notes: 'Founded 2014 by Janet and Vicki. Strict natural/non-toxic ingredients policy. CoAs available on product pages or on request. 4.9 stars from 14,000+ reviews. Account: mishkarosek@gmail.com. EN wishlist built June 2026.'
+    },
+    {
+      name: 'Isivuno Naturals',
+      website: 'isivunonaturals.com',
+      supplies: 'Cosmetic butters (cocoa, shea), organic oils, soapmaking supplies. Fair-trade, ethically sourced, traceable ingredients.',
+      min: 'Check website',
+      delivery: 'Based in Cape Town — ships nationally.',
+      notes: 'Founded by Zikhona Tefu. "Isivuno" = Xhosa for harvest. 5.0 stars, 961 reviews. Deeply aligned with Ruh values — fair-trade, African sourcing, transparent. Primary use: cocoa butter (100g ~R80) and ingredients where EN is overpriced. Check prices against EN before ordering.'
+    }
+  ];
+  save('suppliers', defaults);
+})();
+
 renderSuppliers();
 
 // ─────────────────────────────────────────────
@@ -1767,6 +1801,186 @@ document.getElementById('budget-save-btn').addEventListener('click', () => {
 });
 
 renderBudget();
+
+// ─────────────────────────────────────────────
+//  INGREDIENT SOURCING TABLE
+// ─────────────────────────────────────────────
+const SOURCING_DEFAULTS = [
+  // CARRIER OILS
+  {id:'src-jojoba',name:'Jojoba Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'200ml',price:350,status:'wishlist'},
+  {id:'src-rosehip',name:'Rosehip Seed Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'50ml',price:190,status:'wishlist'},
+  {id:'src-marula',name:'Marula Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'50ml',price:119,status:'wishlist'},
+  {id:'src-baobab',name:'Baobab Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'100ml',price:229,status:'wishlist'},
+  {id:'src-tamanu',name:'Tamanu Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'50ml',price:109,status:'wishlist'},
+  {id:'src-hemp',name:'Hemp Seed Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'50ml',price:69,status:'wishlist'},
+  {id:'src-sweet-almond',name:'Sweet Almond Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'100ml',price:59,status:'wishlist'},
+  {id:'src-calendula',name:'Calendula-Infused Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'100ml',price:169,status:'wishlist'},
+  {id:'src-coconut',name:'Coconut Oil (Virgin)',cat:'Carrier Oils',supplier:'Essentially Natural (Credé)',qty:'250ml',price:95,status:'wishlist'},
+  {id:'src-argan',name:'Argan Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'50ml',price:189,status:'wishlist'},
+  {id:'src-pomegranate',name:'Pomegranate Seed Oil',cat:'Carrier Oils',supplier:'Essentially Natural',qty:'20ml',price:109,status:'wishlist'},
+  {id:'src-neem',name:'Neem Oil',cat:'Carrier Oils',supplier:'Essentially Natural (Umuthi)',qty:'100ml',price:79,status:'wishlist'},
+  // BUTTERS
+  {id:'src-shea',name:'Shea Butter (Unrefined)',cat:'Butters',supplier:'Essentially Natural (Umuthi)',qty:'250g',price:209,status:'wishlist'},
+  {id:'src-mango',name:'Mango Butter',cat:'Butters',supplier:'Essentially Natural',qty:'250g',price:249,status:'wishlist'},
+  {id:'src-cocoa',name:'Cocoa Butter (Unrefined)',cat:'Butters',supplier:'Isivuno Naturals',qty:'100g',price:80,status:'to-source'},
+  // SOAP BASES
+  {id:'src-shea-mp',name:'Shea Butter M&P Base',cat:'Soap Bases',supplier:'Soap & More (soapandmore.co.za)',qty:'—',price:0,status:'to-source'},
+  {id:'src-olive-mp',name:'Olive Oil M&P Base',cat:'Soap Bases',supplier:'Soap & More (soapandmore.co.za)',qty:'—',price:0,status:'to-source'},
+  {id:'src-goat-mp',name:'Goat Milk M&P Base',cat:'Soap Bases',supplier:'Soap & More (soapandmore.co.za)',qty:'—',price:0,status:'to-source'},
+  // EMULSIFIERS
+  {id:'src-lecithin',name:'Sunflower Lecithin',cat:'Emulsifiers',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  // ACTIVES
+  {id:'src-vit-e',name:'Vitamin E (d-Mixed Tocopherol)',cat:'Actives',supplier:'Essentially Natural',qty:'10ml',price:119,status:'wishlist'},
+  {id:'src-rooibos-ext',name:'Rooibos Extract (cosmetic grade)',cat:'Actives',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-aloe',name:'Aloe Vera',cat:'Actives',supplier:'Essentially Natural',qty:'100ml',price:89,status:'wishlist'},
+  {id:'src-rose-hydro',name:'Rose Damascena Hydrosol',cat:'Actives',supplier:'Essentially Natural',qty:'100ml',price:109,status:'wishlist'},
+  {id:'src-sea-buck',name:'Sea Buckthorn',cat:'Actives',supplier:'Essentially Natural',qty:'10ml',price:149,status:'wishlist'},
+  {id:'src-chamomile-ext',name:'Chamomile Extract (cosmetic grade)',cat:'Actives',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-oatmeal',name:'Colloidal Oatmeal',cat:'Actives',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-centella',name:'Centella Asiatica Extract',cat:'Actives',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-willow',name:'Willow Bark Extract',cat:'Actives',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-bakuchiol',name:'Bakuchiol Isolate',cat:'Actives',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-carrot-co2',name:'Carrot Root CO2 Extract',cat:'Actives',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-green-tea',name:'Green Tea Extract (cosmetic grade)',cat:'Actives',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  // ESSENTIAL OILS
+  {id:'src-lavender',name:'Lavender EO',cat:'Essential Oils',supplier:'Essentially Natural',qty:'20ml',price:149,status:'wishlist'},
+  {id:'src-frankincense',name:'Frankincense EO (Boswellia serrata)',cat:'Essential Oils',supplier:'Essentially Natural (on sale)',qty:'20ml',price:152.15,status:'wishlist'},
+  {id:'src-rose-eo',name:'Rose EO (pure Rosa damascena)',cat:'Essential Oils',supplier:'— Source pure only',qty:'—',price:0,status:'to-source'},
+  {id:'src-neroli',name:'Neroli EO (pure Citrus aurantium)',cat:'Essential Oils',supplier:'— Source pure only',qty:'—',price:0,status:'to-source'},
+  {id:'src-german-cham',name:'German Chamomile EO (pure)',cat:'Essential Oils',supplier:'— Source pure only',qty:'—',price:0,status:'to-source'},
+  {id:'src-roman-cham',name:'Roman Chamomile EO (pure)',cat:'Essential Oils',supplier:'— Source pure only',qty:'—',price:0,status:'to-source'},
+  {id:'src-geranium',name:'Geranium EO (verify pure)',cat:'Essential Oils',supplier:'Essentially Natural — verify if pure',qty:'10ml',price:89,status:'wishlist'},
+  {id:'src-helichrysum',name:'Helichrysum EO (italicum)',cat:'Essential Oils',supplier:'— Source italicum only',qty:'—',price:0,status:'to-source'},
+  {id:'src-tea-tree',name:'Tea Tree EO',cat:'Essential Oils',supplier:'Essentially Natural',qty:'10ml',price:49,status:'wishlist'},
+  {id:'src-cedarwood',name:'Cedarwood EO (Cedrus atlantica)',cat:'Essential Oils',supplier:'Essentially Natural (Umuthi)',qty:'5ml',price:55,status:'wishlist'},
+  {id:'src-myrrh',name:'Myrrh EO',cat:'Essential Oils',supplier:'Essentially Natural (Umuthi)',qty:'5ml',price:169,status:'wishlist'},
+  {id:'src-sandalwood',name:'Sandalwood EO (Santalum album)',cat:'Essential Oils',supplier:'— Source true species only',qty:'—',price:0,status:'to-source'},
+  {id:'src-patchouli',name:'Patchouli EO',cat:'Essential Oils',supplier:'Essentially Natural (Umuthi)',qty:'5ml',price:95,status:'wishlist'},
+  {id:'src-carrot-seed',name:'Carrot Seed EO',cat:'Essential Oils',supplier:'Essentially Natural (Umuthi)',qty:'5ml',price:95,status:'wishlist'},
+  {id:'src-blue-tansy',name:'Blue Tansy EO',cat:'Essential Oils',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-ylang',name:'Ylang Ylang EO',cat:'Essential Oils',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  // BOTANICALS (Soap)
+  {id:'src-dried-lav',name:'Dried Lavender (botanical)',cat:'Botanicals — Soap',supplier:'Essentially Natural',qty:'75g',price:135,status:'wishlist'},
+  {id:'src-dried-roo',name:'Dried Rooibos (botanical)',cat:'Botanicals — Soap',supplier:'Essentially Natural',qty:'100g',price:85,status:'wishlist'},
+  {id:'src-comfrey',name:'Comfrey (for oil infusion)',cat:'Botanicals — Soap',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  // TEA BOTANICALS
+  {id:'src-honeybush',name:'Honeybush',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-tulsi',name:'Tulsi / Holy Basil',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-cardamom',name:'Cardamom',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-cinnamon',name:'Cinnamon (Ceylon only)',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-blue-lotus',name:'Blue Lotus',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-mugwort',name:'Mugwort',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-passionflower',name:'Passionflower',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-hibiscus',name:'Hibiscus',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-lemon-balm',name:'Lemon Balm',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-damiana',name:'Damiana',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-cacao',name:'Cacao Husks',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-peppermint',name:'Peppermint (herb)',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-lemon-verb',name:'Lemon Verbena',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-ginger',name:'Ginger Root',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-rosehip-dry',name:'Rosehip (dried)',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-valerian',name:'Valerian Root',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-oat-straw',name:'Oat Straw',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-spearmint',name:'Spearmint',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-nettle',name:'Nettle',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-liquorice',name:'Liquorice Root',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-dandelion',name:'Dandelion Root',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-elderflower',name:'Elderflower',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-calendula-dry',name:'Calendula Flower (dried)',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-jasmine',name:'Jasmine (dried)',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-elderberry',name:'Elderberry',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-fennel',name:'Fennel',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-star-anise',name:'Star Anise',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-cloves',name:'Cloves',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-turmeric',name:'Turmeric',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-ashwagandha',name:'Ashwagandha',cat:'Tea Botanicals',supplier:'— To source',qty:'—',price:0,status:'to-source'},
+  {id:'src-shatavari',name:'Shatavari (Phase 2)',cat:'Tea Botanicals',supplier:'— Phase 2',qty:'—',price:0,status:'to-source'},
+];
+
+const SOURCING_STATUSES = ['to-source','wishlist','ordered','received'];
+const SOURCING_LABELS = {'to-source':'To Source','wishlist':'On Wishlist','ordered':'Ordered','received':'Received'};
+const SOURCING_COLORS = {'to-source':'var(--text-light)','wishlist':'var(--amber)','ordered':'#5B8FA1','received':'var(--sage)'};
+
+function loadSourcing() {
+  try { return JSON.parse(localStorage.getItem('ruh_wb_sourcing')) || null; }
+  catch { return null; }
+}
+function saveSourcing(data) { localStorage.setItem('ruh_wb_sourcing', JSON.stringify(data)); }
+
+function renderSourcingTable() {
+  let items = loadSourcing();
+  if (!items) { items = JSON.parse(JSON.stringify(SOURCING_DEFAULTS)); saveSourcing(items); }
+  const el = document.getElementById('sourcing-table');
+  const totalEl = document.getElementById('sourcing-total');
+  const cats = [];
+  items.forEach(i => { if (!cats.includes(i.cat)) cats.push(i.cat); });
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:0.75rem;">';
+  html += '<thead><tr style="border-bottom:2px solid var(--cream-dark);">';
+  html += '<th style="text-align:left;padding:0.4rem 0.5rem;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);font-weight:600;">Ingredient</th>';
+  html += '<th style="text-align:left;padding:0.4rem 0.5rem;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);font-weight:600;">Supplier</th>';
+  html += '<th style="text-align:left;padding:0.4rem 0.5rem;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);font-weight:600;">Qty</th>';
+  html += '<th style="text-align:right;padding:0.4rem 0.5rem;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);font-weight:600;">Price</th>';
+  html += '<th style="text-align:center;padding:0.4rem 0.5rem;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);font-weight:600;">Status</th>';
+  html += '<th style="padding:0.4rem;"></th></tr></thead><tbody>';
+  cats.forEach(cat => {
+    html += `<tr><td colspan="6" style="background:var(--cream-dark);padding:0.4rem 0.5rem;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--burgundy);font-weight:600;">${cat}</td></tr>`;
+    items.forEach((item, idx) => {
+      if (item.cat !== cat) return;
+      const color = SOURCING_COLORS[item.status];
+      const label = SOURCING_LABELS[item.status];
+      html += `<tr style="border-bottom:1px solid var(--cream-dark);" data-src-idx="${idx}">`;
+      html += `<td style="padding:0.45rem 0.5rem;color:var(--text-dark);">${esc(item.name)}</td>`;
+      html += `<td style="padding:0.45rem 0.5rem;color:var(--text-mid);" class="src-supplier">${esc(item.supplier)}</td>`;
+      html += `<td style="padding:0.45rem 0.5rem;color:var(--text-mid);" class="src-qty">${esc(item.qty)}</td>`;
+      html += `<td style="padding:0.45rem 0.5rem;text-align:right;color:var(--text-dark);" class="src-price">${item.price > 0 ? 'R'+item.price.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2}) : '—'}</td>`;
+      html += `<td style="padding:0.45rem 0.5rem;text-align:center;"><span class="src-status-pill" data-src-idx="${idx}" style="cursor:pointer;font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:white;background:${color};padding:0.2rem 0.5rem;border-radius:20px;white-space:nowrap;">${label}</span></td>`;
+      html += `<td style="padding:0.45rem 0.25rem;"><button class="src-edit-btn" data-src-idx="${idx}" style="background:none;border:1px solid var(--cream-dark);border-radius:2px;padding:0.15rem 0.4rem;font-size:0.6rem;cursor:pointer;color:var(--text-light);">Edit</button></td>`;
+      html += '</tr>';
+    });
+  });
+  html += '</tbody></table>';
+  el.innerHTML = html;
+  const total = items.reduce((sum, i) => sum + (parseFloat(i.price) || 0), 0);
+  const sourced = items.filter(i => i.price > 0).length;
+  totalEl.innerHTML = `${sourced} of ${items.length} ingredients priced &nbsp;·&nbsp; <strong>Total: R${total.toLocaleString('en-ZA',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong>`;
+  el.querySelectorAll('.src-status-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      const items = loadSourcing() || JSON.parse(JSON.stringify(SOURCING_DEFAULTS));
+      const idx = parseInt(pill.dataset.srcIdx);
+      const cur = SOURCING_STATUSES.indexOf(items[idx].status);
+      items[idx].status = SOURCING_STATUSES[(cur + 1) % SOURCING_STATUSES.length];
+      saveSourcing(items);
+      renderSourcingTable();
+    });
+  });
+  el.querySelectorAll('.src-edit-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const idx = parseInt(btn.dataset.srcIdx);
+      const row = el.querySelector(`tr[data-src-idx="${idx}"]`);
+      const items = loadSourcing() || JSON.parse(JSON.stringify(SOURCING_DEFAULTS));
+      const item = items[idx];
+      row.querySelector('.src-supplier').innerHTML = `<input style="width:100%;font-size:0.75rem;border:1px solid var(--cream-dark);border-radius:2px;padding:0.2rem 0.35rem;" class="src-in-supplier" value="${esc(item.supplier)}">`;
+      row.querySelector('.src-qty').innerHTML = `<input style="width:70px;font-size:0.75rem;border:1px solid var(--cream-dark);border-radius:2px;padding:0.2rem 0.35rem;" class="src-in-qty" value="${esc(item.qty)}">`;
+      row.querySelector('.src-price').innerHTML = `<input type="number" style="width:70px;font-size:0.75rem;border:1px solid var(--cream-dark);border-radius:2px;padding:0.2rem 0.35rem;text-align:right;" class="src-in-price" value="${item.price}">`;
+      btn.textContent = 'Save';
+      btn.classList.add('src-save-btn');
+      btn.classList.remove('src-edit-btn');
+      btn.style.background = 'var(--burgundy)';
+      btn.style.color = 'white';
+      btn.style.borderColor = 'var(--burgundy)';
+      btn.onclick = () => {
+        const items = loadSourcing() || JSON.parse(JSON.stringify(SOURCING_DEFAULTS));
+        items[idx].supplier = row.querySelector('.src-in-supplier').value.trim();
+        items[idx].qty = row.querySelector('.src-in-qty').value.trim();
+        items[idx].price = parseFloat(row.querySelector('.src-in-price').value) || 0;
+        saveSourcing(items);
+        renderSourcingTable();
+      };
+    });
+  });
+}
+
+renderSourcingTable();
 
 // ─────────────────────────────────────────────
 //  ESCAPE HELPER
