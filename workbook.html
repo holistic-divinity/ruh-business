@@ -1022,40 +1022,52 @@
 
     <!-- SUPPLIER DIRECTORY -->
     <div class="section" id="section-suppliers">
-      <div class="section-title">Supplier Directory</div>
-      <div class="section-desc">Every supplier you work with. Reference this before every order so you're never searching from scratch.</div>
+      <!-- Title row with search -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem;margin-bottom:1.25rem;">
+        <div class="section-title" style="margin-bottom:0;">Supplier Directory</div>
+        <input class="form-input" id="sup-search" placeholder="Search suppliers..." style="max-width:220px;font-size:0.75rem;padding:0.45rem 0.75rem;" />
+      </div>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Supplier Name</label>
-          <input class="form-input" id="sup-name" placeholder="e.g. Essentially Natural" />
+      <!-- Add Supplier toggle -->
+      <button id="sup-toggle-btn" style="background:none;border:1px solid var(--cream-dark);border-radius:3px;padding:0.45rem 1rem;font-family:'Raleway',sans-serif;font-size:0.68rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-mid);cursor:pointer;margin-bottom:1.25rem;transition:all 0.15s;">+ Add Supplier</button>
+
+      <!-- Add Supplier form (hidden by default) -->
+      <div id="sup-form-panel" style="display:none;background:white;border:1px solid var(--cream-dark);border-radius:4px;padding:1.25rem;margin-bottom:1.5rem;">
+        <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:1rem;">New Supplier</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Supplier Name</label>
+            <input class="form-input" id="sup-name" placeholder="e.g. Essentially Natural" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Website</label>
+            <input class="form-input" id="sup-website" placeholder="e.g. essentiallynatural.co.za" />
+          </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Website</label>
-          <input class="form-input" id="sup-website" placeholder="e.g. essentiallynatural.co.za" />
+          <label class="form-label">What They Supply</label>
+          <input class="form-input" id="sup-supplies" placeholder="e.g. Carrier oils, butters, essential oils" />
         </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">What They Supply</label>
-        <input class="form-input" id="sup-supplies" placeholder="e.g. Carrier oils, butters, essential oils, preservatives" />
-      </div>
-      <div class="form-row">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Minimum Order</label>
+            <input class="form-input" id="sup-min" placeholder="e.g. No minimum" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Delivery Time</label>
+            <input class="form-input" id="sup-delivery" placeholder="e.g. 2–3 business days to Joburg" />
+          </div>
+        </div>
         <div class="form-group">
-          <label class="form-label">Minimum Order</label>
-          <input class="form-input" id="sup-min" placeholder="e.g. R500, no minimum" />
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" style="min-height:80px" id="sup-notes" placeholder="Quality notes, CoA availability, discount codes, anything useful..."></textarea>
         </div>
-        <div class="form-group">
-          <label class="form-label">Delivery Time</label>
-          <input class="form-input" id="sup-delivery" placeholder="e.g. 3–5 business days to Gauteng" />
-        </div>
+        <button class="btn" id="sup-save-btn">Save Supplier</button>
+        <div id="sup-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <textarea class="form-textarea" style="min-height:80px" id="sup-notes" placeholder="Quality notes, things to avoid, discount codes, contact person, anything useful..."></textarea>
-      </div>
-      <button class="btn" id="sup-save-btn">Add Supplier</button>
-      <div id="sup-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
-      <div class="card-list" id="sup-list"></div>
+
+      <!-- Supplier list -->
+      <div id="sup-list"></div>
     </div>
 
     <!-- CUSTOMER NOTES -->
@@ -1560,22 +1572,69 @@ renderCosting();
 // ─────────────────────────────────────────────
 //  SUPPLIER DIRECTORY
 // ─────────────────────────────────────────────
+let supSearch = '';
+
 function renderSuppliers() {
   const list = load('suppliers');
   const el = document.getElementById('sup-list');
   el.innerHTML = '';
-  if (!list.length) { el.innerHTML = '<div class="empty-state">No suppliers added yet. Essentially Natural is your first one — add them when you place your first order.</div>'; return; }
-  [...list].reverse().forEach((item, idx) => {
-    const realIdx = list.length - 1 - idx;
+  const filtered = supSearch ? list.filter(s => s.name.toLowerCase().includes(supSearch.toLowerCase())) : list;
+  if (!filtered.length) { el.innerHTML = '<div class="empty-state">No suppliers found.</div>'; return; }
+  filtered.forEach((item) => {
+    const realIdx = list.findIndex(s => s.name === item.name);
     const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.name)}</div><div class="card-meta">${esc(item.website)}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div><div style="margin-top:0.5rem"><span class="card-tag tag-sage">${esc(item.supplies)}</span></div><div style="display:flex;gap:2rem;margin-top:0.75rem"><div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.2rem">Min Order</div><div style="font-size:0.8rem;color:var(--text-mid)">${esc(item.min)}</div></div><div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.2rem">Delivery</div><div style="font-size:0.8rem;color:var(--text-mid)">${esc(item.delivery)}</div></div></div>${item.notes ? `<div class="card-body" style="margin-top:0.75rem">${esc(item.notes)}</div>` : ''}`;
+    div.style.cssText = 'background:white;border:1px solid var(--cream-dark);border-radius:3px;margin-bottom:0.4rem;overflow:hidden;';
+    div.innerHTML = `
+      <div class="sup-row" data-idx="${realIdx}" style="display:flex;align-items:center;justify-content:space-between;padding:0.7rem 1rem;cursor:pointer;transition:background 0.15s;">
+        <div style="font-size:0.82rem;font-weight:600;color:var(--text-dark);letter-spacing:0.02em;">${esc(item.name)}</div>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <span style="font-size:0.65rem;color:var(--text-light);">${esc(item.website)}</span>
+          <span class="sup-chevron" style="font-size:0.7rem;color:var(--text-light);transition:transform 0.2s;">▾</span>
+        </div>
+      </div>
+      <div class="sup-detail" style="display:none;padding:0 1rem 1rem;border-top:1px solid var(--cream-dark);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.75rem;">
+          <div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.25rem;">What They Supply</div><div style="font-size:0.78rem;color:var(--text-mid);">${esc(item.supplies)}</div></div>
+          <div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.25rem;">Minimum Order</div><div style="font-size:0.78rem;color:var(--text-mid);">${esc(item.min)}</div></div>
+          <div><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.25rem;">Delivery</div><div style="font-size:0.78rem;color:var(--text-mid);">${esc(item.delivery)}</div></div>
+          ${item.notes ? `<div style="grid-column:1/-1;"><div style="font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.25rem;">Notes</div><div style="font-size:0.78rem;color:var(--text-mid);line-height:1.6;">${esc(item.notes)}</div></div>` : ''}
+        </div>
+        <button class="btn-danger" data-idx="${realIdx}" style="margin-top:0.75rem;">Delete</button>
+      </div>`;
     el.appendChild(div);
   });
-  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
+  el.querySelectorAll('.sup-row').forEach(row => {
+    row.addEventListener('mouseenter', () => row.style.background = 'var(--cream)');
+    row.addEventListener('mouseleave', () => row.style.background = 'white');
+    row.addEventListener('click', () => {
+      const detail = row.nextElementSibling;
+      const chevron = row.querySelector('.sup-chevron');
+      const open = detail.style.display === 'block';
+      detail.style.display = open ? 'none' : 'block';
+      chevron.style.transform = open ? 'rotate(0deg)' : 'rotate(180deg)';
+    });
+  });
+  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
     const list = load('suppliers'); list.splice(parseInt(btn.dataset.idx), 1); save('suppliers', list); renderSuppliers(); updateCounts();
   }));
 }
+
+// Toggle add form
+document.getElementById('sup-toggle-btn').addEventListener('click', () => {
+  const panel = document.getElementById('sup-form-panel');
+  const btn = document.getElementById('sup-toggle-btn');
+  const open = panel.style.display === 'block';
+  panel.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? '+ Add Supplier' : '− Close';
+});
+
+// Search
+document.getElementById('sup-search').addEventListener('input', e => {
+  supSearch = e.target.value;
+  renderSuppliers();
+});
+
 document.getElementById('sup-save-btn').addEventListener('click', () => {
   const name = document.getElementById('sup-name').value.trim();
   if (!name) return;
@@ -1583,6 +1642,8 @@ document.getElementById('sup-save-btn').addEventListener('click', () => {
   list.push({ name, website: document.getElementById('sup-website').value.trim(), supplies: document.getElementById('sup-supplies').value.trim(), min: document.getElementById('sup-min').value.trim(), delivery: document.getElementById('sup-delivery').value.trim(), notes: document.getElementById('sup-notes').value.trim() });
   save('suppliers', list);
   clearInputs(['sup-name','sup-website','sup-supplies','sup-min','sup-delivery','sup-notes']);
+  document.getElementById('sup-form-panel').style.display = 'none';
+  document.getElementById('sup-toggle-btn').textContent = '+ Add Supplier';
   flash('sup-saved-msg', 'Supplier saved.');
   renderSuppliers(); updateCounts();
 });
