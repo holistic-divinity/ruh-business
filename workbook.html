@@ -355,6 +355,14 @@
     .filter-tab { background:none; border:1px solid var(--cream-dark); border-radius:2px; padding:0.35rem 0.85rem; font-family:'Raleway',sans-serif; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); cursor:pointer; transition:all 0.15s; }
     .filter-tab:hover { background:var(--cream-dark); color:var(--text-dark); }
     .filter-tab.active { background:var(--burgundy); border-color:var(--burgundy); color:var(--cream); }
+    .ing-cards-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:0.5rem; margin-bottom:0.75rem; min-height:2rem; }
+    .ing-card { background:white; border:1px solid var(--cream-dark); border-radius:4px; padding:0.6rem 0.75rem 0.5rem; position:relative; }
+    .ing-card-name { font-size:0.75rem; color:var(--text-dark); line-height:1.3; padding-right:1rem; }
+    .ing-card-pct { font-size:0.9rem; font-weight:600; color:var(--burgundy); margin-top:0.2rem; }
+    .ing-card-note { grid-column:1/-1; background:var(--cream-dark); border:1px solid var(--sage-pale); border-radius:4px; padding:0.6rem 0.75rem; font-size:0.72rem; color:var(--text-mid); font-style:italic; }
+    .ing-card-del { position:absolute; top:0.3rem; right:0.35rem; background:none; border:none; cursor:pointer; font-size:0.65rem; color:var(--text-light); line-height:1; padding:0; }
+    .ing-card-del:hover { color:var(--burgundy); }
+    .ing-add-row { display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap; }
     .lib-add-tab { border-color:var(--sage); color:var(--sage); }
     .lib-add-tab:hover { background:var(--sage-pale); color:var(--text-dark); }
     .lib-add-tab.active { background:var(--sage); border-color:var(--sage); color:var(--cream); }
@@ -831,7 +839,13 @@
       </div>
       <div class="form-group">
         <label class="form-label">Ingredients + Percentages</label>
-        <textarea class="form-textarea" id="rec-ingredients" placeholder="List each ingredient and its percentage, e.g:&#10;Aqua — 65%&#10;Shea Butter — 15%&#10;Jojoba Oil — 10%&#10;Emulsifying Wax — 6%&#10;Optiphen — 1%&#10;Lavender Essential Oil — 0.5%"></textarea>
+        <textarea id="rec-ingredients" style="display:none;"></textarea>
+        <div class="ing-cards-grid" id="rec-ing-grid"></div>
+        <div class="ing-add-row">
+          <input class="form-input" id="rec-ing-name" placeholder="Ingredient name" style="flex:2;min-width:120px;" />
+          <input class="form-input" id="rec-ing-pct" placeholder="e.g. 40%" style="flex:1;min-width:70px;" />
+          <button class="btn" type="button" id="rec-ing-add-btn" style="font-size:0.7rem;padding:0.45rem 0.9rem;white-space:nowrap;">+ Add</button>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Method</label>
@@ -1078,109 +1092,123 @@
       <div class="section-title">Equipment</div>
       <div class="section-desc">Everything you need to make Ruh products. Track what you have, what you need, and what to order on June 9.</div>
 
-      <div id="equipment-list" style="margin-bottom:1.5rem;"></div>
+      <div class="filter-tabs" style="margin-bottom:1.25rem;">
+        <button class="filter-tab lib-add-tab" id="equip-add-tab">+ Add Equipment</button>
+      </div>
 
-      <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.75rem;padding-top:1rem;border-top:1px solid var(--cream-dark);">Add Equipment</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Item</label>
-          <input class="form-input" id="equip-item" placeholder="e.g. Digital thermometer" />
+      <div id="equip-add-panel" style="display:none;background:var(--cream-dark);border:1px solid var(--sage-pale);border-radius:4px;padding:1.5rem;margin-bottom:1.25rem;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--burgundy);margin-bottom:1.25rem;">Add Equipment</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Item</label>
+            <input class="form-input" id="equip-item" placeholder="e.g. Digital thermometer" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select class="form-select" id="equip-status">
+              <option value="need">Need to buy</option>
+              <option value="have">Have it</option>
+            </select>
+          </div>
         </div>
         <div class="form-group">
-          <label class="form-label">Status</label>
-          <select class="form-select" id="equip-status">
-            <option value="need">Need to buy</option>
-            <option value="have">Have it</option>
-          </select>
+          <label class="form-label">Notes (optional)</label>
+          <input class="form-input" id="equip-notes" placeholder="e.g. Order from Takealot, R150–R250" />
         </div>
+        <button class="btn" id="equip-save-btn">Add Item</button>
+        <div id="equip-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Notes (optional)</label>
-        <input class="form-input" id="equip-notes" placeholder="e.g. Order from Takealot, R150–R250" />
-      </div>
-      <button class="btn" id="equip-save-btn">Add Item</button>
-      <div id="equip-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+
+      <div id="equipment-list"></div>
     </div>
 
     <!-- BUDGET TRACKER -->
     <div class="section" id="section-budget">
-      <div class="section-title">Budget Tracker</div>
-      <div class="section-desc">Phase 1 — Brand Foundation. R3,500 allocated. Rough estimates on the left, real numbers on the right as you spend.</div>
+      <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:0.5rem;">
+        <div class="section-title" style="margin-bottom:0;">Budget Tracker</div>
+        <select id="budget-nav" class="form-select" style="width:auto;font-size:0.7rem;padding:0.35rem 0.8rem;">
+          <option value="overview">Overview</option>
+          <option value="log">Log Expense</option>
+          <option value="expenses">Expense List</option>
+          <option value="sourcing">Ingredient Sourcing</option>
+        </select>
+      </div>
+      <div class="section-desc" style="margin-bottom:1.5rem;">Phase 1 — Brand Foundation. R3,500 allocated. Rough estimates on the left, real numbers on the right as you spend.</div>
 
-      <!-- Two Column Overview -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;margin-bottom:2rem;">
-
-        <!-- LEFT: Rough Budget -->
-        <div style="background:white;border:1px solid var(--cream-dark);border-radius:4px;padding:1.25rem;">
-          <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:1rem;">Rough Budget — Phase 1</div>
-          <table style="width:100%;border-collapse:collapse;">
-            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Equipment</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R510–R900</td></tr>
-            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Ingredients (test order)</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R800–R1,200</td></tr>
-            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Domain</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R150–R300</td></tr>
-            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">CIPC Registration</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R0–R200</td></tr>
-            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Canva</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R0</td></tr>
-            <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.76rem;font-weight:600;color:var(--text-dark);padding:0.6rem 0;">Total estimate</td><td style="font-size:0.76rem;font-weight:600;color:var(--text-dark);text-align:right;padding:0.6rem 0;">R1,460–R2,600</td></tr>
-            <tr><td style="font-size:0.76rem;color:var(--sage);padding:0.4rem 0;">Buffer</td><td style="font-size:0.76rem;color:var(--sage);text-align:right;padding:0.4rem 0;">R900–R2,040</td></tr>
-          </table>
-          <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--cream-dark);font-size:0.7rem;color:var(--text-light);">Allocated: <strong style="color:var(--burgundy);font-size:0.82rem;">R3,500</strong></div>
+      <!-- OVERVIEW (default) -->
+      <div id="budget-panel-overview">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.25rem;">
+          <div style="background:white;border:1px solid var(--cream-dark);border-radius:4px;padding:1.25rem;">
+            <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:1rem;">Rough Budget — Phase 1</div>
+            <table style="width:100%;border-collapse:collapse;">
+              <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Equipment</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R510–R900</td></tr>
+              <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Ingredients (test order)</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R800–R1,200</td></tr>
+              <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Domain</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R150–R300</td></tr>
+              <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">CIPC Registration</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R0–R200</td></tr>
+              <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.78rem;color:var(--text-mid);padding:0.4rem 0;">Canva</td><td style="font-size:0.78rem;color:var(--text-dark);text-align:right;padding:0.4rem 0;">R0</td></tr>
+              <tr style="border-bottom:1px solid var(--cream-dark);"><td style="font-size:0.76rem;font-weight:600;color:var(--text-dark);padding:0.6rem 0;">Total estimate</td><td style="font-size:0.76rem;font-weight:600;color:var(--text-dark);text-align:right;padding:0.6rem 0;">R1,460–R2,600</td></tr>
+              <tr><td style="font-size:0.76rem;color:var(--sage);padding:0.4rem 0;">Buffer</td><td style="font-size:0.76rem;color:var(--sage);text-align:right;padding:0.4rem 0;">R900–R2,040</td></tr>
+            </table>
+            <div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--cream-dark);font-size:0.7rem;color:var(--text-light);">Allocated: <strong style="color:var(--burgundy);font-size:0.82rem;">R3,500</strong></div>
+          </div>
+          <div style="background:white;border:1px solid var(--cream-dark);border-radius:4px;padding:1.25rem;">
+            <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:1rem;">Actual Spend — Phase 1</div>
+            <div id="budget-actual-breakdown"></div>
+          </div>
         </div>
-
-        <!-- RIGHT: Actual Spend -->
-        <div style="background:white;border:1px solid var(--cream-dark);border-radius:4px;padding:1.25rem;">
-          <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:1rem;">Actual Spend — Phase 1</div>
-          <div id="budget-actual-breakdown"></div>
-        </div>
-
       </div>
 
-      <!-- Ingredient Sourcing Table -->
-      <div style="margin-bottom:2rem;">
-        <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.35rem;padding-top:1rem;border-top:1px solid var(--cream-dark);">Ingredient Sourcing Plan</div>
+      <!-- LOG EXPENSE -->
+      <div id="budget-panel-log" style="display:none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Date</label>
+            <input class="form-input" type="date" id="budget-date" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Category</label>
+            <select class="form-select" id="budget-category">
+              <option value="Equipment">Equipment</option>
+              <option value="Ingredients">Ingredients</option>
+              <option value="Domain & Registration">Domain & Registration</option>
+              <option value="Admin / Legal">Admin / Legal</option>
+              <option value="Packaging">Packaging</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Insurance">Insurance</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">What did you buy?</label>
+          <input class="form-input" id="budget-item" placeholder="e.g. Precision scale — Takealot" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Amount (R)</label>
+            <input class="form-input" type="number" id="budget-amount" placeholder="e.g. 250" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notes (optional)</label>
+            <input class="form-input" id="budget-notes" placeholder="Order number, supplier, etc." />
+          </div>
+        </div>
+        <button class="btn" id="budget-save-btn">Log Expense</button>
+        <div id="budget-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      </div>
+
+      <!-- EXPENSE LIST -->
+      <div id="budget-panel-expenses" style="display:none;">
+        <div id="budget-list"></div>
+      </div>
+
+      <!-- INGREDIENT SOURCING -->
+      <div id="budget-panel-sourcing" style="display:none;">
         <div style="font-size:0.7rem;color:var(--text-light);margin-bottom:1rem;">Click a status pill to cycle through stages. Click Edit to update supplier, quantity or price.</div>
         <div id="sourcing-table"></div>
         <div id="sourcing-total" style="margin-top:0.75rem;text-align:right;font-size:0.78rem;font-weight:600;color:var(--text-dark);border-top:1px solid var(--cream-dark);padding-top:0.75rem;"></div>
       </div>
 
-      <!-- Log Expense Form -->
-      <div style="font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:0.75rem;padding-top:1rem;border-top:1px solid var(--cream-dark);">Log an Expense</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input class="form-input" type="date" id="budget-date" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select class="form-select" id="budget-category">
-            <option value="Equipment">Equipment</option>
-            <option value="Ingredients">Ingredients</option>
-            <option value="Domain & Registration">Domain & Registration</option>
-            <option value="Admin / Legal">Admin / Legal</option>
-            <option value="Packaging">Packaging</option>
-            <option value="Marketing">Marketing</option>
-            <option value="Insurance">Insurance</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">What did you buy?</label>
-        <input class="form-input" id="budget-item" placeholder="e.g. Precision scale — Takealot" />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Amount (R)</label>
-          <input class="form-input" type="number" id="budget-amount" placeholder="e.g. 250" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Notes (optional)</label>
-          <input class="form-input" id="budget-notes" placeholder="Order number, supplier, etc." />
-        </div>
-      </div>
-      <button class="btn" id="budget-save-btn">Log Expense</button>
-      <div id="budget-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
-
-      <!-- Expense List -->
-      <div id="budget-list" style="margin-top:1.5rem;"></div>
     </div>
 
     <!-- PHASE 2 -->
@@ -1517,7 +1545,8 @@ document.getElementById('rec-save-btn').addEventListener('click', () => {
   const list = load('recipes');
   list.push({ product, batch: document.getElementById('rec-batch').value.trim(), date: document.getElementById('rec-date').value, size: document.getElementById('rec-size').value.trim(), ingredients: document.getElementById('rec-ingredients').value.trim(), method: document.getElementById('rec-method').value.trim(), ph: document.getElementById('rec-ph').value.trim(), observations: document.getElementById('rec-observations').value.trim(), changes: document.getElementById('rec-changes').value.trim() });
   save('recipes', list);
-  clearInputs(['rec-product','rec-batch','rec-date','rec-size','rec-ingredients','rec-method','rec-ph','rec-observations','rec-changes']);
+  clearInputs(['rec-product','rec-batch','rec-date','rec-size','rec-method','rec-ph','rec-observations','rec-changes']);
+  renderIngredientCards([]);
   flash('rec-saved-msg', 'Batch saved.');
   renderRecipes(); updateCounts();
 });
@@ -1780,6 +1809,14 @@ function renderEquipment() {
   });
 }
 
+document.getElementById('equip-add-tab').addEventListener('click', () => {
+  const panel = document.getElementById('equip-add-panel');
+  const tab = document.getElementById('equip-add-tab');
+  const open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  tab.classList.toggle('active', !open);
+});
+
 document.getElementById('equip-save-btn').addEventListener('click', () => {
   const item = document.getElementById('equip-item').value.trim();
   if (!item) { flash('equip-saved-msg', 'Item name is required.'); return; }
@@ -1793,6 +1830,8 @@ document.getElementById('equip-save-btn').addEventListener('click', () => {
   saveEquipment(items);
   clearInputs(['equip-item','equip-notes']);
   flash('equip-saved-msg', 'Item added.');
+  document.getElementById('equip-add-panel').style.display = 'none';
+  document.getElementById('equip-add-tab').classList.remove('active');
   renderEquipment();
   updateCounts();
 });
@@ -1888,6 +1927,13 @@ document.getElementById('budget-save-btn').addEventListener('click', () => {
 });
 
 renderBudget();
+
+document.getElementById('budget-nav').addEventListener('change', function() {
+  const panels = ['overview','log','expenses','sourcing'];
+  panels.forEach(id => {
+    document.getElementById('budget-panel-' + id).style.display = (id === this.value) ? 'block' : 'none';
+  });
+});
 
 // ─────────────────────────────────────────────
 //  INGREDIENT SOURCING TABLE
@@ -2349,6 +2395,56 @@ document.getElementById('lib-save-btn').addEventListener('click', () => {
   updateCounts();
 });
 
+// ─────────────────────────────────────────────
+//  INGREDIENT CARDS (Recipe section)
+// ─────────────────────────────────────────────
+let recIngLines = [];
+
+function renderIngredientCards(lines) {
+  recIngLines = lines.filter(l => l.trim());
+  const grid = document.getElementById('rec-ing-grid');
+  grid.innerHTML = '';
+  recIngLines.forEach((line, idx) => {
+    const isIngredient = /—|-/.test(line) && !line.startsWith('Note');
+    if (!isIngredient) {
+      const note = document.createElement('div');
+      note.className = 'ing-card-note';
+      note.textContent = line.trim();
+      grid.appendChild(note);
+      return;
+    }
+    const parts = line.split(/\s*[—–-]\s*/);
+    const name = parts[0].trim();
+    const pct = parts.slice(1).join(' — ').trim();
+    const card = document.createElement('div');
+    card.className = 'ing-card';
+    card.innerHTML = `<button class="ing-card-del" data-ingidx="${idx}">✕</button><div class="ing-card-name">${esc(name)}</div><div class="ing-card-pct">${esc(pct)}</div>`;
+    grid.appendChild(card);
+  });
+  grid.querySelectorAll('.ing-card-del').forEach(btn => {
+    btn.addEventListener('click', () => {
+      recIngLines.splice(parseInt(btn.dataset.ingidx), 1);
+      renderIngredientCards(recIngLines);
+    });
+  });
+  serializeIngredientCards();
+}
+
+function serializeIngredientCards() {
+  document.getElementById('rec-ingredients').value = recIngLines.join('\n');
+}
+
+document.getElementById('rec-ing-add-btn').addEventListener('click', () => {
+  const name = document.getElementById('rec-ing-name').value.trim();
+  const pct = document.getElementById('rec-ing-pct').value.trim();
+  if (!name) return;
+  recIngLines.push(pct ? `${name} — ${pct}` : name);
+  renderIngredientCards(recIngLines);
+  document.getElementById('rec-ing-name').value = '';
+  document.getElementById('rec-ing-pct').value = '';
+  document.getElementById('rec-ing-name').focus();
+});
+
 seedLibrary();
 renderLibrary();
 
@@ -2600,6 +2696,9 @@ const RECIPE_TEMPLATES = {
 document.getElementById('rec-cat-select').addEventListener('change', function() {
   const navList = document.getElementById('rec-nav-list');
   navList.innerHTML = '';
+  clearInputs(['rec-product','rec-batch','rec-date','rec-size','rec-method','rec-ph','rec-observations','rec-changes']);
+  document.getElementById('rec-ingredients').value = '';
+  renderIngredientCards([]);
   const cat = this.value;
   if (!cat) return;
   (RECIPE_TEMPLATES[cat] || []).forEach(template => {
@@ -2610,14 +2709,8 @@ document.getElementById('rec-cat-select').addEventListener('change', function() 
       document.querySelectorAll('.recipe-nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('rec-product').value = template.product;
-      document.getElementById('rec-ingredients').value = template.ingredients;
-      document.getElementById('rec-batch').value = '';
-      document.getElementById('rec-date').value = '';
-      document.getElementById('rec-size').value = '';
-      document.getElementById('rec-method').value = '';
-      document.getElementById('rec-ph').value = '';
-      document.getElementById('rec-observations').value = '';
-      document.getElementById('rec-changes').value = '';
+      clearInputs(['rec-batch','rec-date','rec-size','rec-method','rec-ph','rec-observations','rec-changes']);
+      renderIngredientCards(template.ingredients.split('\n'));
     });
     navList.appendChild(btn);
   });
