@@ -355,6 +355,10 @@
     .filter-tab { background:none; border:1px solid var(--cream-dark); border-radius:2px; padding:0.35rem 0.85rem; font-family:'Raleway',sans-serif; font-size:0.62rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-light); cursor:pointer; transition:all 0.15s; }
     .filter-tab:hover { background:var(--cream-dark); color:var(--text-dark); }
     .filter-tab.active { background:var(--burgundy); border-color:var(--burgundy); color:var(--cream); }
+    .lib-add-tab { border-color:var(--sage); color:var(--sage); }
+    .lib-add-tab:hover { background:var(--sage-pale); color:var(--text-dark); }
+    .lib-add-tab.active { background:var(--sage); border-color:var(--sage); color:var(--cream); }
+    #lib-add-panel { background:var(--cream-dark); border:1px solid var(--sage-pale); border-radius:4px; padding:1.5rem; margin-bottom:1.25rem; }
 
     /* ── TYPE BADGES ── */
     .type-badge { display:inline-block; font-size:0.56rem; letter-spacing:0.1em; text-transform:uppercase; padding:0.18rem 0.55rem; border-radius:2px; margin-right:0.35rem; margin-top:0.25rem; }
@@ -452,9 +456,6 @@
     <button class="sidebar-item" data-section="ingredient-library">
       <span class="sidebar-icon">⬡</span> Ingredient Library
     </button>
-    <button class="sidebar-item" data-section="ingredients">
-      <span class="sidebar-icon">◌</span> Ingredient Stories
-    </button>
     <button class="sidebar-item" data-section="research">
       <span class="sidebar-icon">◎</span> Formulation Research
     </button>
@@ -486,6 +487,11 @@
     <button class="sidebar-item" data-section="budget">
       <span class="sidebar-icon">◈</span> Budget Tracker
     </button>
+
+    <div class="sidebar-label">Future</div>
+    <button class="sidebar-item" data-section="phase2">
+      <span class="sidebar-icon">◬</span> Phase 2
+    </button>
   </nav>
 
   <!-- Main Content -->
@@ -514,12 +520,6 @@
           <div class="index-card-title">Ingredient Library</div>
           <div class="index-card-desc">Your confirmed ingredient database. Origin, background, benefits, precautions, and which products each ingredient lives in.</div>
           <div class="index-card-count" id="count-ingredient-library"></div>
-        </div>
-        <div class="index-card" data-goto="ingredients">
-          <div class="index-card-icon">◌</div>
-          <div class="index-card-title">Ingredient Stories</div>
-          <div class="index-card-desc">Ingredients being researched and considered — not yet confirmed for a product. Move them to the Library once locked in.</div>
-          <div class="index-card-count" id="count-ingredients"></div>
         </div>
         <div class="index-card" data-goto="research">
           <div class="index-card-icon">◎</div>
@@ -579,6 +579,17 @@
             <div class="index-card-title">Budget Tracker</div>
             <div class="index-card-desc">Rough budget vs actual spend. Every rand tracked from day one.</div>
             <div class="index-card-count" id="count-budget"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:2px solid var(--sage);">
+        <div style="font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--sage);margin-bottom:0.75rem;">Future</div>
+        <div class="index-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));">
+          <div class="index-card" data-goto="phase2" style="border-top:2px solid var(--sage);">
+            <div class="index-card-icon">◬</div>
+            <div class="index-card-title">Phase 2</div>
+            <div class="index-card-desc">Everything confirmed for Phase 2 — products, ingredients, blends, and future ideas. Your living reference for what comes after launch.</div>
           </div>
         </div>
       </div>
@@ -680,6 +691,7 @@
       <div class="section-desc">Your confirmed ingredient database. Pre-populated with everything confirmed so far — face creams, body butters, soaps. Usage rates and SA sources get filled in during June research.</div>
 
       <div class="filter-tabs" id="lib-filter-tabs">
+        <button class="filter-tab lib-add-tab" data-action="add">+ Add Ingredient</button>
         <button class="filter-tab active" data-filter="all">All</button>
         <button class="filter-tab" data-filter="face-cream">Face Cream</button>
         <button class="filter-tab" data-filter="body-butter">Body Butter</button>
@@ -688,128 +700,79 @@
         <button class="filter-tab" data-filter="tinctured-serums">Tinctured Serums</button>
       </div>
 
+      <div id="lib-add-panel" style="display:none;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--burgundy);margin-bottom:1.25rem;">Add New Ingredient</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ingredient Name</label>
+            <input class="form-input" id="lib-name" placeholder="e.g. Argan Oil" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">INCI Name</label>
+            <input class="form-input" id="lib-inci" placeholder="e.g. Argania Spinosa Kernel Oil" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select class="form-select" id="lib-type">
+              <option value="carrier-oil">Carrier Oil</option>
+              <option value="butter">Butter</option>
+              <option value="active">Active</option>
+              <option value="essential-oil">Essential Oil</option>
+              <option value="botanical">Botanical</option>
+              <option value="emulsifier">Emulsifier</option>
+              <option value="soap-base">Soap Base</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Origin / Region</label>
+            <input class="form-input" id="lib-origin" placeholder="e.g. West Africa" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Products (tick all that apply)</label>
+          <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.3rem">
+            <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="face-cream" class="lib-product-check"> Face Cream</label>
+            <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="body-butter" class="lib-product-check"> Body Butter</label>
+            <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="soap" class="lib-product-check"> Soap</label>
+            <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="teas" class="lib-product-check"> Teas</label>
+            <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="tinctured-serums" class="lib-product-check"> Tinctured Serums</label>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Background + Cultural Story</label>
+          <textarea class="form-textarea" id="lib-background" placeholder="Where does it come from? What traditions used it? What story does it carry?"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Benefits</label>
+          <textarea class="form-textarea" style="min-height:80px" id="lib-benefits" placeholder="What does it do? Skin benefits, tea benefits, properties..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Usage Rate</label>
+            <input class="form-input" id="lib-usage" placeholder="e.g. 5–15%" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">SA Supplier Source</label>
+            <input class="form-input" id="lib-source" placeholder="e.g. essentiallynatural.co.za" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Precautions</label>
+          <textarea class="form-textarea" style="min-height:70px" id="lib-precautions" placeholder="Any safety notes, dilution limits, allergen flags, pregnancy cautions..."></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Personal Notes</label>
+          <textarea class="form-textarea" style="min-height:70px" id="lib-notes" placeholder="Anything personal — why you chose it, how it fits the brand, which blend it's in..."></textarea>
+        </div>
+        <button class="btn" id="lib-save-btn">Add to Library</button>
+        <div id="lib-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      </div>
+
       <input class="lib-search" id="lib-search" placeholder="Search ingredients..." />
       <div class="lib-count" id="lib-count"></div>
       <div class="card-list" id="lib-list"></div>
-
-      <hr class="divider">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--burgundy);margin-bottom:1.25rem;">Add New Ingredient</div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Ingredient Name</label>
-          <input class="form-input" id="lib-name" placeholder="e.g. Argan Oil" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Type</label>
-          <select class="form-select" id="lib-type">
-            <option value="carrier-oil">Carrier Oil</option>
-            <option value="butter">Butter</option>
-            <option value="active">Active</option>
-            <option value="essential-oil">Essential Oil</option>
-            <option value="botanical">Botanical</option>
-            <option value="emulsifier">Emulsifier</option>
-            <option value="soap-base">Soap Base</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Products (tick all that apply)</label>
-        <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-top:0.3rem">
-          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="face-cream" class="lib-product-check"> Face Cream</label>
-          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="body-butter" class="lib-product-check"> Body Butter</label>
-          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="soap" class="lib-product-check"> Soap</label>
-          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="teas" class="lib-product-check"> Teas</label>
-          <label style="font-size:0.75rem;color:var(--text-mid);display:flex;align-items:center;gap:0.3rem"><input type="checkbox" value="tinctured-serums" class="lib-product-check"> Tinctured Serums</label>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Origin / Region</label>
-        <input class="form-input" id="lib-origin" placeholder="e.g. West Africa" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Background + Cultural Story</label>
-        <textarea class="form-textarea" id="lib-background" placeholder="Where does it come from? What traditions used it? What story does it carry?"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Benefits</label>
-        <textarea class="form-textarea" style="min-height:80px" id="lib-benefits" placeholder="What does it do for the skin?"></textarea>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Usage Rate (fill in during research)</label>
-          <input class="form-input" id="lib-usage" placeholder="e.g. 5–15%" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">SA Supplier Source</label>
-          <input class="form-input" id="lib-source" placeholder="e.g. essentiallynatural.co.za" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Precautions</label>
-        <textarea class="form-textarea" style="min-height:70px" id="lib-precautions" placeholder="Any safety notes, dilution limits, allergen flags..."></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Personal Notes</label>
-        <textarea class="form-textarea" style="min-height:70px" id="lib-notes" placeholder="Anything personal — why you chose it, how it fits the brand..."></textarea>
-      </div>
-      <button class="btn" id="lib-save-btn">Add to Library</button>
-      <div id="lib-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
-    </div>
-
-    <!-- INGREDIENT STORIES -->
-    <div class="section" id="section-ingredients">
-      <div class="section-title">Ingredient Stories</div>
-      <div class="section-desc">For ingredients you're researching and considering — not yet confirmed for a product. Once confirmed, add them to the Ingredient Library.</div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Ingredient Name</label>
-          <input class="form-input" id="ing-name" placeholder="e.g. Shea Butter" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">INCI Name</label>
-          <input class="form-input" id="ing-inci" placeholder="e.g. Butyrospermum Parkii Butter" />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Origin / Region</label>
-          <input class="form-input" id="ing-origin" placeholder="e.g. Shea Belt, West Africa" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">Used In (products)</label>
-          <input class="form-input" id="ing-products" placeholder="e.g. Body Butter, Face Cream" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Traditional Use + Cultural Story</label>
-        <textarea class="form-textarea" id="ing-story" placeholder="Where does this ingredient come from? What traditions used it? What did it mean to the people who harvested it?"></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Skin Benefits + Properties</label>
-        <textarea class="form-textarea" style="min-height:80px" id="ing-benefits" placeholder="What does it do for the skin? pH, recommended usage percentage, any contraindications?"></textarea>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Notes</label>
-          <textarea class="form-textarea" style="min-height:70px" id="ing-notes" placeholder="Anything else — sourcing notes, ritual significance, what product it's going into and why..."></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Product Category (if confirmed)</label>
-          <select class="form-select" id="ing-product-cat">
-            <option value="">— Still researching —</option>
-            <option value="face-cream">Face Cream</option>
-            <option value="body-butter">Body Butter</option>
-            <option value="soap">Soap</option>
-            <option value="teas">Teas</option>
-            <option value="tinctured-serums">Tinctured Serums</option>
-          </select>
-        </div>
-      </div>
-      <button class="btn" id="ing-save-btn">Add Ingredient</button>
-      <div id="ing-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
-      <div class="card-list" id="ing-list"></div>
     </div>
 
     <!-- FORMULATION RESEARCH -->
@@ -1220,6 +1183,100 @@
       <div id="budget-list" style="margin-top:1.5rem;"></div>
     </div>
 
+    <!-- PHASE 2 -->
+    <div class="section" id="section-phase2">
+      <div class="section-title">Phase 2</div>
+      <div class="section-desc">Everything confirmed for Phase 2 — products, ingredients, blends, and future ideas. A living reference for what comes after launch.</div>
+
+      <div style="display:flex;flex-direction:column;gap:2rem;">
+
+        <!-- TEAS -->
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--burgundy);margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1px solid var(--cream-dark);">Teas</div>
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-mid);margin-bottom:0.5rem;">Confirmed Phase 2 Blends</div>
+            <div style="background:white;border-radius:4px;padding:1rem;font-size:0.8rem;color:var(--text-mid);line-height:1.7;">
+              <strong>Anxiety Relief / Rest</strong> — Deferred from launch range. Blend composition TBD during Phase 2 formulation sessions.<br>
+              <strong>Shatavari Hormonal Balance</strong> — Phytoestrogenic female tonic blend. Key ingredient: Shatavari (Asparagus racemosus). Needs careful formulation and safety consideration around hormone-sensitive conditions. Blend TBD.
+            </div>
+          </div>
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:0.7rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-mid);margin-bottom:0.5rem;">Botanicals Loved — Not Used in Launch Blends</div>
+            <div style="background:white;border-radius:4px;padding:1rem;font-size:0.8rem;color:var(--text-mid);line-height:1.7;">
+              <strong>Elderflower</strong> — GABA interaction, Celtic/Norse sacred, gentle ancestral wisdom. Top note.<br>
+              <strong>Jasmine</strong> — Buddhist/Hindu temple herb, GABA interaction, calming and mildly euphoric. Top note.<br>
+              <strong>Hawthorn</strong> — Celtic sacred, emotional courage, heart-opening. Middle note.<br>
+              <strong>Kanna (Sceletium tortuosum)</strong> — SA San/Khoikhoi sacred plant, serotonin reuptake inhibitor. Dropped for launch due to SSRI/MAOI interaction liability — label warning required. Middle note.<br>
+              <strong>Reishi Mushroom</strong> — Chinese spirit mushroom, Taoist/Buddhist meditation. Dropped due to sourcing complexity (typically powder/extract). Base note.<br>
+              <strong>Gotu Kola</strong> — Ayurvedic/Buddhist meditation herb, overlaps with Brahmi. Middle note.<br>
+              <strong>Saffron</strong> — Persian/Sufi/Buddhist, mood-elevating, expensive at scale. Top note.<br>
+              <strong>Lemon Verbena</strong> — Emotional lift, intensely lemony, makes release feel like opening. Middle/top note.<br>
+              <strong>Nettle</strong> — Kidney cleansing, deeply nutritive, replenishes after release. Base/middle note.<br>
+              <strong>Lion's Mane Mushroom</strong> — Buddhist monks, nerve growth factor, cognitive clarity. Base note.<br>
+              <strong>Brahmi/Bacopa</strong> — Used in Clarity blend. Also note: Gotu Kola is the other herb called Brahmi in some traditions.<br>
+              <strong>Vervain</strong> — Celtic/Druidic sacred, purification and preparation for ritual. Middle/top note.<br>
+              <strong>Frankincense (as tea)</strong> — 5,000 years of sacred ceremony, deepens breath. Base note.<br>
+              <strong>Yarrow</strong> — I Ching divination herb, clarity and discernment. Middle note.<br>
+              <strong>Mimosa / Albizia</strong> — Chinese heart-opening herb, grief and emotional constraint. Middle note.<br>
+              <strong>Clary Sage</strong> — European visionary/witch tradition, opens inner eye. Top note.<br>
+              <strong>Wild Dagga (Leonotis leonurus)</strong> — South African, Zulu/Xhosa traditional use, mild euphoria. Middle note.<br>
+              <strong>Kava Kava</strong> — Pacific Islander ceremonial, profound calm + clear awareness. Caution: liver toxicity at high/prolonged doses. Base note.<br>
+              <strong>Ginkgo Biloba</strong> — Buddhist temples, 270 million year old tree, cerebral blood flow. Middle note.<br>
+              <strong>Sacred Lotus (Nelumbo nucifera)</strong> — Used in Clarity blend. Also suitable for other spiritually-oriented blends.<br>
+              <strong>Damiana</strong> — Used in Wild Dreaming. Also suitable for ceremonial/creative blends in Phase 2.
+            </div>
+          </div>
+          <textarea class="form-textarea" id="p2-teas-notes" style="min-height:100px;" placeholder="Add your own Phase 2 tea notes here..."></textarea>
+          <button class="btn" style="margin-top:0.5rem;" onclick="localStorage.setItem('ruh_p2_teas', document.getElementById('p2-teas-notes').value); this.textContent='Saved ✓'; setTimeout(()=>this.textContent='Save Notes',1500);">Save Notes</button>
+        </div>
+
+        <!-- BODY SCRUBS -->
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--burgundy);margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1px solid var(--cream-dark);">Body Scrubs</div>
+          <div style="background:white;border-radius:4px;padding:1rem;font-size:0.8rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem;">
+            Confirmed Phase 2 product. Simple to make — sugar or salt base + carrier oils + botanicals + essential oils. No preservation needed (anhydrous). High perceived value, excellent margins, visually beautiful. Natural ritual pairing with body butters — exfoliate then seal. Add after core launch range is established and selling.
+          </div>
+          <textarea class="form-textarea" id="p2-scrubs-notes" style="min-height:100px;" placeholder="Ingredient ideas, scent directions, product concepts..."></textarea>
+          <button class="btn" style="margin-top:0.5rem;" onclick="localStorage.setItem('ruh_p2_scrubs', document.getElementById('p2-scrubs-notes').value); this.textContent='Saved ✓'; setTimeout(()=>this.textContent='Save Notes',1500);">Save Notes</button>
+        </div>
+
+        <!-- FACIAL EXFOLIATORS -->
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--burgundy);margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1px solid var(--cream-dark);">Facial Exfoliators</div>
+          <div style="background:white;border-radius:4px;padding:1rem;font-size:0.8rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem;">
+            Confirmed Phase 2 product. Two types:<br>
+            <strong>Physical exfoliators</strong> — ground oats, rice powder, and clay. Natural only, no synthetic abrasives.<br>
+            <strong>Enzyme exfoliators</strong> — papaya, pineapple, or pumpkin enzymes. Natural enzymatic exfoliation — no chemical AHAs or BHAs.
+          </div>
+          <textarea class="form-textarea" id="p2-exfoliate-notes" style="min-height:100px;" placeholder="Ingredient ideas, formulation notes, product concepts..."></textarea>
+          <button class="btn" style="margin-top:0.5rem;" onclick="localStorage.setItem('ruh_p2_exfoliate', document.getElementById('p2-exfoliate-notes').value); this.textContent='Saved ✓'; setTimeout(()=>this.textContent='Save Notes',1500);">Save Notes</button>
+        </div>
+
+        <!-- TINCTURED SERUMS -->
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--burgundy);margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1px solid var(--cream-dark);">Tinctured Serums</div>
+          <div style="background:white;border-radius:4px;padding:1rem;font-size:0.8rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem;">
+            5 serums confirmed for launch range. This section is for Phase 2 serum ideas that emerge during product development and testing.
+          </div>
+          <textarea class="form-textarea" id="p2-serums-notes" style="min-height:100px;" placeholder="Phase 2 serum ideas, new botanicals to consider, formulation concepts..."></textarea>
+          <button class="btn" style="margin-top:0.5rem;" onclick="localStorage.setItem('ruh_p2_serums', document.getElementById('p2-serums-notes').value); this.textContent='Saved ✓'; setTimeout(()=>this.textContent='Save Notes',1500);">Save Notes</button>
+        </div>
+
+        <!-- OTHER / FUTURE -->
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--burgundy);margin-bottom:0.5rem;padding-bottom:0.5rem;border-bottom:1px solid var(--cream-dark);">Other / Future</div>
+          <div style="background:white;border-radius:4px;padding:1rem;font-size:0.8rem;color:var(--text-mid);line-height:1.7;margin-bottom:1rem;">
+            <strong>Own Oracle Deck</strong> — A real Ruh product, 1–2 years from now. Based on ingredients, brand themes, and the full Ruh world. The door is there.<br>
+            <strong>Herb Garden</strong> — Grow own botanicals for Ruh. Lavender is possible in Joburg. Rooibos is not (endemic to the Cederberg). Phase 2/3 project — needs a dedicated setup discussion. Deeply aligned with the brand story.<br>
+            <strong>WhatsApp Community</strong> — Small, curated customer community. Mishka asks what they need, what's missing, what they want to see. People who help shape something become the most loyal customers.
+          </div>
+          <textarea class="form-textarea" id="p2-other-notes" style="min-height:100px;" placeholder="Any other future ideas, products, or plans..."></textarea>
+          <button class="btn" style="margin-top:0.5rem;" onclick="localStorage.setItem('ruh_p2_other', document.getElementById('p2-other-notes').value); this.textContent='Saved ✓'; setTimeout(()=>this.textContent='Save Notes',1500);">Save Notes</button>
+        </div>
+
+      </div>
+    </div>
+
   </main>
 </div>
 
@@ -1289,7 +1346,7 @@ function clearInputs(ids) {
 //  INDEX COUNTS
 // ─────────────────────────────────────────────
 function updateCounts() {
-  const sections = ['design','ingredients','research','recipes','stability','costing','suppliers','customers','budget','equipment'];
+  const sections = ['design','research','recipes','stability','costing','suppliers','customers','budget','equipment'];
   sections.forEach(s => {
     const el = document.getElementById('count-' + s);
     if (!el) return;
@@ -1403,37 +1460,6 @@ document.getElementById('design-save-btn').addEventListener('click', () => {
 document.getElementById('design-filter').addEventListener('change', renderDesign);
 renderDesign();
 
-// ─────────────────────────────────────────────
-//  INGREDIENT STORIES
-// ─────────────────────────────────────────────
-function renderIngredients() {
-  const list = load('ingredients');
-  const el = document.getElementById('ing-list');
-  el.innerHTML = '';
-  if (!list.length) { el.innerHTML = '<div class="empty-state">No ingredients documented yet. Start with your heroes — coconut oil, shea butter, jojoba.</div>'; return; }
-  [...list].reverse().forEach((item, idx) => {
-    const realIdx = list.length - 1 - idx;
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.name)}</div><div class="card-meta">${esc(item.inci)} · ${esc(item.origin)}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div>${item.products ? `<div style="margin-bottom:0.5rem"><span class="card-tag tag-sage">${esc(item.products)}</span></div>` : ''}<div class="card-body">${esc(item.story)}</div>${item.benefits ? `<div class="card-body" style="margin-top:0.5rem;font-style:italic">${esc(item.benefits)}</div>` : ''}`;
-    el.appendChild(div);
-  });
-  el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
-    const list = load('ingredients'); list.splice(parseInt(btn.dataset.idx), 1); save('ingredients', list); renderIngredients(); updateCounts();
-  }));
-}
-document.getElementById('ing-save-btn').addEventListener('click', () => {
-  const name = document.getElementById('ing-name').value.trim();
-  if (!name) return;
-  const list = load('ingredients');
-  list.push({ name, inci: document.getElementById('ing-inci').value.trim(), origin: document.getElementById('ing-origin').value.trim(), products: document.getElementById('ing-products').value.trim(), story: document.getElementById('ing-story').value.trim(), benefits: document.getElementById('ing-benefits').value.trim(), notes: document.getElementById('ing-notes').value.trim(), productCat: document.getElementById('ing-product-cat').value });
-  save('ingredients', list);
-  clearInputs(['ing-name','ing-inci','ing-origin','ing-products','ing-story','ing-benefits','ing-notes']);
-  document.getElementById('ing-product-cat').selectedIndex = 0;
-  flash('ing-saved-msg', 'Ingredient saved.');
-  renderIngredients(); updateCounts();
-});
-renderIngredients();
 
 // ─────────────────────────────────────────────
 //  FORMULATION RESEARCH
@@ -2127,6 +2153,9 @@ const LIB_DEFAULTS = [
   {id:'nettle',name:'Nettle',type:'botanical',products:['teas'],origin:'Europe, Asia, North America (Urtica dioica)',background:'Used for food and medicine for thousands of years across Europe and North America. Nettle cloth has been found in Bronze Age European burial sites. One of the most complete nourishing plants known.',benefits:'Iron-rich and nutritive. Supports adrenal function, anti-inflammatory, diuretic, supports hair and skin health. A deeply nourishing tonic.',usageRate:'',saSource:'',precautions:'Very safe as tea. Mild diuretic — stay hydrated. May mildly affect blood thinners at very high doses.',notes:''},
   {id:'liquorice-root',name:'Liquorice Root',type:'botanical',products:['teas'],origin:'Mediterranean and Middle East (Glycyrrhiza glabra)',background:'Used in Chinese and Ayurvedic medicine for thousands of years. Referenced in ancient Egyptian, Greek, and Chinese texts as a sweetener and tonic. One of the most used herbs in Traditional Chinese Medicine.',benefits:'Naturally sweet and warming. Soothes digestive and respiratory inflammation, supports adrenal function, antiviral. Adds sweetness to blends without sugar.',usageRate:'',saSource:'',precautions:'AVOID with hypertension — glycyrrhizin raises blood pressure with daily use. Avoid with certain heart and kidney conditions. Avoid in pregnancy.',notes:''},
   {id:'dandelion-root',name:'Dandelion Root',type:'botanical',products:['teas'],origin:'Europe and Asia (Taraxacum officinale)',background:'Every part of the dandelion has been used medicinally across European, Native American, and Chinese traditions for centuries. One of the most nutritionally complete herbs known.',benefits:'Liver support, digestive tonic, rich in inulin (prebiotic), mild diuretic, supports detoxification. Deeply cleansing and earthy.',usageRate:'',saSource:'',precautions:'Diuretic — caution with diuretic medications. Can affect absorption of some medications.',notes:''},
+  {id:'brahmi',name:'Brahmi (Bacopa monnieri)',type:'botanical',products:['teas'],origin:'India — wetlands and marshes of the Indian subcontinent (Bacopa monnieri)',background:'One of the most revered herbs in Ayurveda, used for over 3,000 years specifically by scholars, sages, and meditators. Ancient Brahmin priests consumed it to memorise thousands of verses of sacred text. The name Brahmi literally means "that which gives knowledge of Brahman" — Brahman being the supreme universal consciousness. Used deliberately for deepening meditative states and expanding awareness.',benefits:'Improves memory, cognitive function, and concentration. Reduces anxiety and cortisol. Enhances serotonin pathways. Cumulative — builds over weeks of regular use. The Ayurvedic spine of the Clarity + Meditation blend.',usageRate:'',saSource:'',precautions:'Builds cumulatively — best as a daily practice tea. May interact with thyroid medications. Caution in pregnancy — limited safety data.',notes:'Used in Clarity + Meditation blend at 20%. Starting ratio.'},
+  {id:'skullcap',name:'Skullcap',type:'botanical',products:['teas'],origin:'North America — Eastern United States (Scutellaria lateriflora)',background:'Used ceremonially by multiple Native American peoples including the Cherokee and Iroquois. The Cherokee used it in women\'s ceremonies. In Native American tradition it was used for ceremony, vision quests, and serious spiritual practice. Later adopted into European herbal medicine as one of the most effective nervine herbs known. Named for the shape of its flower — a tiny skull-cap.',benefits:'One of the most powerful nervine herbs in Western herbalism. Deeply calms the nervous system without sedating. Quiets mental chatter while leaving awareness intact and clear — exactly what meditation requires.',usageRate:'',saSource:'',precautions:'Generally safe. May enhance the effect of sedative medications. Rare liver toxicity reported with some commercial products — source from reputable suppliers.',notes:'Used in Clarity + Meditation blend at 12%. Starting ratio.'},
+  {id:'sacred-lotus',name:'Sacred Lotus',type:'botanical',products:['teas'],origin:'Asia and Egypt (Nelumbo nucifera)',background:'One of the most sacred plants in human history across multiple civilisations. In Buddhism the lotus is the primary symbol of enlightenment — it grows from mud through murky water and opens into perfect beauty above the surface. The Buddha is depicted seated on a lotus. In Hinduism, Lakshmi and Brahma both sit on lotuses. In ancient Egypt — predating Buddhism — the lotus symbolised creation, rebirth, and the sun rising from primordial waters.',benefits:'Contains nuciferine and other alkaloids that produce a calm, meditative, mildly sedative effect. Soothes anxiety and calms what TCM calls "disturbed shen" — disturbed spirit or consciousness. Produces spiritual peace.',usageRate:'',saSource:'',precautions:'Mild sedative — do not combine with prescription sedatives. Avoid in pregnancy due to limited safety data.',notes:'Used in Clarity + Meditation blend at 8%. Starting ratio. Use petals and/or stamens.'},
   {id:'shatavari',name:'Shatavari',type:'botanical',products:['teas'],origin:'India, South Asia (Asparagus racemosus)',background:'The name means "she who has 100 husbands" — referring to its deeply nourishing quality for women\'s vitality. A sacred female tonic herb in Ayurveda for over 3,000 years. A Phase 2 Ruh product ingredient.',benefits:'Female reproductive tonic, hormone balancing, adaptogenic. Supports fertility, menstrual health, and menopausal transition. Rich in steroidal saponins.',usageRate:'',saSource:'',precautions:'Contains phytoestrogens — avoid if hormone-sensitive conditions (e.g. oestrogen-sensitive cancers). Consult a practitioner before using in pregnancy. Phase 2 Ruh product.',notes:'Phase 2 — Hormonal Balance Tea Blend'},
   {id:'elderflower',name:'Elderflower',type:'botanical',products:['teas'],origin:'Europe and North America (Sambucus nigra)',background:'One of the most beloved flowers in traditional European herbalism. Used for centuries for colds, fever, and as a spring tonic. Steeped in folklore — the elder tree was considered to be inhabited by protective spirits.',benefits:'Anti-inflammatory, immune support, gentle diaphoretic (helps fever break), beautiful floral flavour. Light and uplifting in blends.',usageRate:'',saSource:'',precautions:'Very safe. Use flowers only — other parts of the raw plant can cause nausea.',notes:''},
   {id:'calendula-flower-dried',name:'Calendula Flower (Dried)',type:'botanical',products:['teas','tinctured-serums'],origin:'Mediterranean and Western Europe (Calendula officinalis)',background:'The same healing flower as the Calendula-Infused Oil in the library — here as dried petals for tea. Used since ancient Egypt and Rome for wound healing and medicine. A truly generous, radiant plant.',benefits:'Anti-inflammatory, soothes digestive inflammation, wound healing from the inside, gentle and beautiful in blends. Golden petals in the cup.',usageRate:'',saSource:'',precautions:'Avoid if allergic to Asteraceae family plants.',notes:''},
@@ -2204,6 +2233,7 @@ function makeLibCard(item, realIdx) {
       <button class="btn-danger" data-libidx="${realIdx}">Delete</button>
     </div>
     <div style="font-size:0.72rem;color:var(--text-light);margin-top:0.4rem">${esc(item.origin)}</div>
+    ${item.inci ? `<div style="font-size:0.65rem;color:var(--text-light);font-style:italic;margin-top:0.2rem">${esc(item.inci)}</div>` : ''}
     <button class="lib-expand-btn" data-expanded="false">Show details ▾</button>
     <div class="lib-detail">
       ${item.background ? `<div class="lib-detail-row"><div class="lib-detail-label">Background</div><div class="lib-detail-value">${esc(item.background)}</div></div>` : ''}
@@ -2271,7 +2301,16 @@ function renderLibrary() {
 document.getElementById('lib-filter-tabs').addEventListener('click', e => {
   const btn = e.target.closest('.filter-tab');
   if (!btn) return;
-  document.querySelectorAll('#lib-filter-tabs .filter-tab').forEach(b => b.classList.remove('active'));
+  const panel = document.getElementById('lib-add-panel');
+  if (btn.dataset.action === 'add') {
+    const open = panel.style.display !== 'none';
+    panel.style.display = open ? 'none' : 'block';
+    btn.classList.toggle('active', !open);
+    return;
+  }
+  panel.style.display = 'none';
+  document.querySelector('.lib-add-tab').classList.remove('active');
+  document.querySelectorAll('#lib-filter-tabs .filter-tab[data-filter]').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   libFilter = btn.dataset.filter;
   renderLibrary();
@@ -2290,6 +2329,7 @@ document.getElementById('lib-save-btn').addEventListener('click', () => {
   list.push({
     id: name.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''),
     name,
+    inci: document.getElementById('lib-inci').value.trim(),
     type: document.getElementById('lib-type').value,
     products,
     origin: document.getElementById('lib-origin').value.trim(),
@@ -2302,7 +2342,7 @@ document.getElementById('lib-save-btn').addEventListener('click', () => {
   });
   saveLib(list);
   document.querySelectorAll('.lib-product-check').forEach(c => c.checked = false);
-  clearInputs(['lib-name','lib-origin','lib-background','lib-benefits','lib-usage','lib-source','lib-precautions','lib-notes']);
+  clearInputs(['lib-name','lib-inci','lib-origin','lib-background','lib-benefits','lib-usage','lib-source','lib-precautions','lib-notes']);
   document.getElementById('lib-type').selectedIndex = 0;
   flash('lib-saved-msg', 'Added to library.');
   renderLibrary();
@@ -2311,6 +2351,14 @@ document.getElementById('lib-save-btn').addEventListener('click', () => {
 
 seedLibrary();
 renderLibrary();
+
+// ─────────────────────────────────────────────
+//  PHASE 2 — restore saved notes
+// ─────────────────────────────────────────────
+['teas','scrubs','exfoliate','serums','other'].forEach(key => {
+  const el = document.getElementById('p2-' + key + '-notes');
+  if (el) el.value = localStorage.getItem('ruh_p2_' + key) || '';
+});
 
 // ─────────────────────────────────────────────
 //  COMPATIBILITY CHECKER
@@ -2535,11 +2583,10 @@ const RECIPE_TEMPLATES = {
     { label: 'Healing', product: 'Ruh Soap — Healing', ingredients: 'SOAP BASE\nShea Butter M&P Base\n\nADD-IN OILS\nTamanu Oil\nRosehip Seed Oil\n\nACTIVES\nCentella Asiatica\nRooibos Extract\n\nESSENTIAL OILS\nHelichrysum EO\nFrankincense EO\nLavender EO' }
   ],
   'teas': [
-    { label: 'Grounding + Meditation', product: 'Ruh Tea — Grounding + Meditation', ingredients: 'Tulsi / Holy Basil\nAshwagandha\nOat Straw\nLemon Balm\nCacao Husks\nBlue Lotus\nCardamom\n\nNote: Ratios to be confirmed during formulation session.' },
-    { label: 'Wild Dreaming', product: 'Ruh Tea — Wild Dreaming', ingredients: 'Mugwort\nPassionflower\nBlue Lotus\nValerian Root\nLemon Balm\nJasmine (Dried Flowers)\n\nNote: Ratios to be confirmed during formulation session.\nCAUTION: Contains mugwort — not for use during pregnancy.' },
-    { label: 'Release', product: 'Ruh Tea — Release', ingredients: 'Dandelion Root\nNettle\nLemon Verbena\nPeppermint\nGinger Root\nHibiscus\nRosehip (Dried)\n\nNote: Ratios to be confirmed during formulation session.' },
-    { label: 'Clarity', product: 'Ruh Tea — Clarity', ingredients: 'Tulsi / Holy Basil\nPeppermint\nSpearmint\nRosehip (Dried)\nLemon Verbena\nCardamom\n\nNote: Ratios to be confirmed during formulation session.' },
-    { label: 'Rest + Anxiety Relief', product: 'Ruh Tea — Rest + Anxiety Relief', ingredients: 'Valerian Root\nPassionflower\nLemon Balm\nOat Straw\nCalendula Flower (Dried)\nSpearmint\n\nNote: Ratios to be confirmed during formulation session.' }
+    { label: 'Grounding', product: 'Ruh Tea — Grounding', ingredients: 'Rooibos — 40%\nOat Straw — 20%\nGinger Root — 15%\nCinnamon (Ceylon) — 15%\nAshwagandha — 10%\n\nNotes: Starting ratios — adjust through testing. Keep ashwagandha at 10% to start; its bitterness is strong. Two bases (rooibos + ashwagandha), two middles (oat straw + ginger), one top (cinnamon).' },
+    { label: 'Wild Dreaming', product: 'Ruh Tea — Wild Dreaming', ingredients: 'Honeybush — 35%\nMugwort — 20%\nPassionflower — 20%\nBlue Lotus — 15%\nDamiana — 10%\n\nNotes: Starting ratios — adjust through testing.\nCAUTION: Contains mugwort and damiana — NOT for use during pregnancy. Mugwort is a strong emmenagogue.' },
+    { label: 'Release', product: 'Ruh Tea — Release', ingredients: 'Dandelion Root — 35%\nHibiscus — 30%\nRosehip (Dried) — 20%\nTulsi / Holy Basil — 15%\n\nNotes: Starting ratios — adjust through testing. Hibiscus is bold; reduce if too tart.\nCAUTION: Hibiscus significantly lowers blood pressure — include label warning for those on blood pressure medication.' },
+    { label: 'Clarity + Meditation', product: 'Ruh Tea — Clarity + Meditation', ingredients: 'Honeybush — 35%\nCacao Husks — 25%\nBrahmi (Bacopa monnieri) — 20%\nSkullcap — 12%\nSacred Lotus (Nelumbo nucifera) — 8%\n\nNotes: Starting ratios — adjust through testing. Brahmi is cumulative — best as a daily practice tea. Cacao husks contain mild theobromine; not suitable for those highly sensitive to stimulants.' },
   ],
   'tinctured-serums': [
     { label: 'Repair + Regeneration', product: 'Ruh Tinctured Serum — Repair + Regeneration', ingredients: 'HERBAL INFUSION BASE\nComfrey (6-week oil infusion)\n\nCARRIER OILS\nRosehip Seed Oil\nTamanu Oil\nBaobab Oil\nPomegranate Seed Oil\n\nACTIVES\nCentella Asiatica\nVitamin E (Natural d-alpha)\nBakuchiol\nRooibos Extract\n\nESSENTIAL OILS\nHelichrysum EO\nFrankincense EO\nCarrot Seed EO\nMyrrh EO' },
