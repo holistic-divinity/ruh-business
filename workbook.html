@@ -802,6 +802,7 @@
       </div>
       <button class="btn" id="res-save-btn">Save Notes</button>
       <div id="res-saved-msg" style="font-size:0.65rem;color:var(--sage);margin-top:0.5rem;min-height:1rem;"></div>
+      <div id="res-filter-tabs" class="filter-tabs" style="margin-top:1.25rem;"></div>
       <div class="card-list" id="res-list"></div>
     </div>
 
@@ -1492,20 +1493,36 @@ renderDesign();
 // ─────────────────────────────────────────────
 //  FORMULATION RESEARCH
 // ─────────────────────────────────────────────
+let resActiveFilter = 'all';
 function renderResearch() {
   const list = load('research');
   const el = document.getElementById('res-list');
+  const tabsEl = document.getElementById('res-filter-tabs');
   el.innerHTML = '';
+  tabsEl.innerHTML = '';
   if (!list.length) { el.innerHTML = '<div class="empty-state">No research notes yet. Start with Formula Botanica\'s beginner guides tomorrow.</div>'; return; }
-  [...list].reverse().forEach((item, idx) => {
-    const realIdx = list.length - 1 - idx;
+
+  // build filter tabs
+  const titles = ['all', ...list.map(i => i.title)];
+  titles.forEach(title => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-tab' + (resActiveFilter === title ? ' active' : '');
+    btn.textContent = title === 'all' ? 'All' : title;
+    btn.addEventListener('click', () => { resActiveFilter = title; renderResearch(); });
+    tabsEl.appendChild(btn);
+  });
+
+  // render cards
+  const filtered = resActiveFilter === 'all' ? list : list.filter(i => i.title === resActiveFilter);
+  [...filtered].reverse().forEach((item) => {
+    const realIdx = list.indexOf(item);
     const div = document.createElement('div');
     div.className = 'card';
     div.innerHTML = `<div class="card-header"><div><div class="card-title">${esc(item.title)}</div><div class="card-meta">${esc(item.source)} · ${item.date}</div></div><button class="btn-danger" data-idx="${realIdx}">Delete</button></div><div class="card-body">${esc(item.notes)}</div>`;
     el.appendChild(div);
   });
   el.querySelectorAll('.btn-danger').forEach(btn => btn.addEventListener('click', () => {
-    const list = load('research'); list.splice(parseInt(btn.dataset.idx), 1); save('research', list); renderResearch(); updateCounts();
+    const list = load('research'); list.splice(parseInt(btn.dataset.idx), 1); save('research', list); resActiveFilter = 'all'; renderResearch(); updateCounts();
   }));
 }
 document.getElementById('res-save-btn').addEventListener('click', () => {
